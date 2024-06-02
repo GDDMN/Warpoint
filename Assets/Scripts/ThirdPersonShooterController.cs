@@ -4,6 +4,13 @@ using UnityEngine;
 using Cinemachine;
 using StarterAssets;
 
+public enum WeaponType 
+{
+  NO_WEAPON,
+  ONE_ARMED,
+  DOUBLE_ARMED
+}
+
 public class ThirdPersonShooterController : MonoBehaviour
 {
   [SerializeField] private CinemachineVirtualCamera _aimVirtualCamera;

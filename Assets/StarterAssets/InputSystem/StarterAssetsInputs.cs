@@ -14,6 +14,8 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool aim;
+		public bool shooting;
+		public bool cameraSide = true;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -50,6 +52,17 @@ namespace StarterAssets
 			AimInput(value.isPressed);
 		}
 
+		public void OnShoot(InputValue value)
+    {
+			ShootInput(value.isPressed);
+    }
+		
+		public void OnChangeCameraSide()
+    {
+			ChangeCameraSide(!cameraSide);
+    }
+
+
 
 #endif
     public void MoveInput(Vector2 newMoveDirection)
@@ -77,6 +90,11 @@ namespace StarterAssets
 			aim = newAimState;
 		}
 
+		private void ShootInput(bool newShootingState)
+		{
+			shooting = newShootingState;
+		}
+
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
@@ -85,6 +103,10 @@ namespace StarterAssets
 		private void SetCursorState(bool newState)
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+		}
+		private void ChangeCameraSide(bool unversdCameraSide)
+		{
+			cameraSide = unversdCameraSide;
 		}
 	}
 }
