@@ -27,11 +27,13 @@ public class ThirdPersonShooterController : MonoBehaviour
 
   private ThirdPersonController _controller;
   private StarterAssetsInputs _inputs;
+  private Animator _animator;
 
   private Vector2 SCREEN_CENTER_POINT = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
   private void Awake()
   {
+    _animator = GetComponent<Animator>();
     _controller = GetComponent<ThirdPersonController>();
     _inputs = GetComponent<StarterAssetsInputs>();
   }
@@ -43,7 +45,9 @@ public class ThirdPersonShooterController : MonoBehaviour
 
   private void Aiming()
   {
-    if(!_inputs.aim)
+    _animator.SetBool("Aim", _inputs.aim);
+
+    if (!_inputs.aim)
     {
       _aimVirtualCamera.gameObject.SetActive(false);
       _controller.SetSensativity(normalSensativity);
