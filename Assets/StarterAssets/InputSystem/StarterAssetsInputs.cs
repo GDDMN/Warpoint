@@ -16,6 +16,7 @@ namespace StarterAssets
 		public bool sprint;
 		public bool aim;
 		public bool shooting;
+
 		public bool cameraSide = true;
 
 		[Header("Movement Settings")]
