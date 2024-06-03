@@ -16,7 +16,6 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private CinemachineVirtualCamera _aimVirtualCamera;
   [SerializeField] private float normalSensativity;
   [SerializeField] private float aimSensativity;
-  [SerializeField] private LayerMask aimColliderLayerMask = new LayerMask();
 
   private ThirdPersonController _controller;
   private StarterAssetsInputs _inputs;
@@ -28,16 +27,17 @@ public class ThirdPersonShooterController : MonoBehaviour
     _inputs = GetComponent<StarterAssetsInputs>();
   }
 
+  private void OnEnable()
+  {
+
+  }
 
   private void Update()
   {
     Vector3 mouseWorldPoint = Vector3.zero;
     
     Ray ray = Camera.main.ScreenPointToRay(SCREEN_CENTER_POINT);
-    if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, aimColliderLayerMask))
-      mouseWorldPoint = raycastHit.point;
-
-
+    mouseWorldPoint = ray.direction * 999f;
 
     if (_inputs.aim)
     {

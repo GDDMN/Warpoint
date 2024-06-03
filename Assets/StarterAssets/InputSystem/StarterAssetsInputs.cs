@@ -11,6 +11,7 @@ namespace StarterAssets
 		[Header("Character Input Values")]
 		public Vector2 move;
 		public Vector2 look;
+
 		public bool jump;
 		public bool sprint;
 		public bool aim;
@@ -61,8 +62,6 @@ namespace StarterAssets
     {
 			ChangeCameraSide(!cameraSide);
     }
-
-
 
 #endif
     public void MoveInput(Vector2 newMoveDirection)
