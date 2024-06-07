@@ -24,6 +24,8 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private CinemachineVirtualCamera _aimVirtualCamera;
   [SerializeField] private float normalSensativity;
   [SerializeField] private float aimSensativity;
+  public WeaponType weaponType;
+
 
   private ThirdPersonController _controller;
   private StarterAssetsInputs _inputs;
@@ -46,6 +48,7 @@ public class ThirdPersonShooterController : MonoBehaviour
   private void Aiming()
   {
     _animator.SetBool("Aim", _inputs.aim);
+    _animator.SetInteger("WeaponType", (int)weaponType);
 
     if (!_inputs.aim)
     {
