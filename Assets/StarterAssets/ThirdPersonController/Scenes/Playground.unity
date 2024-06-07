@@ -1842,6 +1842,10 @@ PrefabInstance:
       propertyPath: SprintSpeed
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 2098293134084549741, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: CinemachineCameraTarget
+      value: 
+      objectReference: {fileID: 1872456188}
     - target: {fileID: 2328729483586074366, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1883,6 +1887,11 @@ PrefabInstance:
 --- !u!4 &1872456187 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6046286223615841594, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+  m_PrefabInstance: {fileID: 1872456186}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1872456188 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6046286223615841597, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
   m_PrefabInstance: {fileID: 1872456186}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1979352518
