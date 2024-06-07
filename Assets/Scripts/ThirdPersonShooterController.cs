@@ -4,6 +4,7 @@ using UnityEngine;
 using Cinemachine;
 using StarterAssets;
 using System;
+using UnityEngine.Animations.Rigging;
 
 public enum WeaponType 
 {
@@ -21,9 +22,11 @@ public struct WaponData
 
 public class ThirdPersonShooterController : MonoBehaviour
 {
+  [SerializeField] private Rig aimRig;
   [SerializeField] private CinemachineVirtualCamera _aimVirtualCamera;
   [SerializeField] private float normalSensativity;
   [SerializeField] private float aimSensativity;
+  [SerializeField] private Transform _aimObject;
   public WeaponType weaponType;
 
 
@@ -54,12 +57,16 @@ public class ThirdPersonShooterController : MonoBehaviour
     {
       _aimVirtualCamera.gameObject.SetActive(false);
       _controller.SetSensativity(normalSensativity);
+      aimRig.weight = 0f;
       return;
     }
 
+    
     Vector3 mouseWorldPoint = Vector3.zero;
     Ray ray = Camera.main.ScreenPointToRay(SCREEN_CENTER_POINT);
     mouseWorldPoint = ray.direction * 999f;
+
+    _aimObject.position = mouseWorldPoint;
 
     _aimVirtualCamera.gameObject.SetActive(true);
     _controller.SetSensativity(aimSensativity);
@@ -69,6 +76,9 @@ public class ThirdPersonShooterController : MonoBehaviour
 
     Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
     transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * 20f);
+
+    if(weaponType != WeaponType.NO_WEAPON)
+      aimRig.weight = 1f;
   }
 
  
