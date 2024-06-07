@@ -79,14 +79,20 @@ public class ThirdPersonShooterController : MonoBehaviour
 
     if(weaponType != WeaponType.NO_WEAPON)
       aimRig.weight = 1f;
+
+    Shooting();
   }
 
  
   private void Shooting()
   {
     if (!_inputs.shooting)
+    {
+      _animator.SetBool("Shoot", false);
       return;
+    }
 
+    _animator.SetBool("Shoot", true);
 
   }
 }
