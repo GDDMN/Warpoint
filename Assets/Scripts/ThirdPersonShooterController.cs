@@ -50,6 +50,7 @@ public class ThirdPersonShooterController : MonoBehaviour
 
   private void Aiming()
   {
+    //_animator.SetBool("Aim", true);
     _animator.SetBool("Aim", _inputs.aim);
     _animator.SetInteger("WeaponType", (int)weaponType);
 
