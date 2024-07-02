@@ -2371,7 +2371,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1983542135109913576, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2037826931191880116, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2467,7 +2467,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4662736364310998182, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_WarningMessage
-      value: 
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'Elbow_R'\n\tTransform 'Spine_01'\n\tTransform
+        'Hips'\n\tTransform 'Hand_R'\n\tTransform 'Elbow_R'\n\tTransform 'Spine_01'\n\tTransform
+        'Hips'\n\tTransform 'Hand_R'\n\tTransform 'Elbow_R'\n\tTransform 'Spine_01'\n\tand
+        more ..."
       objectReference: {fileID: 0}
     - target: {fileID: 4662736364310998183, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _aimObject

@@ -27,6 +27,7 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private float normalSensativity;
   [SerializeField] private float aimSensativity;
   [SerializeField] private Transform _aimObject;
+
   public WeaponType weaponType;
 
 

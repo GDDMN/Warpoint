@@ -163,11 +163,30 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+            Aiming();
         }
 
         private void LateUpdate()
         {
             CameraRotation();
+        }
+
+        private void Aiming()
+        {
+        _animator.SetBool("Aim", _input.aim);
+
+        if (!_input.aim)
+        {
+          _animator.SetLayerWeight(2, 0);
+          _animator.SetLayerWeight(0, 1);
+          return;
+        }
+
+      _animator.SetLayerWeight(2, 1);
+      _animator.SetLayerWeight(0, 0);
+        Vector2 direction = new Vector2(_input.move.x, _input.move.y);
+        _animator.SetFloat("MotionX", direction.x);
+        _animator.SetFloat("MotionZ", direction.y);
         }
 
         private void AssignAnimationIDs()
