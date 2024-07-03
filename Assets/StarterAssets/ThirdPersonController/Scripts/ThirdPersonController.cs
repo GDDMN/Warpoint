@@ -115,9 +115,12 @@ namespace StarterAssets
         private GameObject _mainCamera;
 
         private const float _threshold = 0.01f;
+        private Vector2 realDirection = Vector2.zero;
+        private Vector2 lastDirection = Vector2.zero;
 
-        private bool _hasAnimator;    
+        private bool _hasAnimator;
 
+    public readonly float LEGS_STEP_SPEED = 0.1f;
         private bool IsCurrentDeviceMouse
         {
             get
@@ -193,6 +196,10 @@ namespace StarterAssets
           _animator.SetLayerWeight(2, 0);
           _animator.SetLayerWeight(1, 0);
           _animator.SetLayerWeight(0, 1);
+          
+          realDirection = Vector2.zero;
+          lastDirection = Vector2.zero;
+          
           return;
         }
 
@@ -200,6 +207,16 @@ namespace StarterAssets
         _animator.SetLayerWeight(1, 1);
         _animator.SetLayerWeight(0, 0);
         Vector2 direction = new Vector2(_input.move.x, _input.move.y);
+        
+        if(Vector2.Distance(lastDirection, direction) > 0.01f)
+          realDirection = Vector2.Lerp(lastDirection, direction, LEGS_STEP_SPEED);
+
+        direction.x = Mathf.Clamp(realDirection.x, -1f, 1f);
+        direction.y = Mathf.Clamp(realDirection.y, -1f, 1f);
+        
+        lastDirection = realDirection;
+        
+
         _animator.SetFloat("MotionX", direction.x);
         _animator.SetFloat("MotionZ", direction.y);
         }
