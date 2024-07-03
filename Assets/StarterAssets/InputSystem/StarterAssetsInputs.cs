@@ -15,6 +15,7 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool aim;
+		public bool cruch;
 		public bool shooting;
 
 		public bool cameraSide = true;
@@ -54,6 +55,11 @@ namespace StarterAssets
 			AimInput(value.isPressed);
 		}
 
+		public void OnCruch(InputValue value)
+		{
+			CruchInput(value.isPressed);
+		}
+
 		public void OnShoot(InputValue value)
     {
 			ShootInput(value.isPressed);
@@ -90,6 +96,10 @@ namespace StarterAssets
 			aim = newAimState;
 		}
 
+		private void CruchInput(bool newCruchInput)
+    {
+			cruch = newCruchInput;
+    }
 		private void ShootInput(bool newShootingState)
 		{
 			shooting = newShootingState;

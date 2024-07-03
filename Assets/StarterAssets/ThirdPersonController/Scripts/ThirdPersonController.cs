@@ -21,6 +21,8 @@ namespace StarterAssets
         [Tooltip("Sprint speed of the character in m/s")]
         public float SprintSpeed = 5.335f;
 
+        public float CruchSpeed = 2.0f;
+
         [Tooltip("Aiming move speed ofthe character")]
         public float AimSpeed = 2.0f;
 
@@ -164,11 +166,17 @@ namespace StarterAssets
             GroundedCheck();
             Move();
             Aiming();
+            Cruch();
         }
 
         private void LateUpdate()
         {
             CameraRotation();
+        }
+        
+        private void Cruch()
+        {
+          _animator.SetBool("Cruch", _input.cruch);
         }
 
         private void Aiming()
@@ -182,8 +190,8 @@ namespace StarterAssets
           return;
         }
 
-      _animator.SetLayerWeight(2, 1);
-      _animator.SetLayerWeight(0, 0);
+        _animator.SetLayerWeight(2, 1);
+        _animator.SetLayerWeight(0, 0);
         Vector2 direction = new Vector2(_input.move.x, _input.move.y);
         _animator.SetFloat("MotionX", direction.x);
         _animator.SetFloat("MotionZ", direction.y);
@@ -238,6 +246,10 @@ namespace StarterAssets
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            
+            if (_input.cruch)
+              targetSpeed = CruchSpeed;
+
             targetSpeed = _input.aim ? AimSpeed : targetSpeed;      
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
