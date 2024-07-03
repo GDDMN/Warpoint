@@ -69,6 +69,8 @@ namespace StarterAssets
         [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
         public GameObject CinemachineCameraTarget;
 
+        public WeaponProvider weaponProvider;
+
         [Tooltip("How far in degrees can you move the camera up")]
         public float TopClamp = 70.0f;
 
@@ -114,7 +116,7 @@ namespace StarterAssets
 
         private const float _threshold = 0.01f;
 
-        private bool _hasAnimator;
+        private bool _hasAnimator;    
 
         private bool IsCurrentDeviceMouse
         {
@@ -181,16 +183,21 @@ namespace StarterAssets
 
         private void Aiming()
         {
+        if (weaponProvider.weaponType == WeaponType.NO_WEAPON)
+          return;
+
         _animator.SetBool("Aim", _input.aim);
 
         if (!_input.aim)
         {
           _animator.SetLayerWeight(2, 0);
+          _animator.SetLayerWeight(1, 0);
           _animator.SetLayerWeight(0, 1);
           return;
         }
 
         _animator.SetLayerWeight(2, 1);
+        _animator.SetLayerWeight(1, 1);
         _animator.SetLayerWeight(0, 0);
         Vector2 direction = new Vector2(_input.move.x, _input.move.y);
         _animator.SetFloat("MotionX", direction.x);
@@ -250,7 +257,8 @@ namespace StarterAssets
             if (_input.cruch)
               targetSpeed = CruchSpeed;
 
-            targetSpeed = _input.aim ? AimSpeed : targetSpeed;      
+            if (weaponProvider.weaponType != WeaponType.NO_WEAPON)
+              targetSpeed = _input.aim ? AimSpeed : targetSpeed;      
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -297,7 +305,7 @@ namespace StarterAssets
                     RotationSmoothTime);
 
                 // rotate to face input direction relative to camera position
-                if(!_input.aim)
+                if(!_input.aim || weaponProvider.weaponType == WeaponType.NO_WEAPON)
                   transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
             
             }

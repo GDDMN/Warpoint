@@ -10,7 +10,8 @@ public enum WeaponType
 {
   NO_WEAPON,
   ONE_ARMED,
-  DOUBLE_ARMED
+  DOUBLE_ARMED,
+  THROWABLE
 }
 
 [Serializable]
@@ -28,7 +29,7 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private float aimSensativity;
   [SerializeField] private Transform _aimObject;
 
-  public WeaponType weaponType;
+  public WeaponProvider weaponProvider;
 
 
   private ThirdPersonController _controller;
@@ -51,11 +52,14 @@ public class ThirdPersonShooterController : MonoBehaviour
 
   private void Aiming()
   {
+    if (weaponProvider.weaponType == WeaponType.NO_WEAPON)
+      return;
+
     //_animator.SetBool("Aim", true);
     _animator.SetBool("Aim", _inputs.aim);
-    _animator.SetInteger("WeaponType", (int)weaponType);
+    _animator.SetInteger("WeaponType", (int)weaponProvider.weaponType);
 
-    if (!_inputs.aim)
+    if (!_inputs.aim )
     {
       _aimVirtualCamera.gameObject.SetActive(false);
       _controller.SetSensativity(normalSensativity);
@@ -78,9 +82,7 @@ public class ThirdPersonShooterController : MonoBehaviour
 
     Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
     transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * 20f);
-
-    if(weaponType != WeaponType.NO_WEAPON)
-      aimRig.weight = 1f;
+    aimRig.weight = 1f;
 
     Shooting();
   }
