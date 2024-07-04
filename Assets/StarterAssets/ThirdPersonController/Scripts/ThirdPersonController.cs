@@ -189,7 +189,7 @@ namespace StarterAssets
         if (weaponProvider.weaponType == WeaponType.NO_WEAPON)
           return;
 
-        _animator.SetBool("Aim", _input.aim);
+        _animator.SetBool("Aim", true);
 
         if (!_input.aim)
         {

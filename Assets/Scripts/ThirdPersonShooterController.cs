@@ -56,7 +56,7 @@ public class ThirdPersonShooterController : MonoBehaviour
     if (weaponProvider.weaponType == WeaponType.NO_WEAPON)
       return;
 
-    //_animator.SetBool("Aim", true);
+    _animator.SetBool("Aim", _inputs.aim);
     _animator.SetBool("Aim", true);
     _animator.SetInteger("WeaponType", (int)weaponProvider.weaponType);
 
