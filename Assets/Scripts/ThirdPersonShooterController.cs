@@ -29,6 +29,7 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private float aimSensativity;
   [SerializeField] private Transform _aimObject;
 
+  [SerializeField] private TwoBoneIKConstraint _IKConstaint;
   public WeaponProvider weaponProvider;
 
 
@@ -56,7 +57,7 @@ public class ThirdPersonShooterController : MonoBehaviour
       return;
 
     //_animator.SetBool("Aim", true);
-    _animator.SetBool("Aim", _inputs.aim);
+    _animator.SetBool("Aim", true);
     _animator.SetInteger("WeaponType", (int)weaponProvider.weaponType);
 
     if (!_inputs.aim )
@@ -64,6 +65,7 @@ public class ThirdPersonShooterController : MonoBehaviour
       _aimVirtualCamera.gameObject.SetActive(false);
       _controller.SetSensativity(normalSensativity);
       aimRig.weight = 0f;
+      _IKConstaint.weight = 0f;
       return;
     }
 
@@ -84,6 +86,7 @@ public class ThirdPersonShooterController : MonoBehaviour
     transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * 20f);
     aimRig.weight = 1f;
 
+    _IKConstaint.weight = 1f;
     Shooting();
   }
 
