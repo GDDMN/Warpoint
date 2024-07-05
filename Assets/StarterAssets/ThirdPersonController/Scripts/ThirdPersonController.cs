@@ -88,6 +88,7 @@ namespace StarterAssets
         private float _cinemachineTargetPitch;
 
         // player
+        private bool _isAlive = true;
         private float _speed;
         private float _animationBlend;
         private float _targetRotation = 0.0f;
@@ -150,11 +151,11 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-            _playerInput = GetComponent<PlayerInput>();
-#else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
-#endif
+            #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
+                        _playerInput = GetComponent<PlayerInput>();
+            #else
+            			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
+            #endif
 
             AssignAnimationIDs();
 
@@ -166,6 +167,12 @@ namespace StarterAssets
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
+            
+            if(!_isAlive)
+            {
+              
+              return;     
+            }
 
             JumpAndGravity();
             GroundedCheck();
@@ -456,5 +463,5 @@ namespace StarterAssets
         {
           Sensativity = newSensativity;
         }
-    }
+  }
 }
