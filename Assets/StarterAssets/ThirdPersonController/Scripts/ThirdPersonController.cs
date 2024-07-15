@@ -1,10 +1,91 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
 
-/* Note: animations are called via the controller for both the character and capsule using animator null checks
- */
+enum PlayerState
+{
+  EXPECTATION,
+  ALIVE,
+  DEAD
+}
+
+[Serializable]
+public struct ActorData
+{
+  [Header("Player")]
+  [Tooltip("Move speed of the character in m/s //Default is 2.0f")]
+  public float MoveSpeed; //Default is 2.0f;
+
+  [Tooltip("Sprint speed of the character in m/s //Default is 5.335f")]
+  public float SprintSpeed; //Default is 5.335f;
+
+  public float CruchSpeed; //Default is 2.0f;
+
+  [Tooltip("Aiming move speed ofthe character //Default is 2.0f")]
+  public float AimSpeed; //Default is 2.0f;
+
+  [Tooltip("How fast the character turns to face movement direction //Default is 0.12f")]
+  [Range(0.0f, 0.3f)]
+  public float RotationSmoothTime; //Default is 0.12f;
+  [Tooltip("//Default is 1f")]
+  public float Sensativity; //Default is 1f;
+
+  [Tooltip("Acceleration and deceleration //Default is 10.f")]
+  public float SpeedChangeRate;  //Default is 10.f;
+
+  public AudioClip LandingAudioClip;
+  public AudioClip[] FootstepAudioClips;
+
+  [Tooltip("//Default is 0.5f")]
+  [Range(0, 1)] public float FootstepAudioVolume; //Default is 0.5f;
+
+  [Space(10)]
+  [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again //Default is 0.50f")]
+  public float JumpTimeout; //Default is 0.50f;
+
+  [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs //Default is 0.15f")]
+  public float FallTimeout; //Default is 0.15f;
+
+  [Header("Player Grounded")]
+  [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check //Default is true")]
+  public bool Grounded; //Default is true;
+
+  [Tooltip("Useful for rough ground //Default is -0.14f")]
+  public float GroundedOffset; //Default is -0.14f;
+
+  [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController //Default is 0.28f")]
+  public float GroundedRadius; //Default is 0.28f;
+
+  [Tooltip("What layers the character uses as ground")]
+  public LayerMask GroundLayers;
+}
+
+[Serializable]
+public struct CinemachineData
+{
+  [Header("Cinemachine")]
+  [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
+  public GameObject CinemachineCameraTarget;
+
+  public WeaponProvider weaponProvider;
+
+  [Tooltip("How far in degrees can you move the camera up //Default is 70.0f")]
+  public float TopClamp; //Default is 70.0f;
+
+  [Tooltip("How far in degrees can you move the camera down //Default is -30.0f")]
+  public float BottomClamp; //Default is -30.0f
+
+  [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked //Default is 0.0f")]
+  public float CameraAngleOverride; //Default is 0.0f
+
+  [Tooltip("For locking the camera position on all axis //Default is false")]
+  public bool LockCameraPosition; //Default is false
+}
+
+
+
 
 namespace StarterAssets
 {
@@ -121,7 +202,7 @@ namespace StarterAssets
 
         private bool _hasAnimator;
 
-    public readonly float LEGS_STEP_SPEED = 0.1f;
+        public readonly float LEGS_STEP_SPEED = 0.1f;
         private bool IsCurrentDeviceMouse
         {
             get
@@ -133,7 +214,6 @@ namespace StarterAssets
 #endif
             }
         }
-
 
         private void Awake()
         {
@@ -445,7 +525,7 @@ namespace StarterAssets
             {
                 if (FootstepAudioClips.Length > 0)
                 {
-                    var index = Random.Range(0, FootstepAudioClips.Length);
+                    var index = UnityEngine.Random.Range(0, FootstepAudioClips.Length);
                     AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
                 }
             }
@@ -465,3 +545,4 @@ namespace StarterAssets
         }
   }
 }
+
