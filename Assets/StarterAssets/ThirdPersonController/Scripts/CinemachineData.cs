@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
+
 [Serializable]
 public struct CinemachineData
 {
