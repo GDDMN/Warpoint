@@ -1036,8 +1036,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    MoveSpeed: 5
-    SprintSpeed: 10
+    MoveSpeed: 6
+    SprintSpeed: 12
     CruchSpeed: 3
     AimSpeed: 2
     RotationSmoothTime: 0.12
