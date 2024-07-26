@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
@@ -27,12 +28,6 @@ namespace StarterAssets
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
 
-
-
-
-
-
-
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
 #endif
@@ -43,6 +38,7 @@ namespace StarterAssets
 
         private const float _threshold = 0.01f;
 
+        public event Action<bool> OnLanding;
 
 
 
@@ -168,12 +164,9 @@ namespace StarterAssets
             }
         }
 
-        private void OnLand(AnimationEvent animationEvent)
+        public void OnGround()
         {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
-                AudioSource.PlayClipAtPoint(_actorComponent.ActorData.LandingAudioClip, transform.TransformPoint(_controller.center), _actorComponent.ActorData.FootstepAudioVolume);
-            }
+            OnLanding?.Invoke(true);
         }
 
         public void SetSensativity(float newSensativity)

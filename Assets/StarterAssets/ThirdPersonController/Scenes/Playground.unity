@@ -2335,6 +2335,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShootingController
       objectReference: {fileID: 0}
+    - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: _data.MoveSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: _data.SprintSpeed
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 4662736364310998183, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _aimObject
       value: 

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using StarterAssets;
+using System;
 
 public class ActorComponent : MonoBehaviour
 {
@@ -41,6 +42,8 @@ public class ActorComponent : MonoBehaviour
   public readonly float LEGS_STEP_SPEED = 0.1f;
 
   public bool IsAlive => _isAlive;
+
+  public event Action<bool> OnJumpLounch;
 
   private void Start()
   {
@@ -220,6 +223,7 @@ public class ActorComponent : MonoBehaviour
       // Jump
       if (inputs.jump && _jumpTimeoutDelta <= 0.0f)
       {
+        OnJumpLounch?.Invoke(false);
         // the square root of H * -2 * G = how much velocity needed to reach desired height
         _verticalVelocity = Mathf.Sqrt(_data.JumpHeight * -2f * _data.Gravity);
 

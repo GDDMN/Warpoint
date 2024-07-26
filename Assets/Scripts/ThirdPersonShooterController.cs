@@ -23,7 +23,7 @@ public class ThirdPersonShooterController : MonoBehaviour
 {
   [Header("Actor component")]
   [SerializeField] private ActorComponent _actorComponent;
-
+  
   [Space(10)]
   [SerializeField] private Rig aimRig;
   [SerializeField] private CinemachineVirtualCamera _aimVirtualCamera;
@@ -53,53 +53,63 @@ public class ThirdPersonShooterController : MonoBehaviour
     _inputs = GetComponent<StarterAssetsInputs>();
   }
 
+  private void Start()
+  {
+    _actorComponent.OnJumpLounch += LandingValidate;
+    _controller.OnLanding += LandingValidate;
+  }
+
   private void Update()
   {
-    OnGround = _actorComponent.ActorData.Grounded;
     IsAiming = _inputs.aim;
 
     ConstaintController();
     Aiming();
   }
 
+  private void OnDisable()
+  {
+    _actorComponent.OnJumpLounch -= LandingValidate;
+    _controller.OnLanding -= LandingValidate;
+  }
+
+  private void LandingValidate(bool OnLand)
+  {
+    OnGround = OnLand;
+  }
+
   private void ConstaintController()
   {
     if (IsAiming)
     {
-      ConstaintValidate(true);
-      _constaintBack.weight = 1f;
-      _constraintRightHand.weight = 1f;
-      aimRig.weight = 1f;
+      ConstaintValidate(true, true);
+      //aimRig.weight = 1f;
       return;
     }
 
     if(!OnGround)
     {
-      ConstaintValidate(false);
-      aimRig.weight = 0f;
-      _constaintBack.weight = 0f;
-      _constraintRightHand.weight = 0f;
+      ConstaintValidate(false, false);
+      //aimRig.weight = 0f;
       return;
     }
 
     if (weaponProvider.weaponType != WeaponType.DOUBLE_ARMED)
     {
-      ConstaintValidate(false);
-      aimRig.weight = 0f;
-      _constaintBack.weight = 0f;
-      _constraintRightHand.weight = 0f;
+      ConstaintValidate(false, false);
+      //aimRig.weight = 0f;
       return;
     }
 
-    ConstaintValidate(true);
-    aimRig.weight = 1f;
-    _constaintBack.weight = 0f;
-    _constraintRightHand.weight = 0f;
+    ConstaintValidate(true, false);
+    //aimRig.weight = 1f;
   }
 
-  private void ConstaintValidate(bool active)
+  private void ConstaintValidate(bool lefthandActive, bool armActive)
   {
-    _IKConstaint.weight = active? 1f : 0f;
+    _IKConstaint.weight = lefthandActive ? 1f : 0f;
+    _constaintBack.weight = armActive ? 1f : 0f;
+    _constraintRightHand.weight = armActive ? 1f : 0f;
   }
 
   private void Aiming()
