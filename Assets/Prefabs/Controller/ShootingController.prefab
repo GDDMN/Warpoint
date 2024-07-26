@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c430f382484144e925c097c2d33cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 1
+  m_Weight: 0
   m_Data:
     m_ConstrainedObject: {fileID: 8837404133853105480}
     m_SourceObjects:
@@ -876,12 +876,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 087e4c583704a684292bec1e5ac6059f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _actorComponent: {fileID: 4485340995540612530}
   aimRig: {fileID: 6847820823296518913}
   _aimVirtualCamera: {fileID: 0}
   normalSensativity: 1
   aimSensativity: 0.5
   _aimObject: {fileID: 0}
   _IKConstaint: {fileID: 6439955922146905775}
+  _constraintRightHand: {fileID: 8820581960513567642}
+  _constaintBack: {fileID: 1547519073}
   weaponProvider: {fileID: 6306501199142404827}
 --- !u!114 &3767992701199510190
 MonoBehaviour:
@@ -1019,7 +1022,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 133d7b615203b4a40ae52fecab0dfb68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponType: 1
+  weaponType: 2
 --- !u!114 &4485340995540612530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1035,7 +1038,7 @@ MonoBehaviour:
   _data:
     MoveSpeed: 5
     SprintSpeed: 10
-    CruchSpeed: 0
+    CruchSpeed: 3
     AimSpeed: 2
     RotationSmoothTime: 0.12
     SpeedChangeRate: 10
@@ -1190,7 +1193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c430f382484144e925c097c2d33cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 1
+  m_Weight: 0
   m_Data:
     m_ConstrainedObject: {fileID: 8837332856857389966}
     m_SourceObjects:
@@ -2290,7 +2293,7 @@ MonoBehaviour:
     m_Root: {fileID: 8843778621151893752}
     m_Mid: {fileID: 8837428499681653396}
     m_Tip: {fileID: 8837473350113305892}
-    m_Target: {fileID: 6282816836540287960}
+    m_Target: {fileID: 1390323025815774428}
     m_Hint: {fileID: 0}
     m_TargetPositionWeight: 1
     m_TargetRotationWeight: 1
@@ -2542,6 +2545,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pistol
       objectReference: {fileID: 0}
+    - target: {fileID: 7055930834442279812, guid: f48f5472eb0b590438280f293209402e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2573,11 +2580,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponType: 1
---- !u!4 &6282816836540287960 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8411090518577553091, guid: f48f5472eb0b590438280f293209402e, type: 3}
-  m_PrefabInstance: {fileID: 2561209958971168027}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5312958855310733380
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2632,7 +2634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5858280765533610990, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2642,6 +2644,11 @@ PrefabInstance:
 --- !u!4 &1098331003751186256 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5081579730552803092, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+  m_PrefabInstance: {fileID: 5312958855310733380}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1390323025815774428 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6552738011904496792, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
   m_PrefabInstance: {fileID: 5312958855310733380}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5651407327749004971
