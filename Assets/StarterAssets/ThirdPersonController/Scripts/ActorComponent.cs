@@ -80,6 +80,9 @@ public class ActorComponent : MonoBehaviour
     {
       _animator.SetBool(_animIDGrounded, _data.Grounded);
     }
+
+    if(!_data.Grounded)
+      OnJumpLounch?.Invoke(false);
   }
 
   public void Cruch(StarterAssetsInputs inputs)
@@ -92,7 +95,7 @@ public class ActorComponent : MonoBehaviour
     if (cinemachineData.weaponProvider.weaponType == WeaponType.NO_WEAPON)
       return;
 
-    _animator.SetBool("Aim", true);
+    _animator.SetBool("Aim", inputs.aim);
 
     if (!inputs.aim)
     {
