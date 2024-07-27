@@ -2463,6 +2463,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1983542135109913576, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2098293134084549734, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Name
       value: ShootingController
