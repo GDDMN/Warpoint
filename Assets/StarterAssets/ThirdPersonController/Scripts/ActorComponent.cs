@@ -97,7 +97,7 @@ public class ActorComponent : MonoBehaviour
 
     _animator.SetBool("Aim", inputs.aim);
 
-    if (!inputs.aim)
+    if (!inputs.aim || !_data.Grounded)
     {
       _animator.SetLayerWeight(2, 0);
       _animator.SetLayerWeight(1, 0);

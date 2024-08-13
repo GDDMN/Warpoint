@@ -120,7 +120,7 @@ public class ThirdPersonShooterController : MonoBehaviour
     _animator.SetBool("Aim", IsAiming);
     _animator.SetInteger("WeaponType", (int)weaponProvider.weaponType);
 
-    if (!IsAiming)
+    if (!IsAiming || !OnGround)
     {
       _aimVirtualCamera.gameObject.SetActive(false);
       _controller.SetSensativity(normalSensativity);
