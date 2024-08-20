@@ -112,6 +112,7 @@ public class ActorComponent : MonoBehaviour
     _animator.SetLayerWeight(2, 1);
     _animator.SetLayerWeight(1, 1);
     _animator.SetLayerWeight(0, 0);
+
     Vector2 direction = new Vector2(inputs.move.x, inputs.move.y);
 
     if (Vector2.Distance(lastDirection, direction) > 0.01f)

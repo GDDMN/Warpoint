@@ -63,8 +63,8 @@ public class ThirdPersonShooterController : MonoBehaviour
   {
     IsAiming = _inputs.aim;
 
-    ConstaintController();
     Aiming();
+    ConstaintController();
   }
 
   private void OnDisable()
@@ -80,10 +80,9 @@ public class ThirdPersonShooterController : MonoBehaviour
 
   private void ConstaintController()
   {
-    if (IsAiming)
+    if (IsAiming && OnGround)
     {
       ConstaintValidate(true, true);
-      //aimRig.weight = 1f;
       return;
     }
 
@@ -117,9 +116,6 @@ public class ThirdPersonShooterController : MonoBehaviour
     if (weaponProvider.weaponType == WeaponType.NO_WEAPON)
       return;
 
-    _animator.SetBool("Aim", IsAiming);
-    _animator.SetInteger("WeaponType", (int)weaponProvider.weaponType);
-
     if (!IsAiming || !OnGround)
     {
       _aimVirtualCamera.gameObject.SetActive(false);
@@ -127,6 +123,8 @@ public class ThirdPersonShooterController : MonoBehaviour
       return;
     }
 
+    _animator.SetBool("Aim", IsAiming);
+    _animator.SetInteger("WeaponType", (int)weaponProvider.weaponType);
     
     Vector3 mouseWorldPoint = Vector3.zero;
     Ray ray = Camera.main.ScreenPointToRay(SCREEN_CENTER_POINT);
