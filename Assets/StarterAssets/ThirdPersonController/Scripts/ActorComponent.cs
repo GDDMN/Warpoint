@@ -38,6 +38,8 @@ public class ActorComponent : MonoBehaviour
 
   public float FallTimeout => _data.FallTimeout;
 
+  public bool OnGround => _data.Grounded;
+
 
   public readonly float LEGS_STEP_SPEED = 0.1f;
 

@@ -80,7 +80,7 @@ public class ThirdPersonShooterController : MonoBehaviour
 
   private void ConstaintController()
   {
-    if (IsAiming && OnGround)
+    if (IsAiming && _actorComponent.OnGround)
     {
       ConstaintValidate(true, true);
       return;
@@ -116,7 +116,7 @@ public class ThirdPersonShooterController : MonoBehaviour
     if (weaponProvider.weaponType == WeaponType.NO_WEAPON)
       return;
 
-    if (!IsAiming || !OnGround)
+    if (!IsAiming || !_actorComponent.OnGround)
     {
       _aimVirtualCamera.gameObject.SetActive(false);
       _controller.SetSensativity(normalSensativity);
