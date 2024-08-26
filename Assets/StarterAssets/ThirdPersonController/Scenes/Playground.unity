@@ -830,6 +830,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 635604808}
   m_CullTransparentMesh: 1
+--- !u!114 &664695831 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4740714756747616558, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+  m_PrefabInstance: {fileID: 1872456186}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 133d7b615203b4a40ae52fecab0dfb68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &746329221
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2111,6 +2122,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
+--- !u!4 &1511907407 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1390323025815774428, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+  m_PrefabInstance: {fileID: 1872456186}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1604069359 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4069356275186078, guid: 3e934b6e646fe8c42bacd74c289658f6, type: 3}
@@ -2177,11 +2193,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e934b6e646fe8c42bacd74c289658f6, type: 3}
---- !u!4 &1731093424 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6282816836540287960, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
-  m_PrefabInstance: {fileID: 1872456186}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1762682258
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2428,6 +2439,18 @@ PrefabInstance:
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
       objectReference: {fileID: 1855314216}
+    - target: {fileID: 1363438877365388177, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: WeaponData.WeaponType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1478156096807667448, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: WeaponData.WeaponName
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1478156096807667448, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: WeaponData.WeaponType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1609318681168344796, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2470,7 +2493,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1799083308243325866, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1983542135109913576, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Enabled
@@ -2480,6 +2503,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShootingController
       objectReference: {fileID: 0}
+    - target: {fileID: 2098293134084549741, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: _cinemachineData.weaponProvider
+      value: 
+      objectReference: {fileID: 664695831}
     - target: {fileID: 4662736364310998183, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _aimObject
       value: 
@@ -2490,16 +2517,16 @@ PrefabInstance:
       objectReference: {fileID: 272700263}
     - target: {fileID: 4782978207005740703, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6306501199142404827, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: weaponType
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6439955922146905775, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Data.m_Target
       value: 
-      objectReference: {fileID: 1731093424}
+      objectReference: {fileID: 1511907407}
     - target: {fileID: 8820581960513567642, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 

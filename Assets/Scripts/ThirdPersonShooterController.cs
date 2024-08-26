@@ -4,20 +4,6 @@ using StarterAssets;
 using System;
 using UnityEngine.Animations.Rigging;
 
-public enum WeaponType 
-{
-  NO_WEAPON,
-  ONE_ARMED,
-  DOUBLE_ARMED,
-  THROWABLE
-}
-
-[Serializable]
-public struct WaponData
-{
-  public WeaponType Type;
-}
-
 
 public class ThirdPersonShooterController : MonoBehaviour
 {
@@ -57,6 +43,8 @@ public class ThirdPersonShooterController : MonoBehaviour
   {
     _actorComponent.OnJumpLounch += LandingValidate;
     _controller.OnLanding += LandingValidate;
+
+    _animator.SetInteger("WeaponType", (int)weaponProvider.weaponType);
   }
 
   private void Update()

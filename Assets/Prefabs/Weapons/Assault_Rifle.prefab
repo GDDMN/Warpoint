@@ -178,6 +178,7 @@ GameObject:
   - component: {fileID: 5101896867663028751}
   - component: {fileID: 6988959567056909014}
   - component: {fileID: 6717150517690332860}
+  - component: {fileID: 608281829126639978}
   m_Layer: 0
   m_Name: Assault_Rifle
   m_TagString: Untagged
@@ -267,7 +268,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponData:
-    HandPoint: {fileID: 6552738011904496792}
+    WeaponName: 1
+    WeaponType: 2
+    AmmoCapacity: 0
+    ReloadingSpeed: 0
+    RecoverySpeed: 0
+    PrefabPath: 
+--- !u!114 &608281829126639978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5858280765533610990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 133d7b615203b4a40ae52fecab0dfb68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponType: 2
 --- !u!1 &6216945684225821981
 GameObject:
   m_ObjectHideFlags: 0
