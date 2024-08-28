@@ -1,10 +1,19 @@
 ﻿using UnityEngine;
 using StarterAssets;
 using System;
+using UnityEngine.Animations.Rigging;
 
 public class ActorComponent : MonoBehaviour
 {
   [SerializeField] private ActorData _data;
+  [SerializeField] private WeaponProvider _weaponProvider;
+
+  [Header("Constains")]
+  [SerializeField] private TwoBoneIKConstraint _IKConstaint;
+  [SerializeField] private MultiAimConstraint _constraintRightHand;
+  [SerializeField] private MultiAimConstraint _constaintBack;
+
+  private bool _isAiming = false;
 
   // player
   private bool _isAlive = true;
@@ -53,6 +62,13 @@ public class ActorComponent : MonoBehaviour
 
     _jumpTimeoutDelta = JumpTimeout;
     _fallTimeoutDelta = FallTimeout;
+
+    PickUpWeapon(_weaponProvider);
+  }
+
+  public void Update()
+  {
+    ConstaintController();
   }
 
   public void SetGrounded(bool isGrounded)
@@ -94,10 +110,13 @@ public class ActorComponent : MonoBehaviour
 
   public void Aiming(StarterAssetsInputs inputs, CinemachineData cinemachineData)
   {
+    _isAiming = inputs.aim;
+
     if (cinemachineData.weaponProvider.weaponType == WeaponType.NO_WEAPON)
       return;
 
     _animator.SetBool("Aim", inputs.aim);
+    _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
 
     if (!inputs.aim || !_data.Grounded)
     {
@@ -274,5 +293,43 @@ public class ActorComponent : MonoBehaviour
     {
       _verticalVelocity += _data.Gravity * Time.deltaTime;
     }
+  }
+
+  private void ConstaintController()
+  {
+    if (_isAiming && _data.Grounded)
+    {
+      ConstaintValidate(true, true);
+      return;
+    }
+
+    if (!_data.Grounded)
+    {
+      ConstaintValidate(false, false);
+      return;
+    }
+
+    if (_weaponProvider.weaponType != WeaponType.DOUBLE_ARMED)
+    {
+      ConstaintValidate(false, false);
+      return;
+    }
+
+    ConstaintValidate(true, false);
+  }
+
+  private void ConstaintValidate(bool lefthandActive, bool armActive)
+  {
+    _IKConstaint.weight = lefthandActive ? 1f : 0f;
+    _constaintBack.weight = armActive ? 1f : 0f;
+    _constraintRightHand.weight = armActive ? 1f : 0f;
+  }
+
+
+  private void PickUpWeapon(WeaponProvider weaponProvider)
+  {
+    _weaponProvider = weaponProvider;
+
+    _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
   }
 }

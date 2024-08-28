@@ -11,18 +11,11 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private ActorComponent _actorComponent;
   
   [Space(10)]
-  [SerializeField] private Rig aimRig;
+  //[SerializeField] private Rig aimRig;
   [SerializeField] private CinemachineVirtualCamera _aimVirtualCamera;
   [SerializeField] private float normalSensativity;
   [SerializeField] private float aimSensativity;
   [SerializeField] private Transform _aimObject;
-
-  [SerializeField] private TwoBoneIKConstraint _IKConstaint;
-  [SerializeField] private MultiAimConstraint _constraintRightHand;
-  [SerializeField] private MultiAimConstraint _constaintBack;
-
-  public WeaponProvider weaponProvider;
-
 
   private ThirdPersonController _controller;
   private StarterAssetsInputs _inputs;
@@ -43,8 +36,6 @@ public class ThirdPersonShooterController : MonoBehaviour
   {
     _actorComponent.OnJumpLounch += LandingValidate;
     _controller.OnLanding += LandingValidate;
-
-    _animator.SetInteger("WeaponType", (int)weaponProvider.weaponType);
   }
 
   private void Update()
@@ -52,7 +43,6 @@ public class ThirdPersonShooterController : MonoBehaviour
     IsAiming = _inputs.aim;
 
     Aiming();
-    ConstaintController();
   }
 
   private void OnDisable()
@@ -65,44 +55,11 @@ public class ThirdPersonShooterController : MonoBehaviour
   {
     OnGround = OnLand;
   }
-
-  private void ConstaintController()
-  {
-    if (IsAiming && _actorComponent.OnGround)
-    {
-      ConstaintValidate(true, true);
-      return;
-    }
-
-    if(!OnGround)
-    {
-      ConstaintValidate(false, false);
-      //aimRig.weight = 0f;
-      return;
-    }
-
-    if (weaponProvider.weaponType != WeaponType.DOUBLE_ARMED)
-    {
-      ConstaintValidate(false, false);
-      //aimRig.weight = 0f;
-      return;
-    }
-
-    ConstaintValidate(true, false);
-    //aimRig.weight = 1f;
-  }
-
-  private void ConstaintValidate(bool lefthandActive, bool armActive)
-  {
-    _IKConstaint.weight = lefthandActive ? 1f : 0f;
-    _constaintBack.weight = armActive ? 1f : 0f;
-    _constraintRightHand.weight = armActive ? 1f : 0f;
-  }
-
+  
   private void Aiming()
   {
-    if (weaponProvider.weaponType == WeaponType.NO_WEAPON)
-      return;
+    //if (weaponProvider.weaponType == WeaponType.NO_WEAPON)
+    //  return;
 
     if (!IsAiming || !_actorComponent.OnGround)
     {
@@ -111,8 +68,8 @@ public class ThirdPersonShooterController : MonoBehaviour
       return;
     }
 
-    _animator.SetBool("Aim", IsAiming);
-    _animator.SetInteger("WeaponType", (int)weaponProvider.weaponType);
+    //_animator.SetBool("Aim", IsAiming);
+    
     
     Vector3 mouseWorldPoint = Vector3.zero;
     Ray ray = Camera.main.ScreenPointToRay(SCREEN_CENTER_POINT);
