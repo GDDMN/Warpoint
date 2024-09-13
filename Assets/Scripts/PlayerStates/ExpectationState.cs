@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public class ExpectationState : PlayerState
 {
@@ -7,7 +8,9 @@ public class ExpectationState : PlayerState
     StateType = PlayerStateType.EXPECTATION;
   }
 
-  public override void Enter(ActorComponent actorComponent, CinemachineData cinemachineData)
+  public override void Enter(ActorComponent actorComponent, CinemachineData cinemachineData,
+                             CharacterController characterController, StarterAssets.StarterAssetsInputs inputs,
+                             GameObject mainCamera)
   {
   }
 

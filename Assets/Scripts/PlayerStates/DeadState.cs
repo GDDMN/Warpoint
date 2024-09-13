@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public class DeadState : PlayerState
 {
@@ -7,7 +8,9 @@ public class DeadState : PlayerState
     StateType = PlayerStateType.DEAD;
   }
 
-  public override void Enter(ActorComponent actorComponent, CinemachineData cinemachineData)
+  public override void Enter(ActorComponent actorComponent, CinemachineData cinemachineData,
+                             CharacterController characterController, StarterAssets.StarterAssetsInputs inputs,
+                             GameObject mainCamera)
   {
   }
 

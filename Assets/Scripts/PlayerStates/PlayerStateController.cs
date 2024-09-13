@@ -7,8 +7,13 @@ public class PlayerStateController
   public void Initialize()
   {
     ExpectationState expectationState = new ExpectationState();
+    expectationState.Initialize();
+
     AliveState aliveState = new AliveState();
+    aliveState.Initialize();
+
     DeadState deadState = new DeadState();
+    deadState.Initialize();
 
     _allStates.Add(expectationState);
     _allStates.Add(aliveState);

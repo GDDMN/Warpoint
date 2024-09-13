@@ -62,8 +62,11 @@ namespace StarterAssets
 
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
+            _stateController = new PlayerStateController();
+
             _stateController.Initialize();
             _activeState = _stateController.GetState(PlayerStateType.ALIVE);
+            _activeState.Enter(_actorComponent, _cinemachineData, _controller, _input, _mainCamera);
             
             #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
                         _playerInput = GetComponent<PlayerInput>();
@@ -86,12 +89,10 @@ namespace StarterAssets
               return;     
             }
 
-            _actorComponent.JumpAndGravity(_input);
-            _actorComponent.GroundedCheck();
-            _actorComponent.Move(_input, _cinemachineData, _controller, _mainCamera);
-            _actorComponent.Aiming(_input, _cinemachineData);
-            _actorComponent.Cruch(_input);
+            _activeState.Update();
         }
+
+            
 
         private void LateUpdate()
         {
