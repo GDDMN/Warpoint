@@ -325,11 +325,11 @@ public class ActorComponent : MonoBehaviour
     _constraintRightHand.weight = armActive ? 1f : 0f;
   }
 
-
   private void PickUpWeapon(WeaponProvider weaponProvider)
   {
     _weaponProvider = weaponProvider;
 
     _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
   }
+
 }

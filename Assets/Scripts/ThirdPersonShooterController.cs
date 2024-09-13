@@ -11,7 +11,6 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private ActorComponent _actorComponent;
   
   [Space(10)]
-  //[SerializeField] private Rig aimRig;
   [SerializeField] private CinemachineVirtualCamera _aimVirtualCamera;
   [SerializeField] private float normalSensativity;
   [SerializeField] private float aimSensativity;

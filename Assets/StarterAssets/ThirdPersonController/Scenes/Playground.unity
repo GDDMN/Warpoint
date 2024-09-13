@@ -2551,6 +2551,30 @@ PrefabInstance:
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
       objectReference: {fileID: 1855314216}
+    - target: {fileID: 8839859069530687912, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8839991825614371062, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840182683305501180, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840398430195347746, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840475416064827776, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840485046858426660, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 197304509556778322, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
