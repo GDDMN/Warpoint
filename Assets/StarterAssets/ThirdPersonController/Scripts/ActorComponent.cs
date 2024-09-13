@@ -331,5 +331,4 @@ public class ActorComponent : MonoBehaviour
 
     _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
   }
-
 }

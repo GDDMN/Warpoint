@@ -5,24 +5,19 @@ using System;
 using UnityEngine.InputSystem;
 #endif
 
-enum PlayerState
-{
-  EXPECTATION,
-  ALIVE,
-  DEAD
-}
-
 namespace StarterAssets
 {
-  [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(CharacterController))]
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
     [RequireComponent(typeof(PlayerInput))]
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
         [SerializeField] private ActorComponent _actorComponent;
-
         [SerializeField] private CinemachineData _cinemachineData;
+
+        private PlayerStateController _stateController;
+        private PlayerState _activeState;
 
         // cinemachine
         private float _cinemachineTargetYaw;
@@ -31,7 +26,6 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
 #endif
-
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
@@ -39,9 +33,6 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
 
         public event Action<bool> OnLanding;
-
-
-
         
         private bool IsCurrentDeviceMouse
         {
@@ -71,6 +62,9 @@ namespace StarterAssets
 
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
+            _stateController.Initialize();
+            _activeState = _stateController.GetState(PlayerStateType.ALIVE);
+            
             #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
                         _playerInput = GetComponent<PlayerInput>();
             #else
@@ -89,7 +83,6 @@ namespace StarterAssets
             
             if(!_actorComponent.IsAlive)
             {
-              
               return;     
             }
 
@@ -175,4 +168,3 @@ namespace StarterAssets
         }
   }
 }
-
