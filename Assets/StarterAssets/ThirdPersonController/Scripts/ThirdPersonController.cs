@@ -16,12 +16,12 @@ namespace StarterAssets
         [SerializeField] private ActorComponent _actorComponent;
         [SerializeField] private CinemachineData _cinemachineData;
 
-        private PlayerStateController _stateController;
+        private PlayerStateController _stateController = new PlayerStateController();
         private PlayerState _activeState;
 
         // cinemachine
-        private float _cinemachineTargetYaw;
-        private float _cinemachineTargetPitch;
+        
+        
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
@@ -30,21 +30,11 @@ namespace StarterAssets
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
 
-        private const float _threshold = 0.01f;
+        
 
         public event Action<bool> OnLanding;
         
-        private bool IsCurrentDeviceMouse
-        {
-            get
-            {
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-                return _playerInput.currentControlScheme == "KeyboardMouse";
-#else
-				return false;
-#endif
-            }
-        }
+
 
         private void Awake()
         {
@@ -57,16 +47,11 @@ namespace StarterAssets
 
         private void Start()
         {
-            _cinemachineTargetYaw = _cinemachineData.CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
-
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
-            _stateController = new PlayerStateController();
-
+            
             _stateController.Initialize();
             _activeState = _stateController.GetState(PlayerStateType.ALIVE);
-            _activeState.Enter(_actorComponent, _cinemachineData, _controller, _input, _mainCamera);
             
             #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
                         _playerInput = GetComponent<PlayerInput>();
@@ -74,10 +59,10 @@ namespace StarterAssets
             			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
             #endif
 
+            _activeState.Enter(_actorComponent, _cinemachineData, _controller, _input, _mainCamera, _playerInput);
             _actorComponent.AssignAnimationIDs();
 
             // reset our timeouts on start
-
         }
 
         private void Update()
@@ -96,39 +81,7 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-            CameraRotation();
-        }
-
-        private void CameraRotation()
-        {
-            // if there is an input and camera position is not fixed
-            if (_input.look.sqrMagnitude >= _threshold && !_cinemachineData.LockCameraPosition)
-            {
-                //Don't multiply mouse input by Time.deltaTime;
-                float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-
-                _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier * _cinemachineData.Sensativity;
-                _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier * _cinemachineData.Sensativity;
-            }
-
-            // clamp our rotations so our values are limited 360 degrees
-            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, _cinemachineData.BottomClamp, _cinemachineData.TopClamp);
-
-            // Cinemachine will follow this target
-            _cinemachineData.CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + _cinemachineData.CameraAngleOverride,
-                _cinemachineTargetYaw, 0.0f);
-        }
-
-
-
-
-
-        private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
-        {
-            if (lfAngle < -360f) lfAngle += 360f;
-            if (lfAngle > 360f) lfAngle -= 360f;
-            return Mathf.Clamp(lfAngle, lfMin, lfMax);
+          _activeState.LateUpdate();
         }
 
         private void OnDrawGizmosSelected()
