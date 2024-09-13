@@ -207,9 +207,7 @@ public class ActorComponent : MonoBehaviour
       // rotate to face input direction relative to camera position
       if (!inputs.aim || cinemachineData.weaponProvider.weaponType == WeaponType.NO_WEAPON)
         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-
     }
-
 
     Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
@@ -328,7 +326,6 @@ public class ActorComponent : MonoBehaviour
   private void PickUpWeapon(WeaponProvider weaponProvider)
   {
     _weaponProvider = weaponProvider;
-
     _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
   }
 }

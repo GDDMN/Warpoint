@@ -4,7 +4,6 @@ using StarterAssets;
 using System;
 using UnityEngine.Animations.Rigging;
 
-
 public class ThirdPersonShooterController : MonoBehaviour
 {
   [Header("Actor component")]
@@ -40,7 +39,6 @@ public class ThirdPersonShooterController : MonoBehaviour
   private void Update()
   {
     IsAiming = _inputs.aim;
-
     Aiming();
   }
 
@@ -57,9 +55,6 @@ public class ThirdPersonShooterController : MonoBehaviour
   
   private void Aiming()
   {
-    //if (weaponProvider.weaponType == WeaponType.NO_WEAPON)
-    //  return;
-
     if (!IsAiming || !_actorComponent.OnGround)
     {
       _aimVirtualCamera.gameObject.SetActive(false);
@@ -67,9 +62,6 @@ public class ThirdPersonShooterController : MonoBehaviour
       return;
     }
 
-    //_animator.SetBool("Aim", IsAiming);
-    
-    
     Vector3 mouseWorldPoint = Vector3.zero;
     Ray ray = Camera.main.ScreenPointToRay(SCREEN_CENTER_POINT);
     mouseWorldPoint = ray.direction * 999f;
@@ -88,7 +80,6 @@ public class ThirdPersonShooterController : MonoBehaviour
     Shooting();
   }
 
- 
   private void Shooting()
   {
     if (!_inputs.shooting)
@@ -98,6 +89,5 @@ public class ThirdPersonShooterController : MonoBehaviour
     }
 
     _animator.SetBool("Shoot", true);
-
   }
 }

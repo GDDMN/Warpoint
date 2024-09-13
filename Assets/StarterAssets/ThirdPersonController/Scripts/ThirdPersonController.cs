@@ -18,11 +18,7 @@ namespace StarterAssets
 
         private PlayerStateController _stateController = new PlayerStateController();
         private PlayerState _activeState;
-
-        // cinemachine
         
-        
-
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
 #endif
@@ -30,19 +26,12 @@ namespace StarterAssets
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
 
-        
-
         public event Action<bool> OnLanding;
         
-
-
         private void Awake()
         {
-            // get a reference to our main camera
             if (_mainCamera == null)
-            {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-            }
         }
 
         private void Start()
@@ -61,23 +50,17 @@ namespace StarterAssets
 
             _activeState.Enter(_actorComponent, _cinemachineData, _controller, _input, _mainCamera, _playerInput);
             _actorComponent.AssignAnimationIDs();
-
-            // reset our timeouts on start
         }
 
         private void Update()
         {
-            //_hasAnimator = TryGetComponent(out _animator);
-            
             if(!_actorComponent.IsAlive)
             {
               return;     
             }
 
             _activeState.Update();
-        }
-
-            
+        } 
 
         private void LateUpdate()
         {
@@ -98,18 +81,18 @@ namespace StarterAssets
                 _actorComponent.ActorData.GroundedRadius);
         }
 
-        private void OnFootstep(AnimationEvent animationEvent)
-        {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
-                if (_actorComponent.ActorData.FootstepAudioClips.Length > 0)
-                {
-                    var index = UnityEngine.Random.Range(0, _actorComponent.ActorData.FootstepAudioClips.Length);
-                    AudioSource.PlayClipAtPoint(_actorComponent.ActorData.FootstepAudioClips[index], transform.TransformPoint(_controller.center),
-                    _actorComponent.ActorData.FootstepAudioVolume);
-                }
-            }
-        }
+        //private void OnFootstep(AnimationEvent animationEvent)
+        //{
+        //    if (animationEvent.animatorClipInfo.weight > 0.5f)
+        //    {
+        //        if (_actorComponent.ActorData.FootstepAudioClips.Length > 0)
+        //        {
+        //            var index = UnityEngine.Random.Range(0, _actorComponent.ActorData.FootstepAudioClips.Length);
+        //            AudioSource.PlayClipAtPoint(_actorComponent.ActorData.FootstepAudioClips[index], transform.TransformPoint(_controller.center),
+        //            _actorComponent.ActorData.FootstepAudioVolume);
+        //        }
+        //    }
+        //}
 
         public void OnGround()
         {
