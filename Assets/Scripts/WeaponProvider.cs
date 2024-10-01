@@ -16,10 +16,6 @@ public class WeaponProvider : MonoBehaviour
 
   private Vector2 SCREEN_CENTER_POINT = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
-  private void Start()
-  {
-  }
-
   public void Initialize()
   {
   }
@@ -76,7 +72,6 @@ public class WeaponProvider : MonoBehaviour
     var hurtableObject = hit.collider.GetComponent<IHurtable>();
     if (hurtableObject == null)
       return;
-
     
     hurtableObject.Interaction(hit.point, Data.Damage);
   }
