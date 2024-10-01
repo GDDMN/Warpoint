@@ -1,7 +1,11 @@
+using UnityEngine;
+
 
 public interface IHurtable
 {
-  public void Hurt(int damage);
+  void Hurt(int damage);
 
-  public void Die();
+  void Die();
+
+  void Interaction(Vector3 position, int damage);
 }

@@ -15,6 +15,9 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private float aimSensativity;
   [SerializeField] private Transform _aimObject;
 
+  [Header("Weapon")]
+  [SerializeField] private WeaponProvider weapon;
+
   private ThirdPersonController _controller;
   private StarterAssetsInputs _inputs;
   private Animator _animator;
@@ -76,18 +79,5 @@ public class ThirdPersonShooterController : MonoBehaviour
 
     Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
     transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * 20f);
-
-    Shooting();
-  }
-
-  private void Shooting()
-  {
-    if (!_inputs.shooting)
-    {
-      _animator.SetBool("Shoot", false);
-      return;
-    }
-
-    _animator.SetBool("Shoot", true);
   }
 }

@@ -81,19 +81,6 @@ namespace StarterAssets
                 _actorComponent.ActorData.GroundedRadius);
         }
 
-        //private void OnFootstep(AnimationEvent animationEvent)
-        //{
-        //    if (animationEvent.animatorClipInfo.weight > 0.5f)
-        //    {
-        //        if (_actorComponent.ActorData.FootstepAudioClips.Length > 0)
-        //        {
-        //            var index = UnityEngine.Random.Range(0, _actorComponent.ActorData.FootstepAudioClips.Length);
-        //            AudioSource.PlayClipAtPoint(_actorComponent.ActorData.FootstepAudioClips[index], transform.TransformPoint(_controller.center),
-        //            _actorComponent.ActorData.FootstepAudioVolume);
-        //        }
-        //    }
-        //}
-
         public void OnGround()
         {
             OnLanding?.Invoke(true);

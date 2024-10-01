@@ -14,6 +14,7 @@ public class ActorComponent : MonoBehaviour
   [SerializeField] private MultiAimConstraint _constaintBack;
 
   private bool _isAiming = false;
+  private bool _isShooting = false;
 
   // player
   private bool _isAlive = true;
@@ -327,5 +328,15 @@ public class ActorComponent : MonoBehaviour
   {
     _weaponProvider = weaponProvider;
     _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
+  }
+
+  public void Shooting(StarterAssetsInputs inputs)
+  {
+    _isShooting = inputs.shooting;
+    _isAiming = inputs.aim;
+
+    //Vector3 direction = transform.forward;
+
+    _weaponProvider.ShootValidate(_isShooting && _isAiming, transform.forward);
   }
 }

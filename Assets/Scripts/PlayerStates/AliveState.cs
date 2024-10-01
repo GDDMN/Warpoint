@@ -45,8 +45,8 @@ public class AliveState : PlayerState
     ActorComponent.GroundedCheck();
     ActorComponent.Move(Input, CinemachineData, CharacterController, MainCamera);
     ActorComponent.Aiming(Input, CinemachineData);
+    ActorComponent.Shooting(Input);
     ActorComponent.Cruch(Input);
-
   }
 
   public override void LateUpdate()
