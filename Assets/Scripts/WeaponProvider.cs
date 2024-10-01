@@ -7,6 +7,7 @@ public class WeaponProvider : MonoBehaviour
   public WeaponType weaponType;
   public WeaponData Data;
 
+  public ParticleSystem _fireParticles;
   public AudioSource WeaponSounds;
 
   private bool alreadyShooting = false;
@@ -14,6 +15,10 @@ public class WeaponProvider : MonoBehaviour
   private Vector3 _direction;
 
   private Vector2 SCREEN_CENTER_POINT = new Vector2(Screen.width / 2f, Screen.height / 2f);
+
+  private void Start()
+  {
+  }
 
   public void Initialize()
   {
@@ -30,6 +35,7 @@ public class WeaponProvider : MonoBehaviour
     else
     {
       alreadyShooting = false;
+      _fireParticles.Stop();
       StopCoroutine(coroutine);
     }
   }
@@ -39,6 +45,7 @@ public class WeaponProvider : MonoBehaviour
     if (alreadyShooting)
       return;
 
+    
     coroutine = StartCoroutine(ShootRoutine());
   }
 
@@ -53,7 +60,7 @@ public class WeaponProvider : MonoBehaviour
 
   private void Shoot()
   {
-    WeaponSounds.PlayOneShot(Data.ShootSound);
+    EffectsPlay();
 
     RaycastHit hit;
     Ray ray = Camera.main.ScreenPointToRay(SCREEN_CENTER_POINT);
@@ -70,6 +77,13 @@ public class WeaponProvider : MonoBehaviour
     if (hurtableObject == null)
       return;
 
+    
     hurtableObject.Interaction(hit.point, Data.Damage);
+  }
+
+  private void EffectsPlay()
+  {
+    WeaponSounds.PlayOneShot(Data.ShootSound);
+    _fireParticles.Play();
   }
 }

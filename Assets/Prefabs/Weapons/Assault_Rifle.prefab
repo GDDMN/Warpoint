@@ -273,7 +273,11 @@ MonoBehaviour:
     AmmoCapacity: 0
     ReloadingSpeed: 0
     RecoverySpeed: 0
+    MaxSpread: 0
+    DeltaSpread: 0
+    Damage: 0
     PrefabPath: 
+    ShootSound: {fileID: 0}
 --- !u!114 &608281829126639978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,6 +291,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponType: 2
+  Data:
+    WeaponName: 0
+    WeaponType: 0
+    AmmoCapacity: 0
+    ReloadingSpeed: 0
+    RecoverySpeed: 0
+    MaxSpread: 0
+    DeltaSpread: 0
+    Damage: 0
+    PrefabPath: 
+    ShootSound: {fileID: 0}
+  _fireParticles: {fileID: 0}
+  WeaponSounds: {fileID: 0}
 --- !u!1 &6216945684225821981
 GameObject:
   m_ObjectHideFlags: 0
