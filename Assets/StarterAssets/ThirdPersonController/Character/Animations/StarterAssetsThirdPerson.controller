@@ -705,11 +705,11 @@ AnimatorState:
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
   m_Mirror: 0
-  m_SpeedParameterActive: 1
+  m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: e57329f63b928974ebaee40bac1a6591, type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: 499f524dcb933534e865bcc2f39be386, type: 3}
   m_Tag: 
   m_SpeedParameter: ShootingSpeed
   m_MirrorParameter: 
