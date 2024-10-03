@@ -62,7 +62,7 @@ public class WeaponProvider : MonoBehaviour
     while(true)
     {
       Vector3 spreading = SpreadPos();
-      shootingTime += 0.1f * Time.deltaTime;
+      shootingTime += 0.4f * Time.deltaTime;
       Shoot(spreading);
       yield return new WaitForSecondsRealtime(Data.RecoverySpeed);
     }
