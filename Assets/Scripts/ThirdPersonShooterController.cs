@@ -66,7 +66,8 @@ public class ThirdPersonShooterController : MonoBehaviour
     }
 
     Vector3 mouseWorldPoint = Vector3.zero;
-    Ray ray = Camera.main.ScreenPointToRay(SCREEN_CENTER_POINT);
+    Vector2 centerPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
+    Ray ray = Camera.main.ScreenPointToRay(centerPoint);
     mouseWorldPoint = ray.direction * 999f;
 
     _aimObject.position = mouseWorldPoint;

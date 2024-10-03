@@ -7,6 +7,12 @@ public class WeaponProvider : MonoBehaviour
   public WeaponType weaponType;
   public WeaponData Data;
 
+  public TrailRenderer BulletTracer;
+
+  public Transform AimTargetObj;
+
+  public Transform RaycastOrigin;
+
   public ParticleSystem _fireParticles;
   public AudioSource WeaponSounds;
 
@@ -14,7 +20,10 @@ public class WeaponProvider : MonoBehaviour
   private Coroutine coroutine;
   private Vector3 _direction;
 
-  private Vector2 SCREEN_CENTER_POINT = new Vector2(Screen.width / 2f, Screen.height / 2f);
+  private float shootingTime = 0f;
+  private float spread = 0f;
+
+  //private Vector2 SCREEN_CENTER_POINT = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
   public void Initialize()
   {
@@ -32,7 +41,10 @@ public class WeaponProvider : MonoBehaviour
     {
       alreadyShooting = false;
       _fireParticles.Stop();
-      StopCoroutine(coroutine);
+      shootingTime = 0f;
+
+      if(coroutine != null)
+        StopCoroutine(coroutine);
     }
   }
 
@@ -49,19 +61,23 @@ public class WeaponProvider : MonoBehaviour
   {
     while(true)
     {
-      Shoot();
+      Vector3 spreading = SpreadPos();
+      shootingTime += 0.1f * Time.deltaTime;
+      Shoot(spreading);
       yield return new WaitForSecondsRealtime(Data.RecoverySpeed);
     }
   }
 
-  private void Shoot()
+  private void Shoot(Vector3 spread)
   {
-    EffectsPlay();
-
     RaycastHit hit;
-    Ray ray = Camera.main.ScreenPointToRay(SCREEN_CENTER_POINT);
+    Ray ray = new Ray();
+    ray.origin = RaycastOrigin.position;
+    ray.direction = RaycastOrigin.forward + spread;
 
-    if(Physics.Raycast(ray, out hit, 100f))
+    EffectsPlay(ray.origin, AimTargetObj.position + spread);
+
+    if(Physics.Raycast(ray.origin, (AimTargetObj.position + spread) - ray.origin, out hit))
     {
       SetDamage(hit);
     }
@@ -76,9 +92,22 @@ public class WeaponProvider : MonoBehaviour
     hurtableObject.Interaction(hit.point, Data.Damage);
   }
 
-  private void EffectsPlay()
+  private Vector3 SpreadPos()
+  {
+    spread = shootingTime * Data.DeltaSpread;
+    spread = Mathf.Clamp(spread, 0f, Data.MaxSpread);
+
+    Vector3 spreading = new Vector3(Random.Range(-spread, spread), Random.Range(-spread, spread), 0f);
+    return spreading;
+  }
+
+  private void EffectsPlay(Vector3 originPos, Vector3 endPos)
   {
     WeaponSounds.PlayOneShot(Data.ShootSound);
     _fireParticles.Play();
+    var trace = Instantiate(BulletTracer, originPos, Quaternion.identity);
+
+    trace.AddPosition(originPos);
+    trace.transform.position = endPos;
   }
 }
