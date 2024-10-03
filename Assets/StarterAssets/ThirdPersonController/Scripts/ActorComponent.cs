@@ -335,8 +335,12 @@ public class ActorComponent : MonoBehaviour
     _isShooting = inputs.shooting;
     _isAiming = inputs.aim;
 
-    //Vector3 direction = transform.forward;
-
     _weaponProvider.ShootValidate(_isShooting && _isAiming, transform.forward);
+    _animator.SetBool("Shoot", _isShooting && _isAiming);
+
+    if(_isShooting && _isAiming)
+      _animator.SetFloat("ShootingSpeed", Mathf.Abs(1 - 1 * _weaponProvider.Data.RecoverySpeed));
+    else
+      _animator.SetFloat("ShootingSpeed", 0);
   }
 }

@@ -3784,7 +3784,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4740714756747616558, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: Data.RecoverySpeed
-      value: 0.075
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 4740714756747616558, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: Data.ReloadingSpeed
