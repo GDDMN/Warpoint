@@ -7,6 +7,8 @@ public class WeaponProvider : MonoBehaviour
   public WeaponType weaponType;
   public WeaponData Data;
 
+  public Animator Animator;
+
   public TrailRenderer BulletTracer;
 
   public Transform AimTargetObj;
@@ -23,7 +25,7 @@ public class WeaponProvider : MonoBehaviour
   private float shootingTime = 0f;
   private float spread = 0f;
 
-  //private Vector2 SCREEN_CENTER_POINT = new Vector2(Screen.width / 2f, Screen.height / 2f);
+
 
   public void Initialize()
   {
@@ -106,6 +108,8 @@ public class WeaponProvider : MonoBehaviour
     WeaponSounds.PlayOneShot(Data.ShootSound);
     _fireParticles.Play();
     var trace = Instantiate(BulletTracer, originPos, Quaternion.identity);
+
+    Animator.SetTrigger("Shoot");
 
     trace.AddPosition(originPos);
     trace.transform.position = endPos;
