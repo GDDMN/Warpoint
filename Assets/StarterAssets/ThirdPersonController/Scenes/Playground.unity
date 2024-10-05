@@ -454,11 +454,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4477093640573578, guid: a852a93679cfbcf44a712b85fbb34edf, type: 3}
   m_PrefabInstance: {fileID: 163150485}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &211499334 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6282816836540287960, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
-  m_PrefabInstance: {fileID: 1872456186}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &217323732 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7982690787071284510, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
@@ -1189,6 +1184,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1098331003751186256, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
   m_PrefabInstance: {fileID: 1872456186}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &683777134 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4740714756747616558, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+  m_PrefabInstance: {fileID: 1872456186}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683777132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 133d7b615203b4a40ae52fecab0dfb68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &683777138
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1572,17 +1578,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3248593559139604262, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
   m_PrefabInstance: {fileID: 1872456186}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &796778631 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8370329032862861171, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
-  m_PrefabInstance: {fileID: 1872456186}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 796778624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 133d7b615203b4a40ae52fecab0dfb68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &796778635 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 8137229649008189373, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
@@ -2799,6 +2794,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!4 &1108317926 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1390323025815774428, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+  m_PrefabInstance: {fileID: 1872456186}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1116971703
 GameObject:
   m_ObjectHideFlags: 0
@@ -4057,7 +4057,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1799083308243325866, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1983542135109913576, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Enabled
@@ -4070,7 +4070,7 @@ PrefabInstance:
     - target: {fileID: 2098293134084549741, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _cinemachineData.weaponProvider
       value: 
-      objectReference: {fileID: 796778631}
+      objectReference: {fileID: 683777134}
     - target: {fileID: 2974256329300984466, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -4090,7 +4090,7 @@ PrefabInstance:
     - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _weaponProvider
       value: 
-      objectReference: {fileID: 796778631}
+      objectReference: {fileID: 683777134}
     - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _constraintRightHand
       value: 
@@ -4107,7 +4107,7 @@ PrefabInstance:
     - target: {fileID: 4662736364310998183, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: weapon
       value: 
-      objectReference: {fileID: 796778631}
+      objectReference: {fileID: 683777134}
     - target: {fileID: 4662736364310998183, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _aimObject
       value: 
@@ -4170,7 +4170,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4782978207005740703, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6306501199142404827, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: weaponType
@@ -4179,7 +4179,7 @@ PrefabInstance:
     - target: {fileID: 6439955922146905775, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Data.m_Target
       value: 
-      objectReference: {fileID: 211499334}
+      objectReference: {fileID: 1108317926}
     - target: {fileID: 7222814152670278386, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.4557331

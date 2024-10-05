@@ -26,17 +26,16 @@ public class WeaponProvider : MonoBehaviour
   private float spread = 0f;
 
 
-
   public void Initialize()
   {
   }
 
-  public void ShootValidate(bool validate, Vector3 direction)
+  public void ShootValidate(bool validate, Vector3 direction, Animator actorAnimator)
   {
     if (validate)
     {
       _direction = direction;
-      StartShootRoutine();
+      StartShootRoutine(actorAnimator);
       alreadyShooting = true;
     }
     else
@@ -50,33 +49,33 @@ public class WeaponProvider : MonoBehaviour
     }
   }
 
-  private void StartShootRoutine()
+  private void StartShootRoutine(Animator actorAnimator)
   {
     if (alreadyShooting)
       return;
 
     
-    coroutine = StartCoroutine(ShootRoutine());
+    coroutine = StartCoroutine(ShootRoutine(actorAnimator));
   }
 
-  private IEnumerator ShootRoutine()
+  private IEnumerator ShootRoutine(Animator actorAnimator)
   {
     while(true)
     {
       Vector3 spreading = SpreadPos();
       shootingTime += 0.4f * Time.deltaTime;
-      Shoot(spreading);
+      Shoot(spreading, actorAnimator);
       yield return new WaitForSecondsRealtime(Data.RecoverySpeed);
     }
   }
 
-  private void Shoot(Vector3 spread)
+  private void Shoot(Vector3 spread, Animator actorAnimator)
   {
     RaycastHit hit;
     Ray ray = new Ray();
     ray.origin = RaycastOrigin.position;
     ray.direction = RaycastOrigin.forward + spread;
-
+    actorAnimator.SetTrigger("Shoot");
     EffectsPlay(ray.origin, AimTargetObj.position + spread);
 
     if(Physics.Raycast(ray.origin, (AimTargetObj.position + spread) - ray.origin, out hit))
