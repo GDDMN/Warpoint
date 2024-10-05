@@ -3210,11 +3210,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1706791323426068, guid: 0624c6f5a57851d48ba74b4f86ec13d7, type: 3}
   m_PrefabInstance: {fileID: 1396533105}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &1396533108 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 198076924919084778, guid: 0624c6f5a57851d48ba74b4f86ec13d7, type: 3}
-  m_PrefabInstance: {fileID: 1396533105}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1396533109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3310,6 +3305,11 @@ PrefabInstance:
 --- !u!4 &1401503842 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 497846, guid: 23fc589b73077394db72d954703e8d1c, type: 3}
+  m_PrefabInstance: {fileID: 1401503841}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &1401503844 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 19880796, guid: 23fc589b73077394db72d954703e8d1c, type: 3}
   m_PrefabInstance: {fileID: 1401503841}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1402827283
@@ -4391,7 +4391,7 @@ PrefabInstance:
     - target: {fileID: 8370329032862861171, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _fireParticles
       value: 
-      objectReference: {fileID: 1396533108}
+      objectReference: {fileID: 1401503844}
     - target: {fileID: 8370329032862861171, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: Data.ShootSound
       value: 
