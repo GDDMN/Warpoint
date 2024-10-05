@@ -16,6 +16,9 @@ public class ActorComponent : MonoBehaviour
   private bool _isAiming = false;
   private bool _isShooting = false;
 
+  private Vector3 RIFLE_CONSTAIN_BODY_OFFSET { get { return new Vector3(-40, -10, 20); } }
+  private Vector3 PISTOL_CONSTAIN_BODY_OFFSET { get { return new Vector3(-15, 0, 0); } }
+
   // player
   private bool _isAlive = true;
   private float _speed;
@@ -308,6 +311,8 @@ public class ActorComponent : MonoBehaviour
       return;
     }
 
+    ConstaintBodyOffsets(_weaponProvider.weaponType);
+
     if (_weaponProvider.weaponType != WeaponType.DOUBLE_ARMED)
     {
       ConstaintValidate(false, false);
@@ -322,6 +327,16 @@ public class ActorComponent : MonoBehaviour
     _IKConstaint.weight = lefthandActive ? 1f : 0f;
     _constaintBack.weight = armActive ? 1f : 0f;
     _constraintRightHand.weight = armActive ? 1f : 0f;
+  }
+
+  private void ConstaintBodyOffsets(WeaponType type)
+  {
+    switch (type)
+    {
+      case WeaponType.ONE_ARMED: _constaintBack.data.offset = PISTOL_CONSTAIN_BODY_OFFSET; break;
+      case WeaponType.DOUBLE_ARMED: _constaintBack.data.offset = RIFLE_CONSTAIN_BODY_OFFSET; break;
+      default: break;
+    }
   }
 
   private void PickUpWeapon(WeaponProvider weaponProvider)
