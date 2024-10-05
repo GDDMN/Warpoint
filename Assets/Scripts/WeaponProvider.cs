@@ -109,7 +109,7 @@ public class WeaponProvider : MonoBehaviour
     _fireParticles.Play();
     var trace = Instantiate(BulletTracer, originPos, Quaternion.identity);
 
-    Animator.SetTrigger("Shoot");
+    //Animator.SetTrigger("Shoot");
 
     trace.AddPosition(originPos);
     trace.transform.position = endPos;

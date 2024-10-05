@@ -339,7 +339,7 @@ public class ActorComponent : MonoBehaviour
     _animator.SetBool("Shoot", _isShooting && _isAiming);
 
     if(_isShooting && _isAiming)
-      _animator.SetFloat("ShootingSpeed", Mathf.Abs(1 - 1 * _weaponProvider.Data.RecoverySpeed));
+      _animator.SetFloat("ShootingSpeed", Mathf.Abs(_weaponProvider.Data.RecoverySpeed));
     else
       _animator.SetFloat("ShootingSpeed", 0);
   }

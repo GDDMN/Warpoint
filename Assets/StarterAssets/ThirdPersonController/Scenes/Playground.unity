@@ -1189,17 +1189,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1098331003751186256, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
   m_PrefabInstance: {fileID: 1872456186}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &683777134 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4740714756747616558, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
-  m_PrefabInstance: {fileID: 1872456186}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 683777132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 133d7b615203b4a40ae52fecab0dfb68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!82 &683777138
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3971,6 +3960,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_Data.m_Offset.x
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_Data.m_Offset.y
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_Data.m_Offset.z
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
       objectReference: {fileID: 1855314216}
@@ -4000,7 +4001,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1363438877365388177, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: WeaponData.RecoverySpeed
-      value: 0.1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1363438877365388177, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: WeaponData.ReloadingSpeed
@@ -4069,7 +4070,7 @@ PrefabInstance:
     - target: {fileID: 2098293134084549741, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _cinemachineData.weaponProvider
       value: 
-      objectReference: {fileID: 683777134}
+      objectReference: {fileID: 796778631}
     - target: {fileID: 2974256329300984466, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -4096,7 +4097,12 @@ PrefabInstance:
       objectReference: {fileID: 1872456189}
     - target: {fileID: 4662736364310998182, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_WarningMessage
-      value: 
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'Elbow_R'\n\tTransform 'Elbow_L'\n\tTransform
+        'Spine_03'\n\tTransform 'Hand_L'\n\tTransform 'Shoulder_L'\n\tTransform 'Spine_02'\n\tTransform
+        'Hand_R'\n\tTransform 'Elbow_R'\n\tTransform 'Elbow_L'\n\tTransform 'Spine_03'\n\tand
+        more ..."
       objectReference: {fileID: 0}
     - target: {fileID: 4662736364310998183, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: weapon
@@ -4156,7 +4162,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4740714756747616558, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: Data.RecoverySpeed
-      value: 0.075
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4740714756747616558, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: Data.ReloadingSpeed
@@ -4277,6 +4283,34 @@ PrefabInstance:
     - target: {fileID: 8840485046858426660, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843778621151893752, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70002687
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843778621151893752, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.14993569
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843778621151893752, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.19219469
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843778621151893752, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.67122495
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843778621151893752, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -27.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843778621151893752, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 4.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843778621151893752, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 86.5
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6306501199142404827, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
