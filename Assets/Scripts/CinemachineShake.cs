@@ -8,11 +8,14 @@ public static class CinemachineShake
 
   public static void ShootingShake(CinemachineVirtualCamera camera, float time)
   {
+    if (!camera.isActiveAndEnabled)
+      return;
+
     CinemachineBasicMultiChannelPerlin perlinChannel = 
       camera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-
+    
     perlinChannel.m_AmplitudeGain = shootingShakeIntensity;
-
+    
     camera.StartCoroutine(ShakeTimer(perlinChannel, time));
   }
 

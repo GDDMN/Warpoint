@@ -306,6 +306,12 @@ public class ActorComponent : MonoBehaviour
       return;
     }
 
+    if (_isShooting && _data.Grounded)
+    {
+      ConstaintValidate(true, true);
+      return;
+    }
+
     if (!_data.Grounded)
     {
       ConstaintValidate(false, false);
@@ -356,8 +362,11 @@ public class ActorComponent : MonoBehaviour
   public void Shooting(StarterAssetsInputs inputs)
   {
     _isShooting = inputs.shooting;
-    _isAiming = inputs.aim;
-
-    _weaponProvider.ShootValidate(_isShooting && _isAiming, transform.forward);
+    bool sprinting = inputs.sprint;
+    
+    if (_data.Grounded && !sprinting)
+      _weaponProvider.ShootValidate(_isShooting, transform.forward);
+    else
+      _weaponProvider.ShootValidate(false, transform.forward);
   }
 }

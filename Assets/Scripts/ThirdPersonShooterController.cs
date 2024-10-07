@@ -76,6 +76,13 @@ public class ThirdPersonShooterController : MonoBehaviour
 
   private void Aiming()
   {
+    Vector3 mouseWorldPoint = Vector3.zero;
+    Vector2 centerPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
+    Ray ray = Camera.main.ScreenPointToRay(centerPoint);
+    mouseWorldPoint = ray.direction * 999f;
+
+    _aimObject.position = mouseWorldPoint;
+
     if (!IsAiming || !_actorComponent.OnGround)
     {
       _aimVirtualCamera.gameObject.SetActive(false);
@@ -83,12 +90,7 @@ public class ThirdPersonShooterController : MonoBehaviour
       return;
     }
 
-    Vector3 mouseWorldPoint = Vector3.zero;
-    Vector2 centerPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
-    Ray ray = Camera.main.ScreenPointToRay(centerPoint);
-    mouseWorldPoint = ray.direction * 999f;
-
-    _aimObject.position = mouseWorldPoint;
+    //_aimObject.position = mouseWorldPoint;
 
     _aimVirtualCamera.gameObject.SetActive(true);
     _controller.SetSensativity(aimSensativity);

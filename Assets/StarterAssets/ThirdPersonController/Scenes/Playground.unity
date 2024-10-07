@@ -4153,6 +4153,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_Data.m_MaxLimit
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: m_Data.m_MinLimit
+      value: -50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Data.m_Offset.x
       value: -15
       objectReference: {fileID: 0}
@@ -4286,7 +4294,7 @@ PrefabInstance:
       objectReference: {fileID: 1872456188}
     - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _data.MoveSpeed
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _weaponProvider
@@ -4294,7 +4302,7 @@ PrefabInstance:
       objectReference: {fileID: 683777139}
     - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _data.SprintSpeed
-      value: 7
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _constraintRightHand
