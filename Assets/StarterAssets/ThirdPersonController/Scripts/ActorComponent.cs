@@ -205,6 +205,7 @@ public class ActorComponent : MonoBehaviour
     {
       _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                         mainCamera.transform.eulerAngles.y;
+
       float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
           _data.RotationSmoothTime);
 
@@ -343,6 +344,13 @@ public class ActorComponent : MonoBehaviour
   {
     _weaponProvider = weaponProvider;
     _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
+
+    _weaponProvider.OnShoot += ShootAnimationPlay;
+  }
+
+  private void ShootAnimationPlay()
+  {
+    _animator.SetTrigger("Shoot");
   }
 
   public void Shooting(StarterAssetsInputs inputs)
@@ -350,6 +358,6 @@ public class ActorComponent : MonoBehaviour
     _isShooting = inputs.shooting;
     _isAiming = inputs.aim;
 
-    _weaponProvider.ShootValidate(_isShooting && _isAiming, transform.forward, _animator);
+    _weaponProvider.ShootValidate(_isShooting && _isAiming, transform.forward);
   }
 }

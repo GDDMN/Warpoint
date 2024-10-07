@@ -3,6 +3,7 @@ using Cinemachine;
 using StarterAssets;
 using System;
 using UnityEngine.Animations.Rigging;
+using DG.Tweening;
 
 public class ThirdPersonShooterController : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private float normalSensativity;
   [SerializeField] private float aimSensativity;
   [SerializeField] private Transform _aimObject;
+  [SerializeField] private Transform _aimCamObj;
 
   [Header("Weapon")]
   [SerializeField] private WeaponProvider weapon;
@@ -24,6 +26,7 @@ public class ThirdPersonShooterController : MonoBehaviour
 
   private bool IsAiming = false;
   private bool OnGround = true;
+
   private Vector2 SCREEN_CENTER_POINT = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
   private void Awake()
@@ -37,6 +40,8 @@ public class ThirdPersonShooterController : MonoBehaviour
   {
     _actorComponent.OnJumpLounch += LandingValidate;
     _controller.OnLanding += LandingValidate;
+
+    weapon.OnShoot += ShootingCameraEffect;
   }
 
   private void Update()
@@ -49,6 +54,8 @@ public class ThirdPersonShooterController : MonoBehaviour
   {
     _actorComponent.OnJumpLounch -= LandingValidate;
     _controller.OnLanding -= LandingValidate;
+
+    weapon.OnShoot -= ShootingCameraEffect;
   }
 
   private void LandingValidate(bool OnLand)
@@ -56,6 +63,17 @@ public class ThirdPersonShooterController : MonoBehaviour
     OnGround = OnLand;
   }
   
+  private void ShootingCameraEffect()
+  {
+    CinemachineShake.ShootingShake(_aimVirtualCamera, weapon.Data.RecoverySpeed);
+
+    //var cameraTransform = _aimCamObj;
+    //
+    //cameraTransform
+    //  .DOShakePosition(0.15f, 1f, 10, 90f, false, true, ShakeRandomnessMode.Harmonic)
+    //  .SetEase(Ease.InOutBounce);
+  }
+
   private void Aiming()
   {
     if (!IsAiming || !_actorComponent.OnGround)
