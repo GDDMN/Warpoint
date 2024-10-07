@@ -12,7 +12,8 @@ public struct WeaponData
   public int AmmoCapacity;
   public float ReloadingSpeed;
   public float RecoverySpeed;
-  public float MaxSpread;
+  public float HipMaxSpread;
+  public float AimMaxSpread;
   public float DeltaSpread;
   public int Damage;
 

@@ -4,7 +4,9 @@ using Cinemachine;
 
 public static class CinemachineShake
 {
-  private const float shootingShakeIntensity = 0.5f; 
+  private const float shootingShakeIntensity = 0.5f;
+
+  private const float shootingTimeShake = 0.1f;
 
   public static void ShootingShake(CinemachineVirtualCamera camera, float time)
   {
@@ -16,12 +18,12 @@ public static class CinemachineShake
     
     perlinChannel.m_AmplitudeGain = shootingShakeIntensity;
     
-    camera.StartCoroutine(ShakeTimer(perlinChannel, time));
+    camera.StartCoroutine(ShakeTimer(perlinChannel));
   }
 
-  private static IEnumerator ShakeTimer(CinemachineBasicMultiChannelPerlin perlinChannel, float time)
+  private static IEnumerator ShakeTimer(CinemachineBasicMultiChannelPerlin perlinChannel)
   {
-    yield return new WaitForSecondsRealtime(time);
+    yield return new WaitForSecondsRealtime(shootingTimeShake);
     perlinChannel.m_AmplitudeGain = 0f;
   }
 

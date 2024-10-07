@@ -363,6 +363,7 @@ public class ActorComponent : MonoBehaviour
   {
     _isShooting = inputs.shooting;
     bool sprinting = inputs.sprint;
+    bool aiming = inputs.aim;
 
     if(_isShooting)
     { 
@@ -375,11 +376,11 @@ public class ActorComponent : MonoBehaviour
 
     if (_data.Grounded && !sprinting)
     {
-      _weaponProvider.ShootValidate(_isShooting, transform.forward);
+      _weaponProvider.ShootValidate(_isShooting, transform.forward, aiming);
     }
     else
     {
-      _weaponProvider.ShootValidate(false, transform.forward);
+      _weaponProvider.ShootValidate(false, transform.forward, aiming);
     }
   }
 }

@@ -4369,8 +4369,16 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4740714756747616558, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: Data.AimMaxSpread
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4740714756747616558, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: Data.AmmoCapacity
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4740714756747616558, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: Data.HipMaxSpread
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 4740714756747616558, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: Data.RecoverySpeed
@@ -4457,8 +4465,16 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8370329032862861171, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: Data.AimMaxSpread
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370329032862861171, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: Data.AmmoCapacity
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370329032862861171, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: Data.HipMaxSpread
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8370329032862861171, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: Data.RecoverySpeed

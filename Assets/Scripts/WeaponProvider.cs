@@ -33,12 +33,12 @@ public class WeaponProvider : MonoBehaviour
   {
   }
 
-  public void ShootValidate(bool validate, Vector3 direction)
+  public void ShootValidate(bool validate, Vector3 direction, bool isAiming)
   {
     if (validate)
     {
       _direction = direction;
-      StartShootRoutine();
+      StartShootRoutine(isAiming);
       alreadyShooting = true;
     }
     else
@@ -52,20 +52,20 @@ public class WeaponProvider : MonoBehaviour
     }
   }
 
-  private void StartShootRoutine()
+  private void StartShootRoutine(bool isAiming)
   {
     if (alreadyShooting)
       return;
 
     
-    coroutine = StartCoroutine(ShootRoutine());
+    coroutine = StartCoroutine(ShootRoutine(isAiming));
   }
 
-  private IEnumerator ShootRoutine()
+  private IEnumerator ShootRoutine(bool isAiming)
   {
     while(true)
     {
-      Vector3 spreading = SpreadPos();
+      Vector3 spreading = SpreadPos(isAiming);
       shootingTime += 0.4f * Time.deltaTime;
       Shoot(spreading);
       yield return new WaitForSecondsRealtime(Data.RecoverySpeed);
@@ -98,10 +98,14 @@ public class WeaponProvider : MonoBehaviour
     hurtableObject.Interaction(hit.point, Data.Damage);
   }
 
-  private Vector3 SpreadPos()
+  private Vector3 SpreadPos(bool isAiming)
   {
     spread = shootingTime * Data.DeltaSpread;
-    spread = Mathf.Clamp(spread, 0f, Data.MaxSpread);
+    
+    if(isAiming)
+      spread = Mathf.Clamp(spread, 0f, Data.AimMaxSpread);
+    else
+      spread = Mathf.Clamp(spread, 0f, Data.HipMaxSpread);
 
     Vector3 spreading = new Vector3(UnityEngine.Random.Range(-spread, spread), UnityEngine.Random.Range(-spread, spread), 0f);
     return spreading;
