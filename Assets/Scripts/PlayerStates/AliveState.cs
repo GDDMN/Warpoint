@@ -41,11 +41,12 @@ public class AliveState : PlayerState
 
   public override void Update()
   {
+    //Внимательно смотрим за последовательностью команд
     ActorComponent.JumpAndGravity(Input);
     ActorComponent.GroundedCheck();
     ActorComponent.Move(Input, CinemachineData, CharacterController, MainCamera);
-    ActorComponent.Aiming(Input, CinemachineData);
     ActorComponent.Shooting(Input);
+    ActorComponent.Aiming(Input, CinemachineData);
     ActorComponent.Cruch(Input);
   }
 

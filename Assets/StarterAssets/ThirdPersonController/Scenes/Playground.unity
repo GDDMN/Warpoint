@@ -4154,11 +4154,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Data.m_MaxLimit
-      value: 50
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Data.m_MinLimit
-      value: -50
+      value: -70
       objectReference: {fileID: 0}
     - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Data.m_Offset.x

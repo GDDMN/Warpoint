@@ -125,7 +125,7 @@ public class ActorComponent : MonoBehaviour
     if (!inputs.aim || !_data.Grounded)
     {
       _animator.SetLayerWeight(2, 0);
-      _animator.SetLayerWeight(1, 0);
+      //_animator.SetLayerWeight(1, 0);
       _animator.SetLayerWeight(0, 1);
 
       realDirection = Vector2.zero;
@@ -363,10 +363,23 @@ public class ActorComponent : MonoBehaviour
   {
     _isShooting = inputs.shooting;
     bool sprinting = inputs.sprint;
-    
-    if (_data.Grounded && !sprinting)
-      _weaponProvider.ShootValidate(_isShooting, transform.forward);
+
+    if(_isShooting)
+    { 
+      _animator.SetLayerWeight(1, 1);
+    }
     else
+    {
+      _animator.SetLayerWeight(1, 0);
+    }
+
+    if (_data.Grounded && !sprinting)
+    {
+      _weaponProvider.ShootValidate(_isShooting, transform.forward);
+    }
+    else
+    {
       _weaponProvider.ShootValidate(false, transform.forward);
+    }
   }
 }
