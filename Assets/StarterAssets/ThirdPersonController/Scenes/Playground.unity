@@ -4309,16 +4309,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1872456188}
     - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: _data.AimSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _data.MoveSpeed
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _weaponProvider
       value: 
       objectReference: {fileID: 683777139}
     - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: _data.CruchSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _data.SprintSpeed
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4485340995540612530, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: _constraintRightHand
