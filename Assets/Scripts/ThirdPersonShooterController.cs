@@ -66,12 +66,7 @@ public class ThirdPersonShooterController : MonoBehaviour
   private void ShootingCameraEffect()
   {
     CinemachineShake.ShootingShake(_aimVirtualCamera, weapon.Data.RecoverySpeed);
-
-    //var cameraTransform = _aimCamObj;
-    //
-    //cameraTransform
-    //  .DOShakePosition(0.15f, 1f, 10, 90f, false, true, ShakeRandomnessMode.Harmonic)
-    //  .SetEase(Ease.InOutBounce);
+    
   }
 
   private void Aiming()

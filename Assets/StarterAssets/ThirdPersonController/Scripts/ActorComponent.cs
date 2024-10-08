@@ -13,6 +13,8 @@ public class ActorComponent : MonoBehaviour
   [SerializeField] private MultiAimConstraint _constraintRightHand;
   [SerializeField] private MultiAimConstraint _constaintBack;
 
+  [SerializeField] private Transform aimObject;
+
   private bool _isAiming = false;
   private bool _isShooting = false;
 
@@ -125,7 +127,7 @@ public class ActorComponent : MonoBehaviour
     if (!inputs.aim || !_data.Grounded)
     {
       _animator.SetLayerWeight(2, 0);
-      //_animator.SetLayerWeight(1, 0);
+      _animator.SetLayerWeight(1, 0);
       _animator.SetLayerWeight(0, 1);
 
       realDirection = Vector2.zero;
@@ -210,10 +212,11 @@ public class ActorComponent : MonoBehaviour
           _data.RotationSmoothTime);
 
       // rotate to face input direction relative to camera position
-      if (!inputs.aim || cinemachineData.weaponProvider.weaponType == WeaponType.NO_WEAPON)
+      if ((!inputs.aim || cinemachineData.weaponProvider.weaponType == WeaponType.NO_WEAPON) && !_isShooting)
         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
     }
 
+    HipShootingRotate(transform, aimObject);
     Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
     // move the player
@@ -365,13 +368,10 @@ public class ActorComponent : MonoBehaviour
     bool sprinting = inputs.sprint;
     bool aiming = inputs.aim;
 
-    if(_isShooting)
-    { 
-      _animator.SetLayerWeight(1, 1);
-    }
-    else
+    if (!_isShooting)
     {
-      _animator.SetLayerWeight(1, 0);
+      _weaponProvider.ShootValidate(false, transform.forward, aiming);
+      return;
     }
 
     if (_data.Grounded && !sprinting)
@@ -382,5 +382,36 @@ public class ActorComponent : MonoBehaviour
     {
       _weaponProvider.ShootValidate(false, transform.forward, aiming);
     }
+
+    if (_isAiming)
+      return;
+
+    _animator.SetLayerWeight(2, 1);
+    _animator.SetLayerWeight(1, 1);
+    _animator.SetLayerWeight(0, 0);
+
+    Vector2 direction = new Vector2(inputs.move.x, inputs.move.y);
+
+    _animator.SetFloat("MotionX", direction.x);
+    _animator.SetFloat("MotionZ", direction.y);
+
+    //HipShootingRotate(transform, aimObject);
+    //Сделать поворот в сторону цели, если объект находится со спины игрока
+  }
+
+  private void HipShootingRotate(Transform actorForvard, Transform shootingDirection)
+  {
+    if (!_isShooting)
+      return;
+
+    float angle = Vector3.Angle(shootingDirection.position - actorForvard.position, 
+                                actorForvard.forward);
+
+    Debug.Log(angle);
+
+    if (angle < 70f && angle > -70f)
+      return;
+
+    actorForvard.LookAt(shootingDirection, Vector3.up);
   }
 }

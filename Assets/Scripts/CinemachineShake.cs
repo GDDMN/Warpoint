@@ -26,5 +26,4 @@ public static class CinemachineShake
     yield return new WaitForSecondsRealtime(shootingTimeShake);
     perlinChannel.m_AmplitudeGain = 0f;
   }
-
 }
