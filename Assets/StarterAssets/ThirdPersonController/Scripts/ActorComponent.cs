@@ -23,6 +23,7 @@ public class ActorComponent : MonoBehaviour
 
   // player
   private bool _isAlive = true;
+  private bool _isSprint = false;
   private float _speed;
   private float _animationBlend;
   private float _targetRotation = 0.0f;
@@ -368,7 +369,7 @@ public class ActorComponent : MonoBehaviour
     bool sprinting = inputs.sprint;
     bool aiming = inputs.aim;
 
-    if (!_isShooting)
+    if (!_isShooting || sprinting)
     {
       _weaponProvider.ShootValidate(false, transform.forward, aiming);
       return;
