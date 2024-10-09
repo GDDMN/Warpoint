@@ -45,6 +45,7 @@ public class AliveState : PlayerState
     ActorComponent.JumpAndGravity(Input);
     ActorComponent.GroundedCheck();
     ActorComponent.Move(Input, CinemachineData, CharacterController, MainCamera);
+    ActorComponent.Reloading(Input);
     ActorComponent.Aiming(Input, CinemachineData);
     ActorComponent.Shooting(Input);
     ActorComponent.Cruch(Input);

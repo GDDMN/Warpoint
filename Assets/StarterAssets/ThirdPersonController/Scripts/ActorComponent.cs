@@ -2,6 +2,7 @@
 using StarterAssets;
 using System;
 using UnityEngine.Animations.Rigging;
+using System.Collections;
 
 public class ActorComponent : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class ActorComponent : MonoBehaviour
   // player
   private bool _isAlive = true;
   private bool _isSprint = false;
+  private bool _isReloading = false;
+
   private float _speed;
   private float _animationBlend;
   private float _targetRotation = 0.0f;
@@ -56,6 +59,7 @@ public class ActorComponent : MonoBehaviour
 
   public bool OnGround => _data.Grounded;
 
+  public WeaponProvider Weapon => _weaponProvider;
 
   public readonly float LEGS_STEP_SPEED = 0.1f;
 
@@ -63,12 +67,18 @@ public class ActorComponent : MonoBehaviour
 
   public event Action<bool> OnJumpLounch;
 
+  public event Action<bool> EndReloading;
+
+  public event Action OnWeaponPickUp;
+
   private void Start()
   {
     _hasAnimator = TryGetComponent(out _animator);
 
     _jumpTimeoutDelta = JumpTimeout;
     _fallTimeoutDelta = FallTimeout;
+
+    EndReloading += SetReloadingFlag;
 
     PickUpWeapon(_weaponProvider);
   }
@@ -117,9 +127,12 @@ public class ActorComponent : MonoBehaviour
 
   public void Aiming(StarterAssetsInputs inputs, CinemachineData cinemachineData)
   {
+    if (_isReloading)
+      return;
+
     _isAiming = inputs.aim;
 
-    if (cinemachineData.weaponProvider.weaponType == WeaponType.NO_WEAPON)
+    if (_weaponProvider.weaponType == WeaponType.NO_WEAPON)
       return;
 
     _animator.SetBool("Aim", inputs.aim);
@@ -164,7 +177,7 @@ public class ActorComponent : MonoBehaviour
     if (inputs.cruch)
       targetSpeed = _data.CruchSpeed;
 
-    if (cinemachineData.weaponProvider.weaponType != WeaponType.NO_WEAPON)
+    if (_weaponProvider.weaponType != WeaponType.NO_WEAPON)
       targetSpeed = inputs.aim ? _data.AimSpeed : targetSpeed;
 
     // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
@@ -213,7 +226,7 @@ public class ActorComponent : MonoBehaviour
           _data.RotationSmoothTime);
 
       // rotate to face input direction relative to camera position
-      if ((!inputs.aim || cinemachineData.weaponProvider.weaponType == WeaponType.NO_WEAPON) && !_isShooting)
+      if ((!inputs.aim || _weaponProvider.weaponType == WeaponType.NO_WEAPON) && !_isShooting)
         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
     }
 
@@ -304,6 +317,15 @@ public class ActorComponent : MonoBehaviour
 
   private void ConstaintController()
   {
+
+    Debug.Log(_isReloading);
+
+    if (_isReloading)
+    {
+      ConstaintValidate(false, false);
+      return;
+    }
+
     if (_isAiming && _data.Grounded)
     {
       ConstaintValidate(true, true);
@@ -350,10 +372,12 @@ public class ActorComponent : MonoBehaviour
     }
   }
 
-  private void PickUpWeapon(WeaponProvider weaponProvider)
+  public void PickUpWeapon(WeaponProvider weaponProvider)
   {
     _weaponProvider = weaponProvider;
     _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
+
+    _IKConstaint.data.target = weaponProvider.Data.LeftHandPoint;
 
     _weaponProvider.OnShoot += ShootAnimationPlay;
   }
@@ -365,6 +389,9 @@ public class ActorComponent : MonoBehaviour
 
   public void Shooting(StarterAssetsInputs inputs)
   {
+    if (_isReloading)
+      return;
+
     _isShooting = inputs.shooting;
     bool sprinting = inputs.sprint;
     bool aiming = inputs.aim;
@@ -395,9 +422,6 @@ public class ActorComponent : MonoBehaviour
 
     _animator.SetFloat("MotionX", direction.x);
     _animator.SetFloat("MotionZ", direction.y);
-
-    //HipShootingRotate(transform, aimObject);
-    //Сделать поворот в сторону цели, если объект находится со спины игрока
   }
 
   private void HipShootingRotate(Transform actorForvard, Transform shootingDirection)
@@ -410,9 +434,31 @@ public class ActorComponent : MonoBehaviour
 
     Debug.Log(angle);
 
-    if (angle < 70f && angle > -70f)
+    if (angle < 60f && angle > -60f)
       return;
 
     actorForvard.LookAt(shootingDirection, Vector3.up);
+  }
+
+  public void Reloading(StarterAssetsInputs inputs)
+  {
+    //var reloading = inputs.reloading;
+    //SetReloadingFlag(true);
+    //
+    //if (reloading)
+    //  StartCoroutine(ReloadRoutine());
+  }
+
+  private IEnumerator ReloadRoutine()
+  {
+    _animator.SetTrigger("Reloading");
+    yield return new WaitForSecondsRealtime(2f);
+
+    EndReloading?.Invoke(false);
+  }
+
+  private void SetReloadingFlag(bool flag)
+  {
+    _isReloading = flag;
   }
 }

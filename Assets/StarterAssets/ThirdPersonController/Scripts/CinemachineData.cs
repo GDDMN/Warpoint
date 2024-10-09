@@ -8,8 +8,6 @@ public struct CinemachineData
   [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
   public GameObject CinemachineCameraTarget;
 
-  public WeaponProvider weaponProvider;
-
   [Tooltip("How far in degrees can you move the camera up //Default is 70.0f")]
   public float TopClamp; //Default is 70.0f;
 

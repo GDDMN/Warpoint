@@ -17,8 +17,8 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private Transform _aimObject;
   [SerializeField] private Transform _aimCamObj;
 
-  [Header("Weapon")]
-  [SerializeField] private WeaponProvider weapon;
+  //[Header("Weapon")]
+  //[SerializeField] private WeaponProvider weapon;
 
   private ThirdPersonController _controller;
   private StarterAssetsInputs _inputs;
@@ -39,9 +39,9 @@ public class ThirdPersonShooterController : MonoBehaviour
   private void Start()
   {
     _actorComponent.OnJumpLounch += LandingValidate;
+    _actorComponent.Weapon.OnShoot += ShootingCameraEffect;
+    
     _controller.OnLanding += LandingValidate;
-
-    weapon.OnShoot += ShootingCameraEffect;
   }
 
   private void Update()
@@ -55,7 +55,7 @@ public class ThirdPersonShooterController : MonoBehaviour
     _actorComponent.OnJumpLounch -= LandingValidate;
     _controller.OnLanding -= LandingValidate;
 
-    weapon.OnShoot -= ShootingCameraEffect;
+    _actorComponent.Weapon.OnShoot -= ShootingCameraEffect;
   }
 
   private void LandingValidate(bool OnLand)
@@ -65,7 +65,7 @@ public class ThirdPersonShooterController : MonoBehaviour
   
   private void ShootingCameraEffect()
   {
-    CinemachineShake.ShootingShake(_aimVirtualCamera, weapon.Data.RecoverySpeed);
+    CinemachineShake.ShootingShake(_aimVirtualCamera, _actorComponent.Weapon.Data.RecoverySpeed);
     
   }
 

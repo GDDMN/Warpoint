@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using UnityEngine.Animations.Rigging;
 
 public class WeaponProvider : MonoBehaviour
 {
@@ -25,7 +26,6 @@ public class WeaponProvider : MonoBehaviour
 
   private float shootingTime = 0f;
   private float spread = 0f;
-
 
   public event Action OnShoot;
 

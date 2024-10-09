@@ -23,4 +23,7 @@ public struct WeaponData
 
   [Header("Sound data")]
   public AudioClip ShootSound;
+
+  [Header("Left hand point")]
+  public Transform LeftHandPoint;
 }

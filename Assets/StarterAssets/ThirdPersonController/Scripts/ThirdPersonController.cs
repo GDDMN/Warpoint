@@ -24,7 +24,7 @@ namespace StarterAssets
 #endif
         private CharacterController _controller;
         private StarterAssetsInputs _input;
-        private GameObject _mainCamera;
+        private GameObject _mainCamera;    
 
         public event Action<bool> OnLanding;
         
