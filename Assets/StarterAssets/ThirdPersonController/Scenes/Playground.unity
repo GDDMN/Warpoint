@@ -3507,6 +3507,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1855314216}
     - target: {fileID: 1363438877365388177, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: WeaponData.Damage
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1363438877365388177, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: WeaponData.LeftHandPoint
       value: 
       objectReference: {fileID: 1348012665}

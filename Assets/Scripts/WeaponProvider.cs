@@ -29,8 +29,11 @@ public class WeaponProvider : MonoBehaviour
 
   public event Action OnShoot;
 
+  private int ammo;
+
   public void Initialize()
   {
+    ammo = Data.AmmoCapacity;
   }
 
   private void OnDisable()
@@ -94,6 +97,10 @@ public class WeaponProvider : MonoBehaviour
 
   private void Shoot(Vector3 spread)
   {
+    if (ammo <= 0)
+      return;
+
+    ammo--;
     RaycastHit hit;
     Ray ray = new Ray();
     ray.origin = RaycastOrigin.position;

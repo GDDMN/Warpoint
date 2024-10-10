@@ -382,6 +382,8 @@ public class ActorComponent : MonoBehaviour
 
     _IKConstaint.data.target = weaponProvider.Data.LeftHandPoint;
     rigBuilder.enabled = true;
+
+    _weaponProvider.Initialize();
     _weaponProvider.OnShoot += ShootAnimationPlay;
   }
 
