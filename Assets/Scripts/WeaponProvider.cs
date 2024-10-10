@@ -33,6 +33,26 @@ public class WeaponProvider : MonoBehaviour
   {
   }
 
+  private void OnDisable()
+  {
+    alreadyShooting = false;
+    _fireParticles.Stop();
+    shootingTime = 0f;
+
+    if (coroutine != null)
+      StopCoroutine(coroutine);
+  }
+
+  private void OnDestroy()
+  {
+    alreadyShooting = false;
+    _fireParticles.Stop();
+    shootingTime = 0f;
+
+    if (coroutine != null)
+      StopCoroutine(coroutine);
+  }
+
   public void ShootValidate(bool validate, Vector3 direction, bool isAiming)
   {
     if (validate)
