@@ -288,6 +288,17 @@
                 },
                 {
                     "name": "",
+                    "id": "7150f013-75b3-4590-b092-354329685ec8",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "a417e944-2dc0-4bec-9010-fa8bcd3808c7",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
