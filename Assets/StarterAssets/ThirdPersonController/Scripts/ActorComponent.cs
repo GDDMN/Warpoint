@@ -8,6 +8,7 @@ public class ActorComponent : MonoBehaviour
 {
   [SerializeField] private ActorData _data;
   [SerializeField] private WeaponProvider _weaponProvider;
+  [SerializeField] private RigBuilder rigBuilder;
 
   [Header("Constains")]
   [SerializeField] private TwoBoneIKConstraint _IKConstaint;
@@ -136,7 +137,7 @@ public class ActorComponent : MonoBehaviour
       return;
 
     _animator.SetBool("Aim", inputs.aim);
-    _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
+    //_animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
 
     if (!inputs.aim || !_data.Grounded)
     {
@@ -374,11 +375,13 @@ public class ActorComponent : MonoBehaviour
 
   public void PickUpWeapon(WeaponProvider weaponProvider)
   {
+    rigBuilder.enabled = false;
+
     _weaponProvider = weaponProvider;
     _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
 
     _IKConstaint.data.target = weaponProvider.Data.LeftHandPoint;
-
+    rigBuilder.enabled = true;
     _weaponProvider.OnShoot += ShootAnimationPlay;
   }
 

@@ -281,18 +281,7 @@
                     "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Aim",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "7150f013-75b3-4590-b092-354329685ec8",
-                    "path": "<Keyboard>/alt",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -314,7 +303,7 @@
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -347,7 +336,7 @@
                     "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "Cruch",
                     "isComposite": false,
                     "isPartOfComposite": false
