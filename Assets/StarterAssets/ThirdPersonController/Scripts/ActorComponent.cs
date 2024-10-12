@@ -321,8 +321,6 @@ public class ActorComponent : MonoBehaviour
   private void ConstaintController()
   {
 
-    Debug.Log(_isReloading);
-
     if (_isReloading)
     {
       ConstaintValidate(false, false);

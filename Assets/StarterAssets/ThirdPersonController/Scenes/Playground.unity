@@ -3654,6 +3654,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5245695286448261757, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245695286448266989, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245695286448316423, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6282816836540287960, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.066
