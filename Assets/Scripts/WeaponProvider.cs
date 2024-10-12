@@ -80,7 +80,6 @@ public class WeaponProvider : MonoBehaviour
     if (alreadyShooting)
       return;
 
-    
     coroutine = StartCoroutine(ShootRoutine(isAiming));
   }
 

@@ -20,7 +20,7 @@ public class ActorComponent : MonoBehaviour
   private bool _isAiming = false;
   private bool _isShooting = false;
 
-  private Vector3 RIFLE_CONSTAIN_BODY_OFFSET { get { return new Vector3(-40, -10, 20); } }
+  private Vector3 RIFLE_CONSTAIN_BODY_OFFSET { get { return new Vector3(-60, -10, 20); } }
   private Vector3 PISTOL_CONSTAIN_BODY_OFFSET { get { return new Vector3(-15, 0, 0); } }
 
   // player
@@ -131,6 +131,7 @@ public class ActorComponent : MonoBehaviour
     if (_isReloading)
       return;
 
+    _isSprint = false;
     _isAiming = inputs.aim;
 
     if (_weaponProvider.weaponType == WeaponType.NO_WEAPON)
@@ -173,9 +174,8 @@ public class ActorComponent : MonoBehaviour
   public void Move(StarterAssetsInputs inputs, CinemachineData cinemachineData, CharacterController controller, GameObject mainCamera)
   {
     // set target speed based on move speed, sprint speed and if sprint is pressed
-    float targetSpeed = inputs.sprint ? _data.SprintSpeed : _data.MoveSpeed;
-
-    _isSprint = inputs.sprint;
+    _isSprint = (inputs.sprint && !_isAiming && !_isShooting);
+    float targetSpeed = _isSprint ? _data.SprintSpeed : _data.MoveSpeed;
 
     if (inputs.cruch)
       targetSpeed = _data.CruchSpeed;
@@ -399,16 +399,15 @@ public class ActorComponent : MonoBehaviour
       return;
 
     _isShooting = inputs.shooting;
-    bool sprinting = inputs.sprint;
     bool aiming = inputs.aim;
 
-    if (!_isShooting || sprinting)
+    if (!_isShooting)
     {
       _weaponProvider.ShootValidate(false, transform.forward, aiming);
       return;
     }
 
-    if (_data.Grounded && !sprinting)
+    if (_data.Grounded)
     {
       _weaponProvider.ShootValidate(_isShooting, transform.forward, aiming);
     }
