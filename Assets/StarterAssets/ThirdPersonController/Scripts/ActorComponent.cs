@@ -175,6 +175,8 @@ public class ActorComponent : MonoBehaviour
     // set target speed based on move speed, sprint speed and if sprint is pressed
     float targetSpeed = inputs.sprint ? _data.SprintSpeed : _data.MoveSpeed;
 
+    _isSprint = inputs.sprint;
+
     if (inputs.cruch)
       targetSpeed = _data.CruchSpeed;
 
@@ -327,13 +329,13 @@ public class ActorComponent : MonoBehaviour
       return;
     }
 
-    if (_isAiming && _data.Grounded)
+    if (_isAiming && _data.Grounded && !_isSprint)
     {
       ConstaintValidate(true, true);
       return;
     }
 
-    if (_isShooting && _data.Grounded)
+    if (_isShooting && _data.Grounded && !_isSprint)
     {
       ConstaintValidate(true, true);
       return;
@@ -385,6 +387,7 @@ public class ActorComponent : MonoBehaviour
 
     _weaponProvider.Initialize();
     _weaponProvider.OnShoot += ShootAnimationPlay;
+    OnWeaponPickUp?.Invoke();
   }
 
   private void ShootAnimationPlay()
@@ -394,7 +397,7 @@ public class ActorComponent : MonoBehaviour
 
   public void Shooting(StarterAssetsInputs inputs)
   {
-    if (_isReloading)
+    if (_isReloading || _isSprint || !_data.Grounded)
       return;
 
     _isShooting = inputs.shooting;
@@ -442,7 +445,14 @@ public class ActorComponent : MonoBehaviour
     if (angle < 60f && angle > -60f)
       return;
 
-    actorForvard.LookAt(shootingDirection, Vector3.up);
+
+    Transform lookDirection = new GameObject().transform;
+    
+    lookDirection.position = new Vector3(shootingDirection.position.x, 
+                                         0f, 
+                                         shootingDirection.position.z);
+
+    actorForvard.LookAt(lookDirection, Vector3.up);
   }
 
   public void Reloading(StarterAssetsInputs inputs)

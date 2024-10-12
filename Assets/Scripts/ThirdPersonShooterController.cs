@@ -39,9 +39,13 @@ public class ThirdPersonShooterController : MonoBehaviour
   private void Start()
   {
     _actorComponent.OnJumpLounch += LandingValidate;
-    _actorComponent.Weapon.OnShoot += ShootingCameraEffect;
-    
+    _actorComponent.OnWeaponPickUp += AccesWeaponSettings;
     _controller.OnLanding += LandingValidate;
+  }
+
+  private void AccesWeaponSettings()
+  {
+    _actorComponent.Weapon.OnShoot += ShootingCameraEffect;
   }
 
   private void Update()
