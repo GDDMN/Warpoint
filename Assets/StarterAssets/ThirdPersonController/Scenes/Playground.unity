@@ -513,7 +513,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2601940336382739611, guid: ef0eb95af43d93e42a22ba4e61566d91, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.256
+      value: -0.56
       objectReference: {fileID: 0}
     - target: {fileID: 2601940336382739611, guid: ef0eb95af43d93e42a22ba4e61566d91, type: 3}
       propertyPath: m_LocalPosition.y
@@ -521,7 +521,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2601940336382739611, guid: ef0eb95af43d93e42a22ba4e61566d91, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2601940336382739611, guid: ef0eb95af43d93e42a22ba4e61566d91, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1196,7 +1196,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2601940336382739611, guid: ef0eb95af43d93e42a22ba4e61566d91, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.743
+      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: 2601940336382739611, guid: ef0eb95af43d93e42a22ba4e61566d91, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1204,7 +1204,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2601940336382739611, guid: ef0eb95af43d93e42a22ba4e61566d91, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2601940336382739611, guid: ef0eb95af43d93e42a22ba4e61566d91, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3504,11 +3504,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Data.m_MaxLimit
-      value: 60
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Data.m_MinLimit
-      value: -60
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 1547519073, guid: 4355012fad15d8844b4dde17618327e1, type: 3}
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
