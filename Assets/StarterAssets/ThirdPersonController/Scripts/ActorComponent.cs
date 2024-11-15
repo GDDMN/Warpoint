@@ -138,7 +138,6 @@ public class ActorComponent : MonoBehaviour
       return;
 
     _animator.SetBool("Aim", inputs.aim);
-    //_animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
 
     if (!inputs.aim || !_data.Grounded)
     {
