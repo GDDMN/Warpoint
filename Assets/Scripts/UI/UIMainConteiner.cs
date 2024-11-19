@@ -1,26 +1,34 @@
-using UnityEngine;
+using System.Collections.Generic;
 
 public class UIMainConteiner : MonoSingleton<UIMainConteiner>
 {
-    public UIHealthBar healthBar => _healthBar;
-    public UIWeaponBar weaponBar => _weaponBar;
-
-    private RectTransform _rectTransform;
-
-    [SerializeField] private UIHealthBar _healthBar;
-    [SerializeField] private UIWeaponBar _weaponBar;
-
-    private void Awake()
-    {
-        _rectTransform = gameObject.GetComponent<RectTransform>();
-    }
-
+    private List<UIBaseWindow> _allWindows = new List<UIBaseWindow>();
+    
     public void Initialize()
     {
-        _rectTransform = gameObject.GetComponent<RectTransform>();
+        _allWindows.Clear();
 
-        //TODO set active player values
-        _healthBar.Initialize(100);
-        _weaponBar.Initialize("30", "30");
+        GetAllWindows();
+    }
+
+    private void GetAllWindows()
+    {
+        var childCount = gameObject.transform.childCount;
+
+        for (int i = 0; i < childCount; i++)
+            AddWindowInList(i);
+    }
+
+    private void AddWindowInList(int index)
+    {
+        var childObject = transform.GetChild(index).gameObject;
+        var childBaseWindow = childObject.GetComponent<UIBaseWindow>();
+
+        _allWindows.Add(childBaseWindow);
+    }
+
+    public T GetWindowByType<T>() where T : UIBaseWindow 
+    {
+        return (T)_allWindows.Find(wnd => wnd.GetType() == typeof(T));
     }
 }

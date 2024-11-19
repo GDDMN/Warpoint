@@ -569,8 +569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d3ec7bae55de2f4baf68059997062da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthBar: {fileID: 2144403352}
-  _weaponBar: {fileID: 1949890389}
+  gameHud: {fileID: 1755512928}
 --- !u!1 &530426577
 GameObject:
   m_ObjectHideFlags: 0
@@ -1572,6 +1571,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1755512925}
   - component: {fileID: 1755512927}
+  - component: {fileID: 1755512928}
   m_Layer: 5
   m_Name: UIGameHud
   m_TagString: Untagged
@@ -1609,6 +1609,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1755512924}
   m_CullTransparentMesh: 1
+--- !u!114 &1755512928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1755512924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35485e5dd4f50854780ff2559d1f48be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _healthBar: {fileID: 2144403352}
+  _weaponBar: {fileID: 1949890389}
 --- !u!1 &1814464506
 GameObject:
   m_ObjectHideFlags: 0
