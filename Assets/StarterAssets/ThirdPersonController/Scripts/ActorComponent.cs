@@ -436,8 +436,6 @@ public class ActorComponent : MonoBehaviour
     float angle = Vector3.Angle(shootingDirection.position - actorForvard.position, 
                                 actorForvard.forward);
 
-    Debug.Log(angle);
-
     if (angle < 60f && angle > -60f)
       return;
 
@@ -472,4 +470,5 @@ public class ActorComponent : MonoBehaviour
   {
     _isReloading = flag;
   }
+
 }
