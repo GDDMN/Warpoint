@@ -149,6 +149,11 @@ public class ActorComponent : MonoBehaviour
 
   private void Update()
   {
+    Debug.Log(IsAimingActorState() || IsShootingActorState());
+
+    bool layersWeightValidator = IsAimingActorState() || IsShootingActorState();
+
+    LayersWeightController(layersWeightValidator);
     ConstaintController();
   }
 
@@ -191,12 +196,6 @@ public class ActorComponent : MonoBehaviour
 
   public void Aiming(CinemachineData cinemachineData)
   {
-    //if(!IsAimingActorState())
-    //  return;
-
-    //_actorValidators.IsSprint = false;
-    //_actorValidators.IsAiming = inputs.aim;
-
     if (_weaponProvider.weaponType == WeaponType.NO_WEAPON)
       return;
 
@@ -205,19 +204,11 @@ public class ActorComponent : MonoBehaviour
 
     if (!_actorValidators.IsAiming || !_data.Grounded)
     {
-      _animator.SetLayerWeight(2, 0);
-      _animator.SetLayerWeight(1, 0);
-      _animator.SetLayerWeight(0, 1);
-
       realDirection = Vector2.zero;
       lastDirection = Vector2.zero;
 
       return;
     }
-
-    _animator.SetLayerWeight(2, 1);
-    _animator.SetLayerWeight(1, 1);
-    _animator.SetLayerWeight(0, 0);
 
     Vector2 direction = new Vector2(_actorValidators.MoveDirection.x, _actorValidators.MoveDirection.y);
 
@@ -380,6 +371,14 @@ public class ActorComponent : MonoBehaviour
     }
   }
 
+  private void LayersWeightController(bool isLayersActive)
+  {
+
+    _animator.SetLayerWeight(2, isLayersActive ? 1 : 0);
+    _animator.SetLayerWeight(1, isLayersActive ? 1 : 0);
+    _animator.SetLayerWeight(0, isLayersActive ? 0 : 1);
+  }
+
   private void ConstaintController()
   {
 
@@ -459,6 +458,8 @@ public class ActorComponent : MonoBehaviour
 
   public void Shooting()
   {
+
+
     if (_data.Grounded)
     {
       _weaponProvider.ShootValidate(IsShootingActorState(), transform.forward, _actorValidators.IsAiming);
@@ -470,10 +471,6 @@ public class ActorComponent : MonoBehaviour
 
     if (_actorValidators.IsAiming)
       return;
-
-    //_animator.SetLayerWeight(2, 1);
-    //_animator.SetLayerWeight(1, 1);
-    //_animator.SetLayerWeight(0, 0);
 
     Vector2 direction = new Vector2(_actorValidators.MoveDirection.x, _actorValidators.MoveDirection.y);
 
