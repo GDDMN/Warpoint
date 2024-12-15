@@ -149,9 +149,9 @@ public class ActorComponent : MonoBehaviour
 
   private void Update()
   {
-    Debug.Log(IsAimingActorState() || IsShootingActorState());
-
+  
     bool layersWeightValidator = IsAimingActorState() || IsShootingActorState();
+    Debug.Log(layersWeightValidator);
 
     LayersWeightController(layersWeightValidator);
     ConstaintController();
@@ -200,7 +200,6 @@ public class ActorComponent : MonoBehaviour
       return;
 
     _animator.SetBool("Aim", _actorValidators.IsAiming);
-    Debug.Log("Animator aim flag: " + _actorValidators.IsAiming);
 
     if (!_actorValidators.IsAiming || !_data.Grounded)
     {
