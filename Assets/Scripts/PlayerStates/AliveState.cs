@@ -41,19 +41,26 @@ public class AliveState : PlayerState
 
   public override void Update()
   {
+    Debug.Log("Is Aiming: " + Input.aim);
     //Внимательно смотрим за последовательностью команд
     ActorComponent.JumpAndGravity(Input);
+    ActorComponent.SetActorStateValidators(Input.aim, Input.shooting, Input.sprint, Input.cruch, Input.reloading, Input.move, Input.analogMovement);
     ActorComponent.GroundedCheck();
-    ActorComponent.Move(Input, CinemachineData, CharacterController, MainCamera);
-    ActorComponent.Reloading(Input);
-    ActorComponent.Aiming(Input, CinemachineData);
-    ActorComponent.Shooting(Input);
-    ActorComponent.Cruch(Input);
+    ActorComponent.Move(CinemachineData, CharacterController, MainCamera);
+
+    //ActorComponent.Reloading(Input);
+    ActorComponent.Aiming(CinemachineData);
+    ActorComponent.Shooting();
+    ActorComponent.Cruch();
   }
 
   public override void LateUpdate()
   {
     CameraRotation();
+  }
+
+  private void SetActorValidators()
+  {
   }
 
   private void CameraRotation()

@@ -4,6 +4,19 @@ using System;
 using UnityEngine.Animations.Rigging;
 using System.Collections;
 
+public class ActorValidators
+{
+  public bool IsAlive = true;
+  public bool IsAiming = false;
+  public bool IsShooting = false;
+  public bool IsSprint = false;
+  public bool IsReloading = false;
+  public bool IsCrouch = false;
+  public bool IsAnalogMovement = false;
+
+  public Vector2 MoveDirection;
+}
+
 public class ActorComponent : MonoBehaviour
 {
   [SerializeField] private ActorData _data;
@@ -17,16 +30,10 @@ public class ActorComponent : MonoBehaviour
 
   [SerializeField] private Transform aimObject;
 
-  private bool _isAiming = false;
-  private bool _isShooting = false;
+  [SerializeField] private ActorValidators _actorValidators = new ActorValidators();
 
   private Vector3 RIFLE_CONSTAIN_BODY_OFFSET { get { return new Vector3(-60, -10, 20); } }
   private Vector3 PISTOL_CONSTAIN_BODY_OFFSET { get { return new Vector3(-15, 0, 0); } }
-
-  // player
-  private bool _isAlive = true;
-  private bool _isSprint = false;
-  private bool _isReloading = false;
 
   private float _speed;
   private float _animationBlend;
@@ -64,13 +71,69 @@ public class ActorComponent : MonoBehaviour
 
   public readonly float LEGS_STEP_SPEED = 0.1f;
 
-  public bool IsAlive => _isAlive;
+  public bool IsAlive => _actorValidators.IsAlive;
 
   public event Action<bool> OnJumpLounch;
 
   public event Action<bool> EndReloading;
 
   public event Action OnWeaponPickUp;
+
+  #region VALIDATORS_AND_GETTERS
+
+  public void SetActorStateValidators(bool isAiming, bool isShooting, bool isSprint, bool isCrouch, bool isReloading, Vector2 moveDirection, bool isAnalogMovement)
+  {
+    _actorValidators.IsAlive = true;
+    _actorValidators.IsAiming = isAiming;
+    _actorValidators.IsShooting = isShooting;
+    _actorValidators.IsSprint = isSprint;
+    _actorValidators.IsCrouch = isCrouch;
+    _actorValidators.IsReloading = isReloading;
+
+    _actorValidators.MoveDirection = moveDirection;
+    _actorValidators.IsAnalogMovement = isAnalogMovement;
+  }
+
+  public bool CheckActorDefaultState()
+  {
+    return _actorValidators.IsAlive && 
+          !_actorValidators.IsAiming && 
+          !_actorValidators.IsShooting;
+  }
+
+  private bool IsAimingActorState()
+  {
+    return _actorValidators.IsAlive && 
+          _actorValidators.IsAiming && 
+          !_actorValidators.IsSprint && 
+          !_actorValidators.IsReloading;
+  }
+
+  private bool IsShootingActorState()
+  {
+    return _actorValidators.IsAlive && 
+          _actorValidators.IsShooting && 
+          !_actorValidators.IsSprint && 
+          !_actorValidators.IsReloading;
+  }
+
+  private bool IsCrouchingActorState()
+  {
+    return _actorValidators.IsAlive && 
+          _actorValidators.IsCrouch && 
+          !_actorValidators.IsShooting;
+  }
+
+  private bool IsSprintingActorState()
+  {
+    return _actorValidators.IsAlive && 
+          _actorValidators.IsSprint && 
+          !_actorValidators.IsAiming && 
+          !_actorValidators.IsShooting && 
+          !_actorValidators.IsCrouch && 
+          !_actorValidators.IsReloading;
+  }
+  #endregion
 
   private void Start()
   {
@@ -84,7 +147,7 @@ public class ActorComponent : MonoBehaviour
     PickUpWeapon(_weaponProvider);
   }
 
-  public void Update()
+  private void Update()
   {
     ConstaintController();
   }
@@ -121,25 +184,26 @@ public class ActorComponent : MonoBehaviour
       OnJumpLounch?.Invoke(false);
   }
 
-  public void Cruch(StarterAssetsInputs inputs)
+  public void Cruch()
   {
-    _animator.SetBool("Cruch", inputs.cruch);
+    _animator.SetBool("Cruch", _actorValidators.IsCrouch);
   }
 
-  public void Aiming(StarterAssetsInputs inputs, CinemachineData cinemachineData)
+  public void Aiming(CinemachineData cinemachineData)
   {
-    if (_isReloading)
-      return;
+    //if(!IsAimingActorState())
+    //  return;
 
-    _isSprint = false;
-    _isAiming = inputs.aim;
+    //_actorValidators.IsSprint = false;
+    //_actorValidators.IsAiming = inputs.aim;
 
     if (_weaponProvider.weaponType == WeaponType.NO_WEAPON)
       return;
 
-    _animator.SetBool("Aim", inputs.aim);
+    _animator.SetBool("Aim", _actorValidators.IsAiming);
+    Debug.Log("Animator aim flag: " + _actorValidators.IsAiming);
 
-    if (!inputs.aim || !_data.Grounded)
+    if (!_actorValidators.IsAiming || !_data.Grounded)
     {
       _animator.SetLayerWeight(2, 0);
       _animator.SetLayerWeight(1, 0);
@@ -155,7 +219,7 @@ public class ActorComponent : MonoBehaviour
     _animator.SetLayerWeight(1, 1);
     _animator.SetLayerWeight(0, 0);
 
-    Vector2 direction = new Vector2(inputs.move.x, inputs.move.y);
+    Vector2 direction = new Vector2(_actorValidators.MoveDirection.x, _actorValidators.MoveDirection.y);
 
     if (Vector2.Distance(lastDirection, direction) > 0.01f)
       realDirection = Vector2.Lerp(lastDirection, direction, LEGS_STEP_SPEED);
@@ -170,29 +234,28 @@ public class ActorComponent : MonoBehaviour
     _animator.SetFloat("MotionZ", direction.y);
   }
 
-  public void Move(StarterAssetsInputs inputs, CinemachineData cinemachineData, CharacterController controller, GameObject mainCamera)
+  public void Move(CinemachineData cinemachineData, CharacterController controller, GameObject mainCamera)
   {
     // set target speed based on move speed, sprint speed and if sprint is pressed
-    _isSprint = (inputs.sprint && !_isAiming && !_isShooting);
-    float targetSpeed = _isSprint ? _data.SprintSpeed : _data.MoveSpeed;
+    float targetSpeed = _actorValidators.IsSprint ? _data.SprintSpeed : _data.MoveSpeed;
 
-    if (inputs.cruch)
+    if (_actorValidators.IsCrouch)
       targetSpeed = _data.CruchSpeed;
 
     if (_weaponProvider.weaponType != WeaponType.NO_WEAPON)
-      targetSpeed = inputs.aim ? _data.AimSpeed : targetSpeed;
+      targetSpeed = _actorValidators.IsAiming ? _data.AimSpeed : targetSpeed;
 
     // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
     // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
     // if there is no input, set the target speed to 0
-    if (inputs.move == Vector2.zero) targetSpeed = 0.0f;
+    if (_actorValidators.MoveDirection == Vector2.zero) targetSpeed = 0.0f;
 
     // a reference to the players current horizontal velocity
     float currentHorizontalSpeed = new Vector3(controller.velocity.x, 0.0f, controller.velocity.z).magnitude;
 
     float speedOffset = 0.1f;
-    float inputMagnitude = inputs.analogMovement ? inputs.move.magnitude : 1f;
+    float inputMagnitude = _actorValidators.IsAnalogMovement ? _actorValidators.MoveDirection.magnitude : 1f;
 
     // accelerate or decelerate to target speed
     if (currentHorizontalSpeed < targetSpeed - speedOffset ||
@@ -215,11 +278,11 @@ public class ActorComponent : MonoBehaviour
     if (_animationBlend < 0.01f) _animationBlend = 0f;
 
     // normalise input direction
-    Vector3 inputDirection = new Vector3(inputs.move.x, 0.0f, inputs.move.y).normalized;
+    Vector3 inputDirection = new Vector3(_actorValidators.MoveDirection.x, 0.0f, _actorValidators.MoveDirection.y).normalized;
 
     // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
     // if there is a move input rotate player when the player is moving
-    if (inputs.move != Vector2.zero)
+    if (_actorValidators.MoveDirection != Vector2.zero)
     {
       _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                         mainCamera.transform.eulerAngles.y;
@@ -228,7 +291,7 @@ public class ActorComponent : MonoBehaviour
           _data.RotationSmoothTime);
 
       // rotate to face input direction relative to camera position
-      if ((!inputs.aim || _weaponProvider.weaponType == WeaponType.NO_WEAPON) && !_isShooting)
+      if ((!_actorValidators.IsAiming || _weaponProvider.weaponType == WeaponType.NO_WEAPON) && !_actorValidators.IsShooting)
         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
     }
 
@@ -320,19 +383,21 @@ public class ActorComponent : MonoBehaviour
   private void ConstaintController()
   {
 
-    if (_isReloading)
+    if (_actorValidators.IsReloading)
     {
       ConstaintValidate(false, false);
       return;
     }
 
-    if (_isAiming && _data.Grounded && !_isSprint)
+    //if (_actorValidators.IsAiming && _data.Grounded && !_actorValidators.IsSprint)
+    if(IsAimingActorState())
     {
       ConstaintValidate(true, true);
       return;
     }
 
-    if (_isShooting && _data.Grounded && !_isSprint)
+    //if (_actorValidators.IsShooting && _data.Grounded && !_actorValidators.IsSprint)
+    if(IsShootingActorState())
     {
       ConstaintValidate(true, true);
       return;
@@ -392,37 +457,25 @@ public class ActorComponent : MonoBehaviour
     _animator.SetTrigger("Shoot");
   }
 
-  public void Shooting(StarterAssetsInputs inputs)
+  public void Shooting()
   {
-    if (_isReloading || _isSprint || !_data.Grounded)
-      return;
-
-    _isShooting = inputs.shooting;
-    bool aiming = inputs.aim;
-
-    if (!_isShooting)
-    {
-      _weaponProvider.ShootValidate(false, transform.forward, aiming);
-      return;
-    }
-
     if (_data.Grounded)
     {
-      _weaponProvider.ShootValidate(_isShooting, transform.forward, aiming);
+      _weaponProvider.ShootValidate(IsShootingActorState(), transform.forward, _actorValidators.IsAiming);
     }
     else
     {
-      _weaponProvider.ShootValidate(false, transform.forward, aiming);
+      _weaponProvider.ShootValidate(false, transform.forward, _actorValidators.IsAiming);
     }
 
-    if (_isAiming)
+    if (_actorValidators.IsAiming)
       return;
 
-    _animator.SetLayerWeight(2, 1);
-    _animator.SetLayerWeight(1, 1);
-    _animator.SetLayerWeight(0, 0);
+    //_animator.SetLayerWeight(2, 1);
+    //_animator.SetLayerWeight(1, 1);
+    //_animator.SetLayerWeight(0, 0);
 
-    Vector2 direction = new Vector2(inputs.move.x, inputs.move.y);
+    Vector2 direction = new Vector2(_actorValidators.MoveDirection.x, _actorValidators.MoveDirection.y);
 
     _animator.SetFloat("MotionX", direction.x);
     _animator.SetFloat("MotionZ", direction.y);
@@ -430,7 +483,7 @@ public class ActorComponent : MonoBehaviour
 
   private void HipShootingRotate(Transform actorForvard, Transform shootingDirection)
   {
-    if (!_isShooting)
+    if (!IsShootingActorState())
       return;
 
     float angle = Vector3.Angle(shootingDirection.position - actorForvard.position, 
@@ -468,7 +521,7 @@ public class ActorComponent : MonoBehaviour
 
   private void SetReloadingFlag(bool flag)
   {
-    _isReloading = flag;
+    _actorValidators.IsReloading = flag;
   }
 
 }
