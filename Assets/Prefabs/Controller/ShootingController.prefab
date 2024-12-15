@@ -135,7 +135,8 @@ GameObject:
   - component: {fileID: 4662736364310998183}
   - component: {fileID: 3767992701199510190}
   - component: {fileID: 1983542135109913576}
-  - component: {fileID: 4485340995540612530}
+  - component: {fileID: 3241596853487980463}
+  - component: {fileID: 4217111881024858598}
   m_Layer: 8
   m_Name: ShootingController
   m_TagString: Player
@@ -219,10 +220,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e54e5a728a9234ab24fcf1460ed8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _actorComponent: {fileID: 4485340995540612530}
+  _actorComponent: {fileID: 4217111881024858598}
   _cinemachineData:
     CinemachineCameraTarget: {fileID: 6046286223615841597}
-    weaponProvider: {fileID: 4740714756747616558}
     TopClamp: 70
     BottomClamp: -30
     CameraAngleOverride: 0
@@ -264,6 +264,7 @@ MonoBehaviour:
   aim: 0
   cruch: 0
   shooting: 0
+  reloading: 0
   cameraSide: 1
   analogMovement: 0
   cursorLocked: 1
@@ -378,13 +379,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 087e4c583704a684292bec1e5ac6059f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _actorComponent: {fileID: 4485340995540612530}
+  _actorComponent: {fileID: 4217111881024858598}
   _aimVirtualCamera: {fileID: 0}
   normalSensativity: 1
   aimSensativity: 0.5
   _aimObject: {fileID: 0}
   _aimCamObj: {fileID: 0}
-  weapon: {fileID: 4740714756747616558}
 --- !u!114 &3767992701199510190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -509,7 +509,7 @@ MonoBehaviour:
   - {fileID: 8837636368712264706}
   - {fileID: 8837476054875759726}
   - {fileID: 8843744764015499490}
---- !u!114 &4485340995540612530
+--- !u!114 &3241596853487980463
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -518,30 +518,49 @@ MonoBehaviour:
   m_GameObject: {fileID: 2098293134084549734}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 221eca276770370448a4d379f3a7bdd4, type: 3}
+  m_Script: {fileID: 11500000, guid: fa7f7474eec9e174fb4f1ef2466469c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allWeapons:
+  - {fileID: 8370329032862861171}
+  - {fileID: 4740714756747616558}
+  actor: {fileID: 4217111881024858598}
+  pickUpSound: {fileID: 0}
+  audioSource: {fileID: 0}
+--- !u!114 &4217111881024858598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098293134084549734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 998414942f5869b49aa9b851c20d875e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
     MoveSpeed: 7
-    SprintSpeed: 11
-    CruchSpeed: 4
-    AimSpeed: 3
-    RotationSmoothTime: 0.12
+    SprintSpeed: 16
+    CruchSpeed: 2
+    AimSpeed: 2
+    RotationSmoothTime: 0
     SpeedChangeRate: 10
     LandingAudioClip: {fileID: 0}
     FootstepAudioClips: []
-    FootstepAudioVolume: 0.5
-    JumpHeight: 1.2
-    Gravity: -15
+    FootstepAudioVolume: 0
+    JumpHeight: 1
+    Gravity: -9.8
     JumpTimeout: 0.5
     FallTimeout: 0.15
     Grounded: 1
     GroundedOffset: -0.14
-    GroundedRadius: 0.25
+    GroundedRadius: 0.28
     GroundLayers:
       serializedVersion: 2
       m_Bits: 1
   _weaponProvider: {fileID: 4740714756747616558}
+  rigBuilder: {fileID: 3767992701199510190}
   _IKConstaint: {fileID: 6439955922146905775}
   _constraintRightHand: {fileID: 8820581960513567642}
   _constaintBack: {fileID: 1547519073}
@@ -651,8 +670,8 @@ MonoBehaviour:
         transform: {fileID: 0}
         weight: 0
     m_Offset: {x: 0, y: 0, z: 0}
-    m_MinLimit: -45
-    m_MaxLimit: 45
+    m_MinLimit: -70
+    m_MaxLimit: 70
     m_AimAxis: 0
     m_UpAxis: 5
     m_WorldUpType: 0
@@ -1405,6 +1424,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3558079602976429706, guid: f48f5472eb0b590438280f293209402e, type: 3}
+      propertyPath: WeaponData.Damage
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3558079602976429706, guid: f48f5472eb0b590438280f293209402e, type: 3}
       propertyPath: WeaponData.ShootSound
       value: 
       objectReference: {fileID: 8300000, guid: b2d159f7e00d44d9bbc2d50a0c4fef59, type: 3}
@@ -1416,6 +1439,10 @@ PrefabInstance:
       propertyPath: WeaponData.AmmoCapacity
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 3558079602976429706, guid: f48f5472eb0b590438280f293209402e, type: 3}
+      propertyPath: WeaponData.LeftHandPoint
+      value: 
+      objectReference: {fileID: 6282816836540287960}
     - target: {fileID: 3558079602976429706, guid: f48f5472eb0b590438280f293209402e, type: 3}
       propertyPath: WeaponData.RecoverySpeed
       value: 0.5
@@ -1435,6 +1462,18 @@ PrefabInstance:
     - target: {fileID: 7055930834442279812, guid: f48f5472eb0b590438280f293209402e, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8411090518577553091, guid: f48f5472eb0b590438280f293209402e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.066
+      objectReference: {fileID: 0}
+    - target: {fileID: 8411090518577553091, guid: f48f5472eb0b590438280f293209402e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.083
+      objectReference: {fileID: 0}
+    - target: {fileID: 8411090518577553091, guid: f48f5472eb0b590438280f293209402e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.027
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1481,7 +1520,7 @@ MonoBehaviour:
   weaponType: 1
   Data:
     WeaponName: 0
-    WeaponType: 0
+    WeaponType: 1
     AmmoCapacity: 7
     ReloadingSpeed: 6
     RecoverySpeed: 0.5
@@ -1491,6 +1530,7 @@ MonoBehaviour:
     Damage: 40
     PrefabPath: 
     ShootSound: {fileID: 8300000, guid: b2d159f7e00d44d9bbc2d50a0c4fef59, type: 3}
+    LeftHandPoint: {fileID: 6282816836540287960}
   Animator: {fileID: 8137229649008189373}
   BulletTracer: {fileID: 7367860636561263768, guid: 049d8a12747964845a1134f0dbb98dc1, type: 3}
   AimTargetObj: {fileID: 0}
@@ -1593,6 +1633,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!4 &6282816836540287960 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8411090518577553091, guid: f48f5472eb0b590438280f293209402e, type: 3}
+  m_PrefabInstance: {fileID: 2561209958971168027}
+  m_PrefabAsset: {fileID: 0}
 --- !u!95 &8137229649008189373 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6009492556579310246, guid: f48f5472eb0b590438280f293209402e, type: 3}
@@ -1666,6 +1711,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 19819752, guid: 8deb1def3de25b04b8371070fbb372fe, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19891858, guid: 8deb1def3de25b04b8371070fbb372fe, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19894786, guid: 8deb1def3de25b04b8371070fbb372fe, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1734,6 +1791,10 @@ PrefabInstance:
       value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 608281829126639978, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: Data.LeftHandPoint
+      value: 
+      objectReference: {fileID: 1390323025815774428}
+    - target: {fileID: 608281829126639978, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
       propertyPath: Data.RecoverySpeed
       value: 0.1
       objectReference: {fileID: 0}
@@ -1800,6 +1861,78 @@ PrefabInstance:
     - target: {fileID: 5858280765533610990, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552738011904496792, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.123
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552738011904496792, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.032
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552738011904496792, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.288
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552738011904496792, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.018750817
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552738011904496792, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.24403884
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552738011904496792, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.03666421
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552738011904496792, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.9688907
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552738011904496792, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -4.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552738011904496792, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 178.94
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717150517690332860, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: WeaponData.Damage
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717150517690332860, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: WeaponData.ShootSound
+      value: 
+      objectReference: {fileID: 8300000, guid: b8cb00f95e3e0b840a4eed207d98c214, type: 3}
+    - target: {fileID: 6717150517690332860, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: WeaponData.DeltaSpread
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717150517690332860, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: WeaponData.AimMaxSpread
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717150517690332860, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: WeaponData.AmmoCapacity
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717150517690332860, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: WeaponData.HipMaxSpread
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717150517690332860, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: WeaponData.LeftHandPoint
+      value: 
+      objectReference: {fileID: 1390323025815774428}
+    - target: {fileID: 6717150517690332860, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: WeaponData.RecoverySpeed
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717150517690332860, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
+      propertyPath: WeaponData.ReloadingSpeed
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6988959567056909014, guid: cc756bc9c74f2c244bec783afb9e2ab0, type: 3}
       propertyPath: m_ReflectionProbeUsage
@@ -2075,6 +2208,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 19901012, guid: 23fc589b73077394db72d954703e8d1c, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19954830, guid: 23fc589b73077394db72d954703e8d1c, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2100,11 +2241,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1296267931171028, guid: 0ee090e1fd83f5f42aaa9724335db328, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1571387225240118, guid: 0ee090e1fd83f5f42aaa9724335db328, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1874913591707902, guid: 0ee090e1fd83f5f42aaa9724335db328, type: 3}
       propertyPath: m_Name

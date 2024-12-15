@@ -381,11 +381,11 @@ public class ActorComponent : MonoBehaviour
   private void ConstaintController()
   {
 
-    if (_actorValidators.IsReloading)
-    {
-      ConstaintValidate(false, false);
-      return;
-    }
+    //if (_actorValidators.IsReloading)
+    //{
+    //  ConstaintValidate(false, false);
+    //  return;
+    //}
 
     //if (_actorValidators.IsAiming && _data.Grounded && !_actorValidators.IsSprint)
     if(IsAimingActorState())
@@ -457,8 +457,6 @@ public class ActorComponent : MonoBehaviour
 
   public void Shooting()
   {
-
-
     if (_data.Grounded)
     {
       _weaponProvider.ShootValidate(IsShootingActorState(), transform.forward, _actorValidators.IsAiming);
