@@ -79,6 +79,14 @@ public class ActorComponent : MonoBehaviour
 
   public event Action OnWeaponPickUp;
 
+  private float _hipsShootCooldownTime = 1f;
+  private float _hipsShootCooldownCurrentTime = 0f;
+  private const float _hipsShootCooldownSpeed = 0.5f;
+
+  private Coroutine _shootingCooldownRoutine = null;
+
+  private bool _shootingIsAvaliable = false;
+
   #region VALIDATORS_AND_GETTERS
 
   public void SetActorStateValidators(bool isAiming, bool isShooting, bool isSprint, bool isCrouch, bool isReloading, Vector2 moveDirection, bool isAnalogMovement)
@@ -473,6 +481,19 @@ public class ActorComponent : MonoBehaviour
 
     _animator.SetFloat("MotionX", direction.x);
     _animator.SetFloat("MotionZ", direction.y);
+  }
+
+  private IEnumerator HipsShootingCooldownRoutine()
+  {
+    while(_hipsShootCooldownCurrentTime < _hipsShootCooldownTime && !_shootingIsAvaliable)
+    {
+      _hipsShootCooldownCurrentTime += _hipsShootCooldownSpeed * Time.deltaTime;
+      yield return null;
+    }
+
+    _hipsShootCooldownCurrentTime = 0f;
+    _shootingIsAvaliable = true;
+    yield return null;
   }
 
   private void HipShootingRotate(Transform actorForvard, Transform shootingDirection)

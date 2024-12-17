@@ -1,8 +1,6 @@
 using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
 using System;
-using UnityEngine.Animations.Rigging;
 
 public class WeaponProvider : MonoBehaviour
 {
@@ -30,6 +28,8 @@ public class WeaponProvider : MonoBehaviour
   public event Action OnShoot;
 
   private int ammo;
+
+  private Coroutine _hipsShootingRoutine = null;
 
   public void Initialize()
   {
@@ -142,8 +142,6 @@ public class WeaponProvider : MonoBehaviour
     WeaponSounds.PlayOneShot(Data.ShootSound);
     _fireParticles.Play();
     var trace = Instantiate(BulletTracer, originPos, Quaternion.identity);
-
-    //Animator.SetTrigger("Shoot");
 
     trace.AddPosition(originPos);
     trace.transform.position = endPos;
