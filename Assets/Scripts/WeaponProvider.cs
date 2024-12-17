@@ -6,7 +6,6 @@ public class WeaponProvider : MonoBehaviour
 {
   public WeaponType weaponType;
   public WeaponData Data;
-
   public Animator Animator;
 
   public TrailRenderer BulletTracer;
@@ -28,6 +27,8 @@ public class WeaponProvider : MonoBehaviour
   public event Action OnShoot;
 
   private int ammo;
+
+  public int CurrentAmmo => ammo;
 
   private Coroutine _hipsShootingRoutine = null;
 

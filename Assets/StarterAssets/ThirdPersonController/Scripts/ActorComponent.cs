@@ -145,6 +145,7 @@ public class ActorComponent : MonoBehaviour
 
   private void Start()
   {
+    UIMainConteiner.Instance.Initialize();
     _hasAnimator = TryGetComponent(out _animator);
 
     _jumpTimeoutDelta = JumpTimeout;
@@ -456,6 +457,8 @@ public class ActorComponent : MonoBehaviour
     _weaponProvider.Initialize();
     _weaponProvider.OnShoot += ShootAnimationPlay;
     OnWeaponPickUp?.Invoke();
+
+    UIMainConteiner.Instance.GetWindowByType<UIGameHud>().weaponBar.SetValuesOfPickedWeapon(_weaponProvider.CurrentAmmo.ToString() ,_weaponProvider.Data.AmmoCapacity.ToString());
   }
 
   private void ShootAnimationPlay()
@@ -468,6 +471,7 @@ public class ActorComponent : MonoBehaviour
     if (_data.Grounded)
     {
       _weaponProvider.ShootValidate(IsShootingActorState(), transform.forward, _actorValidators.IsAiming);
+      UIMainConteiner.Instance.GetWindowByType<UIGameHud>().weaponBar.SetActualValueOnShoot(_weaponProvider.CurrentAmmo.ToString());
     }
     else
     {
