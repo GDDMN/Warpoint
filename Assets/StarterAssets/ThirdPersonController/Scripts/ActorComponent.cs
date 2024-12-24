@@ -218,7 +218,25 @@ public class ActorComponent : MonoBehaviour
     }
 
     LegsMotionValidator();
-}
+  }
+
+  public void Shooting()
+  {
+    if (_data.Grounded)
+    {
+      _weaponProvider.ShootValidate(IsShootingActorState(), transform.forward, _actorValidators.IsAiming);
+      _animator.PlayInFixedTime("Gunplay", 1, 0.1f);
+    }
+    else
+    {
+      _weaponProvider.ShootValidate(false, transform.forward, _actorValidators.IsAiming);
+    }
+
+    if (_actorValidators.IsAiming)
+      return;
+
+    LegsMotionValidator();
+  }
 
   private void LegsMotionValidator()
   {
@@ -466,27 +484,6 @@ public class ActorComponent : MonoBehaviour
   private void ShootAnimationPlay()
   {
     //_animator.PlayInFixedTime("Shoot", );
-  }
-
-  public void Shooting()
-  {
-    if (_data.Grounded)
-    {
-      _weaponProvider.ShootValidate(IsShootingActorState(), transform.forward, _actorValidators.IsAiming);
-      _animator.PlayInFixedTime("Gunplay", 1, 0.1f);
-    }
-    else
-    {
-      _weaponProvider.ShootValidate(false, transform.forward, _actorValidators.IsAiming);
-    }
-
-    if (_actorValidators.IsAiming)
-      return;
-
-    Vector2 direction = new Vector2(_actorValidators.MoveDirection.x, _actorValidators.MoveDirection.y);
-
-    _animator.SetFloat("MotionX", direction.x);
-    _animator.SetFloat("MotionZ", direction.y);
   }
 
   private IEnumerator HipsShootingCooldownRoutine()
