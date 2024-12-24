@@ -38,7 +38,7 @@ public class ActorComponent : MonoBehaviour
   private float _speed;
   private float _animationBlend;
   private float _targetRotation = 0.0f;
-  private float _rotationVelocity;
+  private float _rotationVelocity = 0.3f;
   private float _verticalVelocity;
   private float _terminalVelocity = 53.0f;
 
@@ -145,7 +145,6 @@ public class ActorComponent : MonoBehaviour
 
   private void Start()
   {
-    UIMainConteiner.Instance.Initialize();
     _hasAnimator = TryGetComponent(out _animator);
 
     _jumpTimeoutDelta = JumpTimeout;
@@ -457,13 +456,11 @@ public class ActorComponent : MonoBehaviour
     _weaponProvider.Initialize();
     _weaponProvider.OnShoot += ShootAnimationPlay;
     OnWeaponPickUp?.Invoke();
-
-    UIMainConteiner.Instance.GetWindowByType<UIGameHud>().weaponBar.SetValuesOfPickedWeapon(_weaponProvider.CurrentAmmo.ToString() ,_weaponProvider.Data.AmmoCapacity.ToString());
   }
 
   private void ShootAnimationPlay()
   {
-    _animator.SetTrigger("Shoot");
+    //_animator.PlayInFixedTime("Shoot", );
   }
 
   public void Shooting()
@@ -471,7 +468,7 @@ public class ActorComponent : MonoBehaviour
     if (_data.Grounded)
     {
       _weaponProvider.ShootValidate(IsShootingActorState(), transform.forward, _actorValidators.IsAiming);
-      UIMainConteiner.Instance.GetWindowByType<UIGameHud>().weaponBar.SetActualValueOnShoot(_weaponProvider.CurrentAmmo.ToString());
+      _animator.PlayInFixedTime("Gunplay", 1, 0.1f);
     }
     else
     {

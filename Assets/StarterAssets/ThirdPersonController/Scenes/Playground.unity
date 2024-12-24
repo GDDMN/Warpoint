@@ -3800,6 +3800,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6408971118749800370, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: _data.RotationSmoothTime
+      value: 0.13
+      objectReference: {fileID: 0}
     - target: {fileID: 7494566902906820182, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
       propertyPath: m_Name
       value: Test
