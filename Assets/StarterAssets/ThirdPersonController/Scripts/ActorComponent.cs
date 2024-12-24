@@ -217,6 +217,11 @@ public class ActorComponent : MonoBehaviour
       return;
     }
 
+    LegsMotionValidator();
+}
+
+  private void LegsMotionValidator()
+  {
     Vector2 direction = new Vector2(_actorValidators.MoveDirection.x, _actorValidators.MoveDirection.y);
 
     if (Vector2.Distance(lastDirection, direction) > 0.01f)
@@ -507,7 +512,6 @@ public class ActorComponent : MonoBehaviour
 
     if (angle < 60f && angle > -60f)
       return;
-
 
     Transform lookDirection = new GameObject().transform;
     
