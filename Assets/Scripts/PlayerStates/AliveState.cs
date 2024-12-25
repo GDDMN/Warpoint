@@ -50,8 +50,8 @@ public class AliveState : PlayerState
     //ActorComponent.Reloading(Input);
     ActorComponent.Aiming(CinemachineData);
     ActorComponent.Shooting();
-    ActorComponent.LegsMotionValidator();
     ActorComponent.Cruch();
+    ActorComponent.LegsMotionValidator();
   }
 
   public override void LateUpdate()
