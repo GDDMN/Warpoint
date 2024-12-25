@@ -216,43 +216,42 @@ public class ActorComponent : MonoBehaviour
 
       return;
     }
-
-    LegsMotionValidator();
   }
 
   public void Shooting()
   {
     if (_data.Grounded)
     {
-      _weaponProvider.ShootValidate(IsShootingActorState(), transform.forward, _actorValidators.IsAiming);
-      _animator.PlayInFixedTime("Gunplay", 1, 0.1f);
+      _weaponProvider.ShootValidate(IsShootingActorState(), transform.forward, _actorValidators.IsAiming);;
     }
     else
     {
       _weaponProvider.ShootValidate(false, transform.forward, _actorValidators.IsAiming);
     }
-
+    
     if (_actorValidators.IsAiming)
       return;
 
-    LegsMotionValidator();
+    _animator.SetBool("Aim", _actorValidators.IsShooting);
   }
 
-  private void LegsMotionValidator()
+  public void LegsMotionValidator()
   {
     Vector2 direction = new Vector2(_actorValidators.MoveDirection.x, _actorValidators.MoveDirection.y);
 
     if (Vector2.Distance(lastDirection, direction) > 0.01f)
       realDirection = Vector2.Lerp(lastDirection, direction, LEGS_STEP_SPEED);
 
-    direction.x = Mathf.Clamp(realDirection.x, -1f, 1f);
-    direction.y = Mathf.Clamp(realDirection.y, -1f, 1f);
+    Debug.Log(direction + " ; " + lastDirection);
+    Debug.LogWarning(Vector2.Distance(lastDirection, direction));
+
+    realDirection.x = Mathf.Clamp(realDirection.x, -1.0f, 1.0f);
+    realDirection.y = Mathf.Clamp(realDirection.y, -1.0f, 1.0f);
 
     lastDirection = realDirection;
 
-
-    _animator.SetFloat("MotionX", direction.x);
-    _animator.SetFloat("MotionZ", direction.y);
+    _animator.SetFloat("MotionX", realDirection.x);
+    _animator.SetFloat("MotionZ", realDirection.y);
   }
 
   public void Move(CinemachineData cinemachineData, CharacterController controller, GameObject mainCamera)
@@ -412,20 +411,12 @@ public class ActorComponent : MonoBehaviour
   private void ConstaintController()
   {
 
-    //if (_actorValidators.IsReloading)
-    //{
-    //  ConstaintValidate(false, false);
-    //  return;
-    //}
-
-    //if (_actorValidators.IsAiming && _data.Grounded && !_actorValidators.IsSprint)
     if(IsAimingActorState())
     {
       ConstaintValidate(true, true);
       return;
     }
 
-    //if (_actorValidators.IsShooting && _data.Grounded && !_actorValidators.IsSprint)
     if(IsShootingActorState())
     {
       ConstaintValidate(true, true);
