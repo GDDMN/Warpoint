@@ -204,18 +204,10 @@ public class ActorComponent : MonoBehaviour
 
   public void Aiming(CinemachineData cinemachineData)
   {
-    if (_weaponProvider.weaponType == WeaponType.NO_WEAPON)
+    if (_weaponProvider.weaponType == WeaponType.NO_WEAPON || !_data.Grounded)
       return;
 
     _animator.SetBool("Aim", _actorValidators.IsAiming);
-
-    if (!_actorValidators.IsAiming || !_data.Grounded)
-    {
-      realDirection = Vector2.zero;
-      lastDirection = Vector2.zero;
-
-      return;
-    }
   }
 
   public void Shooting()
@@ -498,7 +490,7 @@ public class ActorComponent : MonoBehaviour
     float angle = Vector3.Angle(shootingDirection.position - actorForvard.position, 
                                 actorForvard.forward);
 
-    if (angle < 60f && angle > -60f)
+    if (angle < 30f && angle > -30f)
       return;
 
     Transform lookDirection = new GameObject().transform;
