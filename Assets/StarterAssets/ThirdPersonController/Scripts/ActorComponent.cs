@@ -92,6 +92,9 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
   private bool _shootingIsAvaliable = false;
 
+  private bool _isOnGroundIssue = true;
+  private Coroutine _onGRoundRoutineIssue = null;
+
   #region VALIDATORS_AND_GETTERS
 
   public void SetActorStateValidators(bool isAiming, bool isShooting, bool isSprint, bool isCrouch, bool isReloading, Vector2 moveDirection, bool isAnalogMovement)
@@ -118,7 +121,6 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   {
     return _actorValidators.IsAlive && 
           _actorValidators.IsAiming && 
-          !_actorValidators.IsSprint && 
           !_actorValidators.IsReloading;
   }
 
@@ -126,7 +128,6 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   {
     return _actorValidators.IsAlive && 
           _actorValidators.IsShooting && 
-          !_actorValidators.IsSprint && 
           !_actorValidators.IsReloading;
   }
 
@@ -162,7 +163,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
   private void Update()
   {
-    bool layersWeightValidator = IsAimingActorState() || IsShootingActorState();
+    bool layersWeightValidator = (IsAimingActorState() || IsShootingActorState()) && _data.Grounded;
 
     LayersWeightController(layersWeightValidator);
     ConstaintController();
@@ -256,7 +257,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   {
     if(!IsAimingActorState())
       yield return new WaitForSeconds(HIPS_COOLDOWN_TIME);
-      
+
     _isPlayingShootRoutine = true;
 
     while(_normolizedTime < 1f)
@@ -293,7 +294,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   public void Move(CinemachineData cinemachineData, CharacterController controller, GameObject mainCamera)
   {
     // set target speed based on move speed, sprint speed and if sprint is pressed
-    float targetSpeed = _actorValidators.IsSprint ? _data.SprintSpeed : _data.MoveSpeed;
+    float targetSpeed = IsSprintingActorState() ? _data.SprintSpeed : _data.MoveSpeed;
 
     if (_actorValidators.IsCrouch)
       targetSpeed = _data.CruchSpeed;
@@ -448,13 +449,23 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   {
 
     if(IsAimingActorState())
-    {
+    { 
+      if(_onGRoundRoutineIssue != null)
+        StopCoroutine(_onGRoundRoutineIssue);
+
+      _isOnGroundIssue = true;
+      
       ConstaintValidate(true, true);
       return;
     }
 
     if(IsShootingActorState())
     {
+      if(_onGRoundRoutineIssue != null)
+        StopCoroutine(_onGRoundRoutineIssue);
+
+      _isOnGroundIssue = true;
+      
       ConstaintValidate(true, true);
       return;
     }
@@ -462,6 +473,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     if (!_data.Grounded)
     {
       ConstaintValidate(false, false);
+      _isOnGroundIssue = false;
       return;
     }
 
@@ -473,7 +485,17 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
       return;
     }
 
-    ConstaintValidate(true, false);
+    //ConstaintValidate(true, false);
+    if(!_isOnGroundIssue && _data.Grounded)
+    {
+      _onGRoundRoutineIssue = StartCoroutine(WaitForConstainRoutine());
+      return;
+    }
+
+    if(_data.Grounded && _isOnGroundIssue)
+    {
+      ConstaintValidate(true, false);
+    }
   }
 
   private void ConstaintValidate(bool lefthandActive, bool armActive)
@@ -481,6 +503,13 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     _IKConstaint.weight = lefthandActive ? 1f : 0f;
     _constaintBack.weight = armActive ? 1f : 0f;
     _constraintRightHand.weight = armActive ? 1f : 0f;
+  }
+
+  private IEnumerator WaitForConstainRoutine()
+  {
+    yield return new WaitForSeconds(2f);
+    //ConstaintValidate(true, false);
+    _isOnGroundIssue = true;
   }
 
   private void ConstaintBodyOffsets(WeaponType type)
@@ -504,25 +533,8 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     rigBuilder.enabled = true;
 
     _weaponProvider.Initialize(this);
-    _weaponProvider.OnShoot += ShootAnimationPlay;
+    //_weaponProvider.OnShoot += ShootAnimationPlay;
     OnWeaponPickUp?.Invoke();
-  }
-
-  private void ShootAnimationPlay()
-  {
-  }
-
-  private IEnumerator HipsShootingCooldownRoutine()
-  {
-    while(_hipsShootCooldownCurrentTime < _hipsShootCooldownTime && !_shootingIsAvaliable)
-    {
-      _hipsShootCooldownCurrentTime += _hipsShootCooldownSpeed * Time.deltaTime;
-      yield return null;
-    }
-
-    _hipsShootCooldownCurrentTime = 0f;
-    _shootingIsAvaliable = true;
-    yield return null;
   }
 
   private void HipShootingRotate(Transform actorForvard, Transform shootingDirection)
