@@ -4,6 +4,7 @@ using System;
 
 public class WeaponProvider : MonoBehaviour
 {
+  private const float HIPS_COOLDOWN_TIME = 0.2f;
   public WeaponType weaponType;
   public WeaponData Data;
   public Animator Animator;
@@ -17,8 +18,11 @@ public class WeaponProvider : MonoBehaviour
   public ParticleSystem _fireParticles;
   public AudioSource WeaponSounds;
 
-  private bool alreadyShooting = false;
+  private bool _alreadyShooting = false;
+
+  private bool _shootValidate = false;
   private Coroutine coroutine;
+  private Coroutine cooldownCoroutine = null;
   private Vector3 _direction;
 
   private float shootingTime = 0f;
@@ -30,8 +34,6 @@ public class WeaponProvider : MonoBehaviour
 
   public int CurrentAmmo => ammo;
 
-  private Coroutine _hipsShootingRoutine = null;
-
   public void Initialize()
   {
     ammo = Data.AmmoCapacity;
@@ -39,7 +41,7 @@ public class WeaponProvider : MonoBehaviour
 
   private void OnDisable()
   {
-    alreadyShooting = false;
+    _alreadyShooting = false;
     _fireParticles.Stop();
     shootingTime = 0f;
 
@@ -49,7 +51,7 @@ public class WeaponProvider : MonoBehaviour
 
   private void OnDestroy()
   {
-    alreadyShooting = false;
+    _alreadyShooting = false;
     _fireParticles.Stop();
     shootingTime = 0f;
 
@@ -59,26 +61,48 @@ public class WeaponProvider : MonoBehaviour
 
   public void ShootValidate(bool validate, Vector3 direction, bool isAiming)
   {
-    if (validate)
+    if (validate && (isAiming || _shootValidate))
     {
       _direction = direction;
       StartShootRoutine(isAiming);
-      alreadyShooting = true;
+      _alreadyShooting = true;
+    }
+    else if(validate && !isAiming)
+    {
+      if(cooldownCoroutine == null)
+        cooldownCoroutine = StartCoroutine(HipsShootingCooldown());
     }
     else
     {
-      alreadyShooting = false;
+      _alreadyShooting = false;
+      _shootValidate = false;
+
       _fireParticles.Stop();
       shootingTime = 0f;
 
       if(coroutine != null)
         StopCoroutine(coroutine);
+
+      if(cooldownCoroutine != null)
+      {
+        StopCoroutine(cooldownCoroutine);
+        cooldownCoroutine = null;
+      }
     }
+  }
+
+  private IEnumerator HipsShootingCooldown()
+  {
+    Debug.Log("Start Shooting Cooldown");
+    yield return new WaitForSeconds(HIPS_COOLDOWN_TIME);
+    _shootValidate = true;
+    Debug.Log("End Shooting Cooldown");
+    
   }
 
   private void StartShootRoutine(bool isAiming)
   {
-    if (alreadyShooting)
+    if (_alreadyShooting)
       return;
 
     coroutine = StartCoroutine(ShootRoutine(isAiming));
