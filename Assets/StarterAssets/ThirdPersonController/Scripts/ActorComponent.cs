@@ -4,7 +4,6 @@ using System;
 using UnityEngine.Animations.Rigging;
 using System.Collections;
 using static WeaponProvider;
-using UnityEditor.PackageManager.UI;
 
 public class ActorValidators
 {
@@ -215,7 +214,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   {
     if (_weaponProvider.weaponType == WeaponType.NO_WEAPON || !_data.Grounded)
       return;
-      
+
     _animator.SetBool("Aim", _actorValidators.IsAiming);
   }
 
