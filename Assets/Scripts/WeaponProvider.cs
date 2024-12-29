@@ -4,7 +4,7 @@ using System;
 
 public class WeaponProvider : MonoBehaviour
 {
-  private const float HIPS_COOLDOWN_TIME = 0.2f;
+  private const float HIPS_COOLDOWN_TIME = 0.13f;
   public WeaponType weaponType;
   public WeaponData Data;
   public Animator Animator;

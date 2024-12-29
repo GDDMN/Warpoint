@@ -20,6 +20,7 @@ public class ActorValidators
 
 public class ActorComponent : MonoBehaviour, ITimeReceiver
 {
+  private const float HIPS_COOLDOWN_TIME = 0.13f;
   [SerializeField] private ActorData _data;
   [SerializeField] private WeaponProvider _weaponProvider;
   [SerializeField] private RigBuilder rigBuilder;
@@ -231,7 +232,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
   private void PlayShootAnimation()
   {
-    if(IsAimingActorState() && !IsShootingActorState())
+    if(IsAimingActorState() || IsShootingActorState())
     {
       _animator.SetBool("Aim", true);
     }
@@ -253,6 +254,9 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
   private IEnumerator PlayShootAnimRoutine()
   {
+    if(!IsAimingActorState())
+      yield return new WaitForSeconds(HIPS_COOLDOWN_TIME);
+      
     _isPlayingShootRoutine = true;
 
     while(_normolizedTime < 1f)
