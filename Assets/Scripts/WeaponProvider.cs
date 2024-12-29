@@ -6,6 +6,7 @@ public class WeaponProvider : MonoBehaviour
 {
   private const float HIPS_COOLDOWN_TIME = 0.13f;
   public string GunplayAnimName; 
+  public string ReloadingAnimName;
   public WeaponType weaponType;
   public WeaponData Data;
   public Animator Animator;
@@ -41,6 +42,8 @@ public class WeaponProvider : MonoBehaviour
 
   public ITimeReceiver _timeReceiver; // Интерфейс для передачи значения
 
+  public event Action OnReload;
+
     // Интерфейс для приёма значения normalizedTime
   public interface ITimeReceiver
   {
@@ -49,8 +52,14 @@ public class WeaponProvider : MonoBehaviour
 
   public void Initialize(ITimeReceiver receiver)
   {
-    ammo = Data.AmmoCapacity;
+    ReloadWeapon();
+    OnReload += delegate{ ReloadWeapon(); };
     _timeReceiver = receiver;
+  }
+
+  public void ReloadWeapon()
+  {
+    ammo = Data.AmmoCapacity;
   }
 
   private void OnDisable()
@@ -131,8 +140,7 @@ public class WeaponProvider : MonoBehaviour
   {
     while(true)
     {
-      Vector3 spreading = SpreadPos(isAiming);
-      Shoot(spreading);
+      Shoot();
       _normolizedTime = 0f;
 
       while(_normolizedTime < 1f)
@@ -146,10 +154,12 @@ public class WeaponProvider : MonoBehaviour
     }
   }
 
-  private void Shoot(Vector3 spread)
+  private void Shoot()
   {
     if (ammo <= 0)
       return;
+
+    Vector3 spread = Data.Spread.GetSpreadPos();
 
     ammo--;
     RaycastHit hit;
@@ -174,19 +184,6 @@ public class WeaponProvider : MonoBehaviour
       return;
     
     hurtableObject.Interaction(hit.point, Data.Damage);
-  }
-
-  private Vector3 SpreadPos(bool isAiming)
-  {
-    spread = shootingTime * Data.DeltaSpread;
-    
-    if(isAiming)
-      spread = Mathf.Clamp(spread, 0f, Data.AimMaxSpread);
-    else
-      spread = Mathf.Clamp(spread, 0f, Data.HipMaxSpread);
-
-    Vector3 spreading = new Vector3(UnityEngine.Random.Range(-spread, spread), UnityEngine.Random.Range(-spread, spread), 0f);
-    return spreading;
   }
 
   private void EffectsPlay(Vector3 originPos, Vector3 endPos)

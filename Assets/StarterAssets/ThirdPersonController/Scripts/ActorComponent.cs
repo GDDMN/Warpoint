@@ -96,6 +96,9 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   private Coroutine _onGRoundRoutineIssue = null;
 
   private bool _isTheReadyWeaponIssued = false;
+  
+  private bool _isReloading = false;
+  private Coroutine _reloadingCoroutine = null;
 
   #region VALIDATORS_AND_GETTERS
 
@@ -149,6 +152,13 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
           !_actorValidators.IsCrouch && 
           !_actorValidators.IsReloading;
   }
+
+  private bool IsReloadingState()
+  {
+    return _actorValidators.IsAlive && 
+    _actorValidators.IsReloading &&
+    !_actorValidators.IsSprint;
+  }
   #endregion
 
   private void Start()
@@ -167,7 +177,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
   private void Update()
   {
-    bool layersWeightValidator = (IsAimingActorState() || IsShootingActorState()) && _data.Grounded;
+    bool layersWeightValidator = (IsAimingActorState() || IsShootingActorState() || IsReloadingState()) && _data.Grounded;
 
     LayersWeightController(layersWeightValidator);
     ConstaintController();
@@ -452,6 +462,11 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
   private void ConstaintController()
   {
+    if(_isReloading)
+    {
+      ConstaintValidate(false, false);
+      return;
+    }
 
     if(IsAimingActorState())
     { 
@@ -566,21 +581,24 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     actorForvard.LookAt(lookDirection, Vector3.up);
   }
 
-  public void Reloading(StarterAssetsInputs inputs)
+  public void Reloading()
   {
-    //var reloading = inputs.reloading;
-    //SetReloadingFlag(true);
-    //
-    //if (reloading)
-    //  StartCoroutine(ReloadRoutine());
+    if(!IsReloadingState())
+      return;
+
+    if(_isReloading)
+      return;
+
+    _reloadingCoroutine = StartCoroutine(ReloadingRoutine());
+    _animator.Play(_weaponProvider.ReloadingAnimName, 1);
   }
 
-  private IEnumerator ReloadRoutine()
+  private IEnumerator ReloadingRoutine()
   {
-    _animator.SetTrigger("Reloading");
-    yield return new WaitForSecondsRealtime(2f);
-
-    EndReloading?.Invoke(false);
+    _isReloading = true;
+    yield return new WaitForSeconds(_weaponProvider.Data.ReloadingSpeed);
+    _isReloading = false;
+    _weaponProvider.ReloadWeapon();
   }
 
   private void SetReloadingFlag(bool flag)

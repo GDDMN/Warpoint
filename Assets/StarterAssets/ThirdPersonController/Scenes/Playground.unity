@@ -352,6 +352,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GunplayAnimName: GunplayPistol
+  ReloadingAnimName: 
   weaponType: 1
   Data:
     WeaponName: 3
@@ -359,9 +360,19 @@ MonoBehaviour:
     AmmoCapacity: 50
     ReloadingSpeed: 6
     RecoverySpeed: 0.07
-    HipMaxSpread: 0.5
-    AimMaxSpread: 0.2
-    DeltaSpread: 1
+    Spread:
+      _spreadPos:
+      - {x: 0, y: 0}
+      - {x: 0, y: 0.1}
+      - {x: 0, y: 0.2}
+      - {x: 0.1, y: 0.3}
+      - {x: 0.2, y: 0.4}
+      - {x: 0.4, y: 0.4}
+      - {x: 0.6, y: 0.3}
+      - {x: 0.7, y: 0.1}
+      - {x: 0.1, y: 0.3}
+      - {x: 0.1, y: 0.1}
+    SpreadFactor: 0
     Damage: 10
     PrefabPath: 
     ShootSound: {fileID: 8300000, guid: 9a2754c5a499e334aa91470f9fe27434, type: 3}
@@ -4067,6 +4078,22 @@ PrefabInstance:
       propertyPath: GunplayAnimName
       value: GunplayPistol
       objectReference: {fileID: 0}
+    - target: {fileID: 1611844770767780135, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611844770767780135, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[1].x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611844770767780135, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[1].y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611844770767780135, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[2].x
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 2504656340002837234, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
       propertyPath: m_WarningMessage
       value: 
@@ -4078,6 +4105,46 @@ PrefabInstance:
     - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
       propertyPath: Data.RecoverySpeed
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[1].y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[2].x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[2].y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[4].x
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[4].y
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[5].x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[5].y
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[6].x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
+      propertyPath: Data.Spread._spreadPos.Array.data[6].y
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 2974601105901140306, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
       propertyPath: m_LocalPosition.x
