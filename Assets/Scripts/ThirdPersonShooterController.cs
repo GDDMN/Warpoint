@@ -45,7 +45,7 @@ public class ThirdPersonShooterController : MonoBehaviour
 
   private void AccesWeaponSettings()
   {
-    _actorComponent.Weapon.OnShoot += ShootingCameraEffect;
+    //_actorComponent.Weapon.OnShoot += ShootingCameraEffect;
   }
 
   private void Update()
@@ -59,7 +59,7 @@ public class ThirdPersonShooterController : MonoBehaviour
     _actorComponent.OnJumpLounch -= LandingValidate;
     _controller.OnLanding -= LandingValidate;
 
-    _actorComponent.Weapon.OnShoot -= ShootingCameraEffect;
+    //_actorComponent.Weapon.OnShoot -= ShootingCameraEffect;
   }
 
   private void LandingValidate(bool OnLand)

@@ -2,5 +2,6 @@
 {
   PISTOL,
   ASSAULT_RIFLE,
-  SHOTGUN
+  SHOTGUN,
+  MAC10
 }

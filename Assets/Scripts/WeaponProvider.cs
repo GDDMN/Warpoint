@@ -5,6 +5,7 @@ using System;
 public class WeaponProvider : MonoBehaviour
 {
   private const float HIPS_COOLDOWN_TIME = 0.13f;
+  public string GunplayAnimName; 
   public WeaponType weaponType;
   public WeaponData Data;
   public Animator Animator;
@@ -70,6 +71,11 @@ public class WeaponProvider : MonoBehaviour
 
     if (coroutine != null)
       StopCoroutine(coroutine);
+  }
+
+  public void AtTheReadyPlaySound()
+  {
+    WeaponSounds.PlayOneShot(Data.AtTheReadySound);
   }
 
   public void ShootValidate(bool validate, Vector3 direction, bool isAiming)

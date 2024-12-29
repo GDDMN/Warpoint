@@ -18,8 +18,6 @@ public class UIGameHud : UIBaseWindow
     //TODO set active player values
     public void Initialize()
     {
-
-
         if(isAlreadyInitialized)
             return;
 

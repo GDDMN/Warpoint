@@ -4,6 +4,7 @@ using System;
 using UnityEngine.Animations.Rigging;
 using System.Collections;
 using static WeaponProvider;
+using UnityEditor.PackageManager.UI;
 
 public class ActorValidators
 {
@@ -95,6 +96,8 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   private bool _isOnGroundIssue = true;
   private Coroutine _onGRoundRoutineIssue = null;
 
+  private bool _isTheReadyWeaponIssued = false;
+
   #region VALIDATORS_AND_GETTERS
 
   public void SetActorStateValidators(bool isAiming, bool isShooting, bool isSprint, bool isCrouch, bool isReloading, Vector2 moveDirection, bool isAnalogMovement)
@@ -158,6 +161,8 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
     EndReloading += SetReloadingFlag;
 
+    UIMainConteiner.Instance.Initialize();
+    UIMainConteiner.Instance.GetWindowByType<UIGameHud>().Initialize();
     PickUpWeapon(_weaponProvider);
   }
 
@@ -210,7 +215,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   {
     if (_weaponProvider.weaponType == WeaponType.NO_WEAPON || !_data.Grounded)
       return;
-
+      
     _animator.SetBool("Aim", _actorValidators.IsAiming);
   }
 
@@ -262,7 +267,8 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
     while(_normolizedTime < 1f)
     {
-      _animator.Play("GunplayRifle", -1, _normolizedTime);
+      _normolizedTime = Mathf.Max(_normolizedTime, 0.1f);
+      _animator.Play(_weaponProvider.GunplayAnimName, -1, _normolizedTime);
       
       if(!IsShootingActorState())
       {
@@ -271,7 +277,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
       yield return null;
     }
 
-    _animator.Play("GunplayRifle", -1, 1f);
+    _animator.Play(_weaponProvider.GunplayAnimName, -1, 1f);
     _isPlayingShootRoutine = false;
   }
 
@@ -523,9 +529,10 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   }
 
   public void PickUpWeapon(WeaponProvider weaponProvider)
-  {
+  { 
+    var weaponBar = UIMainConteiner.Instance.GetWindowByType<UIGameHud>().weaponBar;
     rigBuilder.enabled = false;
-
+    
     _weaponProvider = weaponProvider;
     _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
 
@@ -534,6 +541,9 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
     _weaponProvider.Initialize(this);
     //_weaponProvider.OnShoot += ShootAnimationPlay;
+    
+    weaponBar.SetValuesOfPickedWeapon(_weaponProvider.CurrentAmmo.ToString(), _weaponProvider.Data.AmmoCapacity.ToString());
+    _weaponProvider.OnShoot += delegate { weaponBar.SetActualValueOnShoot(_weaponProvider.CurrentAmmo.ToString()); };
     OnWeaponPickUp?.Invoke();
   }
 
