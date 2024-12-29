@@ -157,9 +157,7 @@ public class ActorComponent : MonoBehaviour
 
   private void Update()
   {
-  
     bool layersWeightValidator = IsAimingActorState() || IsShootingActorState();
-    Debug.Log(layersWeightValidator);
 
     LayersWeightController(layersWeightValidator);
     ConstaintController();
@@ -233,9 +231,6 @@ public class ActorComponent : MonoBehaviour
 
     if (Vector2.Distance(lastDirection, direction) > 0.01f)
       realDirection = Vector2.Lerp(lastDirection, direction, LEGS_STEP_SPEED);
-
-    Debug.Log(direction + " ; " + lastDirection);
-    Debug.LogWarning(Vector2.Distance(lastDirection, direction));
 
     realDirection.x = Mathf.Clamp(realDirection.x, -1.0f, 1.0f);
     realDirection.y = Mathf.Clamp(realDirection.y, -1.0f, 1.0f);
