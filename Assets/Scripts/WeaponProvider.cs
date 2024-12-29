@@ -34,9 +34,22 @@ public class WeaponProvider : MonoBehaviour
 
   public int CurrentAmmo => ammo;
 
-  public void Initialize()
+  private float _normolizedTime = 0f;
+
+  public float NormolizedShootTime => _normolizedTime;
+
+  public ITimeReceiver _timeReceiver; // Интерфейс для передачи значения
+
+    // Интерфейс для приёма значения normalizedTime
+  public interface ITimeReceiver
+  {
+      void UpdateTime(float time);
+  }
+
+  public void Initialize(ITimeReceiver receiver)
   {
     ammo = Data.AmmoCapacity;
+    _timeReceiver = receiver;
   }
 
   private void OnDisable()
@@ -102,7 +115,7 @@ public class WeaponProvider : MonoBehaviour
 
   private void StartShootRoutine(bool isAiming)
   {
-    if (_alreadyShooting)
+    if (_alreadyShooting || ammo <= 0)
       return;
 
     coroutine = StartCoroutine(ShootRoutine(isAiming));
@@ -113,9 +126,17 @@ public class WeaponProvider : MonoBehaviour
     while(true)
     {
       Vector3 spreading = SpreadPos(isAiming);
-      shootingTime += 0.4f * Time.deltaTime;
       Shoot(spreading);
-      yield return new WaitForSecondsRealtime(Data.RecoverySpeed);
+      _normolizedTime = 0f;
+
+      while(_normolizedTime < 1f)
+      {
+        yield return null;
+        _normolizedTime += 1f / Data.RecoverySpeed * Time.deltaTime;
+        _normolizedTime = Mathf.Clamp(_normolizedTime, 0f, 1f);
+        
+        _timeReceiver?.UpdateTime(_normolizedTime);
+      }
     }
   }
 

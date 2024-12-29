@@ -3,6 +3,7 @@ using StarterAssets;
 using System;
 using UnityEngine.Animations.Rigging;
 using System.Collections;
+using static WeaponProvider;
 
 public class ActorValidators
 {
@@ -17,7 +18,7 @@ public class ActorValidators
   public Vector2 MoveDirection;
 }
 
-public class ActorComponent : MonoBehaviour
+public class ActorComponent : MonoBehaviour, ITimeReceiver
 {
   [SerializeField] private ActorData _data;
   [SerializeField] private WeaponProvider _weaponProvider;
@@ -83,7 +84,10 @@ public class ActorComponent : MonoBehaviour
   private float _hipsShootCooldownCurrentTime = 0f;
   private const float _hipsShootCooldownSpeed = 0.5f;
 
-  private Coroutine _shootingCooldownRoutine = null;
+  private float _normolizedTime = 0f;
+
+  private bool _isPlayingShootRoutine = false;
+
 
   private bool _shootingIsAvaliable = false;
 
@@ -219,10 +223,51 @@ public class ActorComponent : MonoBehaviour
       _weaponProvider.ShootValidate(false, transform.forward, _actorValidators.IsAiming);
     }
     
+    PlayShootAnimation();
+
     if (_actorValidators.IsAiming)
       return;
+  }
 
-    _animator.SetBool("Aim", _actorValidators.IsShooting);
+  private void PlayShootAnimation()
+  {
+    if(IsAimingActorState() && !IsShootingActorState())
+    {
+      _animator.SetBool("Aim", true);
+    }
+    else if(!IsAimingActorState())
+    {
+      _animator.SetBool("Aim", false);
+    }
+
+    if(IsShootingActorState() && !_isPlayingShootRoutine && _weaponProvider.CurrentAmmo > 0)
+    {
+      StartCoroutine(PlayShootAnimRoutine());
+    }
+  }
+
+  public void UpdateTime(float time)
+  {
+    _normolizedTime = time;
+  }
+
+  private IEnumerator PlayShootAnimRoutine()
+  {
+    _isPlayingShootRoutine = true;
+
+    while(_normolizedTime < 1f)
+    {
+      _animator.Play("GunplayRifle", -1, _normolizedTime);
+      
+      if(!IsShootingActorState())
+      {
+        _normolizedTime += 1.5f * Time.deltaTime;
+      }
+      yield return null;
+    }
+
+    _animator.Play("GunplayRifle", -1, 1f);
+    _isPlayingShootRoutine = false;
   }
 
   public void LegsMotionValidator()
@@ -454,14 +499,13 @@ public class ActorComponent : MonoBehaviour
     _IKConstaint.data.target = weaponProvider.Data.LeftHandPoint;
     rigBuilder.enabled = true;
 
-    _weaponProvider.Initialize();
+    _weaponProvider.Initialize(this);
     _weaponProvider.OnShoot += ShootAnimationPlay;
     OnWeaponPickUp?.Invoke();
   }
 
   private void ShootAnimationPlay()
   {
-    //_animator.PlayInFixedTime("Shoot", );
   }
 
   private IEnumerator HipsShootingCooldownRoutine()
