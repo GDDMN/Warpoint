@@ -99,6 +99,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   
   private bool _isReloading = false;
   private Coroutine _reloadingCoroutine = null;
+  private Coroutine _shootRoutine = null;
 
   #region VALIDATORS_AND_GETTERS
 
@@ -259,7 +260,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
     if(IsShootingActorState() && !_isPlayingShootRoutine && _weaponProvider.CurrentAmmo > 0)
     {
-      StartCoroutine(PlayShootAnimRoutine());
+      _shootRoutine = StartCoroutine(PlayShootAnimRoutine());
     }
   }
 
@@ -289,6 +290,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
     _animator.Play(_weaponProvider.GunplayAnimName, -1, 1f);
     _isPlayingShootRoutine = false;
+    _shootRoutine = null;
   }
 
   public void LegsMotionValidator()
@@ -589,12 +591,19 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
       return;
     }
 
-    if(_isReloading && _reloadingCoroutine != null)
+    if(_isReloading || _reloadingCoroutine != null)
       return;
 
+    if(_shootRoutine != null)
+    {
+      StopCoroutine(_shootRoutine);
+      _shootRoutine = null;
+    }
+
     _isReloading = true;
-    _reloadingCoroutine = StartCoroutine(ReloadingRoutine());
     _animator.Play(_weaponProvider.ReloadingAnimName, 1);
+
+    _reloadingCoroutine = StartCoroutine(ReloadingRoutine());
   }
 
   private IEnumerator ReloadingRoutine()
@@ -609,6 +618,9 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     _weaponProvider.ReloadWeapon();
     var weaponBar = UIMainConteiner.Instance.GetWindowByType<UIGameHud>().weaponBar;
     weaponBar.SetValuesOfPickedWeapon(_weaponProvider.CurrentAmmo.ToString(), _weaponProvider.Data.AmmoCapacity.ToString());
+    
+    StopCoroutine(_reloadingCoroutine);
+    _reloadingCoroutine = null;
     Debug.Log("Stop reloading");
   }
 }
