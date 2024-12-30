@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using TMPro;
 
 public class WeaponProvider : MonoBehaviour
 {
@@ -106,8 +107,9 @@ public class WeaponProvider : MonoBehaviour
       _shootValidate = false;
 
       _fireParticles.Stop();
+      Data.Spread.RestartSpread();
       shootingTime = 0f;
-
+      
       if(coroutine != null)
         StopCoroutine(coroutine);
 

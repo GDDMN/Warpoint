@@ -125,9 +125,9 @@ namespace StarterAssets
 			cameraSide = unversdCameraSide;
 		}
 
-		private void ReloadingInput(bool isReloading)
-    {
-			reloading = isReloading;
+		private void ReloadingInput(bool newReloadingState)
+    	{
+			reloading = newReloadingState;
 		}
 	}
 }

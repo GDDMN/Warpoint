@@ -46,4 +46,9 @@ public class Spread
 
     return value;
   }
+
+  public void RestartSpread()
+  {
+    _iterator = 0;
+  }
 }

@@ -126,14 +126,16 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   {
     return _actorValidators.IsAlive && 
           _actorValidators.IsAiming && 
-          !_actorValidators.IsReloading;
+          !_actorValidators.IsReloading && 
+          !_isReloading;
   }
 
   private bool IsShootingActorState()
   {
     return _actorValidators.IsAlive && 
           _actorValidators.IsShooting && 
-          !_actorValidators.IsReloading;
+          !_actorValidators.IsReloading && 
+          !_isReloading;
   }
 
   private bool IsCrouchingActorState()
@@ -150,7 +152,8 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
           !_actorValidators.IsAiming && 
           !_actorValidators.IsShooting && 
           !_actorValidators.IsCrouch && 
-          !_actorValidators.IsReloading;
+          !_actorValidators.IsReloading && 
+          !_isReloading;
   }
 
   private bool IsReloadingState()
@@ -168,8 +171,6 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     _jumpTimeoutDelta = JumpTimeout;
     _fallTimeoutDelta = FallTimeout;
 
-    EndReloading += SetReloadingFlag;
-
     UIMainConteiner.Instance.Initialize();
     UIMainConteiner.Instance.GetWindowByType<UIGameHud>().Initialize();
     PickUpWeapon(_weaponProvider);
@@ -177,7 +178,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
   private void Update()
   {
-    bool layersWeightValidator = (IsAimingActorState() || IsShootingActorState() || IsReloadingState()) && _data.Grounded;
+    bool layersWeightValidator = (IsAimingActorState() || IsShootingActorState()) && _data.Grounded;
 
     LayersWeightController(layersWeightValidator);
     ConstaintController();
@@ -456,7 +457,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   {
 
     _animator.SetLayerWeight(2, isLayersActive ? 1 : 0);
-    _animator.SetLayerWeight(1, isLayersActive ? 1 : 0);
+    _animator.SetLayerWeight(1, isLayersActive || _isReloading ? 1 : 0);
     _animator.SetLayerWeight(0, isLayersActive ? 0 : 1);
   }
 
@@ -584,26 +585,30 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   public void Reloading()
   {
     if(!IsReloadingState())
+    {
+      return;
+    }
+
+    if(_isReloading && _reloadingCoroutine != null)
       return;
 
-    if(_isReloading)
-      return;
-
+    _isReloading = true;
     _reloadingCoroutine = StartCoroutine(ReloadingRoutine());
     _animator.Play(_weaponProvider.ReloadingAnimName, 1);
   }
 
   private IEnumerator ReloadingRoutine()
   {
-    _isReloading = true;
+    _actorValidators.IsReloading = true;
+    Debug.Log("Start reloading");
     yield return new WaitForSeconds(_weaponProvider.Data.ReloadingSpeed);
+    
     _isReloading = false;
+    _actorValidators.IsReloading = false;
+    
     _weaponProvider.ReloadWeapon();
+    var weaponBar = UIMainConteiner.Instance.GetWindowByType<UIGameHud>().weaponBar;
+    weaponBar.SetValuesOfPickedWeapon(_weaponProvider.CurrentAmmo.ToString(), _weaponProvider.Data.AmmoCapacity.ToString());
+    Debug.Log("Stop reloading");
   }
-
-  private void SetReloadingFlag(bool flag)
-  {
-    _actorValidators.IsReloading = flag;
-  }
-
 }
