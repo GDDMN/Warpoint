@@ -6,12 +6,8 @@ public class BotController : MonoBehaviour
   [SerializeField] private ActorComponent _actorComponent;
   private GameObject _mainCamera;  
   private CharacterController _controller;
-  //[Header("Weapon")]
-  //[SerializeField] private WeaponProvider weapon;
-
-  //private ThirdPersonController _controller;
+  
   private Animator _animator;
-  [SerializeField] private CinemachineData _cinemachineData;
   private PlayerStateController _stateController = new PlayerStateController();
   private PlayerState _activeState;
 
@@ -30,10 +26,7 @@ public class BotController : MonoBehaviour
     _stateController.Initialize();
     _activeState = _stateController.GetState(PlayerStateType.ALIVE);
 
-    //_actorComponent.OnJumpLounch += LandingValidate;
-    //_actorComponent.OnWeaponPickUp += AccesWeaponSettings;
-    //_controller.OnLanding += LandingValidate;
-    _activeState.Enter(_actorComponent, _cinemachineData, _controller, _mainCamera);
+    _activeState.Enter(_actorComponent, _controller, _mainCamera);
     _actorComponent.AssignAnimationIDs();
   }
 
@@ -48,14 +41,8 @@ public class BotController : MonoBehaviour
       return;     
     }
 
-    //bool isJump = false;
-    _activeState.Update(false, false, false, false, false, Vector2.zero, true, false);
+    _activeState.Update();
   }
-
-  //private void LateUpdate()
-  //{
-  //  _activeState.LateUpdate(Vector3.forward);
-  //}
 
   private void OnDisable()
   {

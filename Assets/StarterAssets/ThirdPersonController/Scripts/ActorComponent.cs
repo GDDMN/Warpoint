@@ -15,8 +15,68 @@ public class ActorValidators
   public bool IsCrouch = false;
   public bool IsAnalogMovement = false;
   public bool IsJumping = false;
-
   public Vector2 MoveDirection;
+  public Vector3 ShootingPos;
+
+  public void SetActorStateValidators(bool isAiming, bool isShooting, bool isSprint, bool isCrouch, bool isReloading, Vector2 moveDirection, bool isAnalogMovement, Vector3 shootigPos)
+  {
+    IsAlive = true;
+    IsAiming = isAiming;
+    IsShooting = isShooting;
+    IsSprint = isSprint;
+    IsCrouch = isCrouch;
+    IsReloading = isReloading;
+    ShootingPos = shootigPos;
+
+    MoveDirection = moveDirection;
+    IsAnalogMovement = isAnalogMovement;
+  }
+
+  public bool CheckActorDefaultState()
+  {
+    return IsAlive && 
+          !IsAiming && 
+          !IsShooting;
+  }
+
+  public bool IsAimingActorState()
+  {
+    return IsAlive && 
+           IsAiming && 
+          !IsReloading;
+  }
+
+  public bool IsShootingActorState()
+  {
+    return IsAlive && 
+           IsShooting && 
+          !IsReloading;
+  }
+
+  public bool IsCrouchingActorState()
+  {
+    return IsAlive && 
+           IsCrouch && 
+          !IsShooting;
+  }
+
+  public bool IsSprintingActorState()
+  {
+    return IsAlive && 
+           IsSprint && 
+          !IsAiming && 
+          !IsShooting && 
+          !IsCrouch && 
+          !IsReloading; 
+  }
+
+  public bool IsReloadingState()
+  {
+    return IsAlive && 
+           IsReloading &&
+           !IsSprint;
+  }
+
 }
 
 public class ActorComponent : MonoBehaviour, ITimeReceiver
@@ -31,9 +91,8 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   [SerializeField] private MultiAimConstraint _constraintRightHand;
   [SerializeField] private MultiAimConstraint _constaintBack;
 
-  [SerializeField] private Transform aimObject;
-
   [SerializeField] private ActorValidators _actorValidators = new ActorValidators();
+  public ActorValidators ActorValidators => _actorValidators;
 
   private Vector3 RIFLE_CONSTAIN_BODY_OFFSET { get { return new Vector3(-60, -10, 20); } }
   private Vector3 PISTOL_CONSTAIN_BODY_OFFSET { get { return new Vector3(-15, 0, 0); } }
@@ -102,70 +161,6 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   private Coroutine _reloadingCoroutine = null;
   private Coroutine _shootRoutine = null;
 
-  #region VALIDATORS_AND_GETTERS
-
-  public void SetActorStateValidators(bool isAiming, bool isShooting, bool isSprint, bool isCrouch, bool isReloading, Vector2 moveDirection, bool isAnalogMovement)
-  {
-    _actorValidators.IsAlive = true;
-    _actorValidators.IsAiming = isAiming;
-    _actorValidators.IsShooting = isShooting;
-    _actorValidators.IsSprint = isSprint;
-    _actorValidators.IsCrouch = isCrouch;
-    _actorValidators.IsReloading = isReloading;
-
-    _actorValidators.MoveDirection = moveDirection;
-    _actorValidators.IsAnalogMovement = isAnalogMovement;
-  }
-
-  public bool CheckActorDefaultState()
-  {
-    return _actorValidators.IsAlive && 
-          !_actorValidators.IsAiming && 
-          !_actorValidators.IsShooting;
-  }
-
-  private bool IsAimingActorState()
-  {
-    return _actorValidators.IsAlive && 
-          _actorValidators.IsAiming && 
-          !_actorValidators.IsReloading && 
-          !_isReloading;
-  }
-
-  private bool IsShootingActorState()
-  {
-    return _actorValidators.IsAlive && 
-          _actorValidators.IsShooting && 
-          !_actorValidators.IsReloading && 
-          !_isReloading;
-  }
-
-  private bool IsCrouchingActorState()
-  {
-    return _actorValidators.IsAlive && 
-          _actorValidators.IsCrouch && 
-          !_actorValidators.IsShooting;
-  }
-
-  private bool IsSprintingActorState()
-  {
-    return _actorValidators.IsAlive && 
-          _actorValidators.IsSprint && 
-          !_actorValidators.IsAiming && 
-          !_actorValidators.IsShooting && 
-          !_actorValidators.IsCrouch && 
-          !_actorValidators.IsReloading && 
-          !_isReloading;
-  }
-
-  private bool IsReloadingState()
-  {
-    return _actorValidators.IsAlive && 
-    _actorValidators.IsReloading &&
-    !_actorValidators.IsSprint;
-  }
-  #endregion
-
   private void Start()
   {
     _hasAnimator = TryGetComponent(out _animator);
@@ -173,14 +168,12 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     _jumpTimeoutDelta = JumpTimeout;
     _fallTimeoutDelta = FallTimeout;
 
-    UIMainConteiner.Instance.Initialize();
-    UIMainConteiner.Instance.GetWindowByType<UIGameHud>().Initialize();
     PickUpWeapon(_weaponProvider);
   }
 
   private void Update()
   {
-    bool layersWeightValidator = (IsAimingActorState() || IsShootingActorState()) && _data.Grounded;
+    bool layersWeightValidator = (_actorValidators.IsAimingActorState() || _actorValidators.IsShootingActorState()) && _data.Grounded;
 
     LayersWeightController(layersWeightValidator);
     ConstaintController();
@@ -235,7 +228,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   {
     if (_data.Grounded)
     {
-      _weaponProvider.ShootValidate(IsShootingActorState(), transform.forward, _actorValidators.IsAiming);;
+      _weaponProvider.ShootValidate(_actorValidators.IsShootingActorState(), transform.forward, _actorValidators.IsAiming);;
     }
     else
     {
@@ -250,16 +243,16 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
   private void PlayShootAnimation()
   {
-    if(IsAimingActorState() || IsShootingActorState())
+    if(_actorValidators.IsAimingActorState() || _actorValidators.IsShootingActorState())
     {
       _animator.SetBool("Aim", true);
     }
-    else if(!IsAimingActorState())
+    else if(!_actorValidators.IsAimingActorState())
     {
       _animator.SetBool("Aim", false);
     }
 
-    if(IsShootingActorState() && !_isPlayingShootRoutine && _weaponProvider.CurrentAmmo > 0)
+    if(_actorValidators.IsShootingActorState() && !_isPlayingShootRoutine && _weaponProvider.CurrentAmmo > 0)
     {
       _shootRoutine = StartCoroutine(PlayShootAnimRoutine());
     }
@@ -272,7 +265,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
   private IEnumerator PlayShootAnimRoutine()
   {
-    if(!IsAimingActorState())
+    if(!_actorValidators.IsAimingActorState())
       yield return new WaitForSeconds(HIPS_COOLDOWN_TIME);
 
     _isPlayingShootRoutine = true;
@@ -282,7 +275,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
       _normolizedTime = Mathf.Max(_normolizedTime, 0.1f);
       _animator.Play(_weaponProvider.GunplayAnimName, -1, _normolizedTime);
       
-      if(!IsShootingActorState())
+      if(!_actorValidators.IsShootingActorState())
       {
         _normolizedTime += 1.5f * Time.deltaTime;
       }
@@ -313,7 +306,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   public void Move(CharacterController controller, GameObject mainCamera)
   {
     // set target speed based on move speed, sprint speed and if sprint is pressed
-    float targetSpeed = IsSprintingActorState() ? _data.SprintSpeed : _data.MoveSpeed;
+    float targetSpeed = _actorValidators.IsSprintingActorState() ? _data.SprintSpeed : _data.MoveSpeed;
 
     if (_actorValidators.IsCrouch)
       targetSpeed = _data.CruchSpeed;
@@ -371,7 +364,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
     }
 
-    HipShootingRotate(transform, aimObject);
+    HipShootingRotate(transform, _actorValidators.ShootingPos);
     Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
     // move the player
@@ -459,7 +452,6 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
   private void LayersWeightController(bool isLayersActive)
   {
-
     _animator.SetLayerWeight(2, isLayersActive ? 1 : 0);
     _animator.SetLayerWeight(1, isLayersActive || _isReloading ? 1 : 0);
     _animator.SetLayerWeight(0, isLayersActive ? 0 : 1);
@@ -473,7 +465,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
       return;
     }
 
-    if(IsAimingActorState())
+    if(_actorValidators.IsAimingActorState())
     { 
       if(_onGRoundRoutineIssue != null)
         StopCoroutine(_onGRoundRoutineIssue);
@@ -484,7 +476,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
       return;
     }
 
-    if(IsShootingActorState())
+    if(_actorValidators.IsShootingActorState())
     {
       if(_onGRoundRoutineIssue != null)
         StopCoroutine(_onGRoundRoutineIssue);
@@ -549,7 +541,6 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
   public void PickUpWeapon(WeaponProvider weaponProvider)
   { 
-    var weaponBar = UIMainConteiner.Instance.GetWindowByType<UIGameHud>().weaponBar;
     rigBuilder.enabled = false;
     
     _weaponProvider = weaponProvider;
@@ -559,18 +550,15 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     rigBuilder.enabled = true;
 
     _weaponProvider.Initialize(this);
-    
-    weaponBar.SetValuesOfPickedWeapon(_weaponProvider.CurrentAmmo.ToString(), _weaponProvider.Data.AmmoCapacity.ToString());
-    _weaponProvider.OnShoot += delegate { weaponBar.SetActualValueOnShoot(_weaponProvider.CurrentAmmo.ToString()); };
     OnWeaponPickUp?.Invoke();
   }
 
-  private void HipShootingRotate(Transform actorForvard, Transform shootingDirection)
+  private void HipShootingRotate(Transform actorForvard, Vector3 shootingPos)
   {
-    if (!IsShootingActorState())
+    if (!_actorValidators.IsShootingActorState())
       return;
 
-    float angle = Vector3.Angle(shootingDirection.position - actorForvard.position, 
+    float angle = Vector3.Angle(shootingPos - actorForvard.position, 
                                 actorForvard.forward);
 
     if (angle < 30f && angle > -30f)
@@ -578,16 +566,16 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
 
     Transform lookDirection = new GameObject().transform;
     
-    lookDirection.position = new Vector3(shootingDirection.position.x, 
+    lookDirection.position = new Vector3(shootingPos.x, 
                                          0f, 
-                                         shootingDirection.position.z);
+                                         shootingPos.z);
 
     actorForvard.LookAt(lookDirection, Vector3.up);
   }
 
   public void Reloading()
   {
-    if(!IsReloadingState())
+    if(!_actorValidators.IsReloadingState())
     {
       return;
     }
@@ -617,11 +605,14 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     _actorValidators.IsReloading = false;
     
     _weaponProvider.ReloadWeapon();
-    var weaponBar = UIMainConteiner.Instance.GetWindowByType<UIGameHud>().weaponBar;
-    weaponBar.SetValuesOfPickedWeapon(_weaponProvider.CurrentAmmo.ToString(), _weaponProvider.Data.AmmoCapacity.ToString());
     
     StopCoroutine(_reloadingCoroutine);
     _reloadingCoroutine = null;
     Debug.Log("Stop reloading");
   }
+}
+
+public class ActorShootingComponent : MonoBehaviour
+{
+  
 }

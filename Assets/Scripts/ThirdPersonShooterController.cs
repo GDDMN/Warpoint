@@ -14,9 +14,6 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private Transform _aimObject;
   [SerializeField] private Transform _aimCamObj;
 
-  //[Header("Weapon")]
-  //[SerializeField] private WeaponProvider weapon;
-
   private ThirdPersonController _controller;
   private StarterAssetsInputs _inputs;
   private Animator _animator;

@@ -1,36 +1,57 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class AliveState : PlayerState
+public class AliveState : PlayerState, IValidatorsSetter
 {
   private float _cinemachineTargetYaw;
   private float _cinemachineTargetPitch;
   private const float _threshold = 0.01f;
+
+  private bool _aiming;
+  private bool _shooting;
+  private bool _sprinting;
+  private bool _crouch;
+  private bool _reloading;
+  private Vector2 _moveDirection;
+  private bool _analogMovement;
+  private bool _jump;
+  private Vector3 _shootingPos;
 
   public override void Initialize()
   {
     StateType = PlayerStateType.ALIVE;
   }
 
-  public override void Enter(ActorComponent actorComponent, CinemachineData cinemachineData,
+  public override void Enter(ActorComponent actorComponent,
                              CharacterController characterController, GameObject mainCamera)
   {
     ActorComponent = actorComponent;
-    CinemachineData = cinemachineData;
     CharacterController = characterController;
     MainCamera = mainCamera;
 
-    _cinemachineTargetYaw = CinemachineData.CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+    //_cinemachineTargetYaw = cinemachineData.CinemachineCameraTarget.transform.rotation.eulerAngles.y;
   }
 
-  public override void Update(bool isAiming, bool isShooting, bool isSprint, 
-                              bool isCrouch, bool isReloading, Vector2 moveDirection, 
-                              bool isAnalogMovement, bool isJump)
+  public void SetValidatorsValue(bool isAiming, bool isShooting, bool isSprint, bool isCrouch, bool isReloading, Vector2 moveDirection, bool isAnalogMovement, bool isJump, Vector2 shootingPos)
+  {
+    _aiming = isAiming;
+    _shooting = isShooting;
+    _sprinting = isSprint;
+    _crouch = isCrouch;
+    _reloading = isReloading;
+
+    _moveDirection = moveDirection;
+    _shootingPos = shootingPos;
+    _analogMovement = isAnalogMovement;
+    _jump = isJump;
+  }
+
+  public override void Update()
   {
     //Внимательно смотрим за последовательностью команд
-    ActorComponent.JumpAndGravity(isJump);
-    ActorComponent.SetActorStateValidators(isAiming, isShooting, isSprint, isCrouch, 
-                                          isReloading, moveDirection, isAnalogMovement);
+    ActorComponent.ActorValidators.SetActorStateValidators(_aiming, _shooting , _sprinting, _crouch, 
+                                          _reloading, _moveDirection, _analogMovement, _shootingPos);
+
+    ActorComponent.JumpAndGravity(_jump);
     ActorComponent.GroundedCheck();
     ActorComponent.Move(CharacterController, MainCamera);
 
@@ -41,44 +62,18 @@ public class AliveState : PlayerState
     ActorComponent.LegsMotionValidator();
   }
 
-  public override void LateUpdate(Vector2 look)
-  {
-    CameraRotation(look);
-  }
-
   private void SetActorValidators()
   {
-  }
-
-  private void CameraRotation(Vector3 look)
-  {
-    // if there is an input and camera position is not fixed
-    if (look.sqrMagnitude >= _threshold && !CinemachineData.LockCameraPosition)
-    {
-      //Don't multiply mouse input by Time.deltaTime;
-      //float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-
-      _cinemachineTargetYaw += look.x * 1.0f * CinemachineData.Sensativity;
-      _cinemachineTargetPitch += look.y * 1.0f * CinemachineData.Sensativity;
-    }
-
-    // clamp our rotations so our values are limited 360 degrees
-    _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-    _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, CinemachineData.BottomClamp, CinemachineData.TopClamp);
-
-    // Cinemachine will follow this target
-    CinemachineData.CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CinemachineData.CameraAngleOverride,
-        _cinemachineTargetYaw, 0.0f);
-  }
-
-  private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
-  {
-    if (lfAngle < -360f) lfAngle += 360f;
-    if (lfAngle > 360f) lfAngle -= 360f;
-    return Mathf.Clamp(lfAngle, lfMin, lfMax);
   }
 
   public override void Exit()
   {
   }
+}
+
+public interface IValidatorsSetter
+{
+  void SetValidatorsValue(bool isAiming, bool isShooting, bool isSprint, 
+                          bool isCrouch, bool isReloading, Vector2 moveDirection, 
+                          bool isAnalogMovement, bool isJump, Vector2 shootingPos);
 }

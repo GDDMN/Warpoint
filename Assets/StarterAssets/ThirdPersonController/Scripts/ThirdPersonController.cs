@@ -13,8 +13,15 @@ namespace StarterAssets
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
+        //public CinemachineData CinemachineData;
+
+        private float _cinemachineTargetYaw;
+        private float _cinemachineTargetPitch;
+        private const float _threshold = 0.01f;
+
         [SerializeField] private ActorComponent _actorComponent;
         [SerializeField] private CinemachineData _cinemachineData;
+        [SerializeField] private Transform aimObjectPos;
 
         private PlayerStateController _stateController = new PlayerStateController();
         private PlayerState _activeState;
@@ -48,25 +55,58 @@ namespace StarterAssets
             			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
             #endif
 
-            _activeState.Enter(_actorComponent, _cinemachineData, _controller, _mainCamera);
+            _activeState.Enter(_actorComponent, _controller, _mainCamera);
             _actorComponent.AssignAnimationIDs();
         }
 
         private void Update()
         {
-            if(!_actorComponent.IsAlive)
-            {
-              return;     
-            }
-
-            _activeState.Update(_input.aim, _input.shooting, _input.sprint,
-                                _input.cruch, _input.reloading, _input.move, _input.analogMovement,
-                                _input.jump);
+            SetInputValues();
+            _activeState.Update();
         } 
-
+        
         private void LateUpdate()
         {
-            _activeState.LateUpdate(_input.look);
+            CameraRotation(_input.look);
+        }
+
+        private void SetInputValues()
+        {
+            if(_activeState is IValidatorsSetter)
+            {
+                ((IValidatorsSetter)_activeState).SetValidatorsValue(_input.aim, _input.shooting, _input.sprint,
+                                                                    _input.cruch, _input.reloading, _input.move, 
+                                                                    _input.analogMovement, _input.jump, aimObjectPos.position);
+            }
+        }
+
+
+        private void CameraRotation(Vector2 look)
+        {
+            // if there is an input and camera position is not fixed
+            if (look.sqrMagnitude >= _threshold && !_cinemachineData.LockCameraPosition)
+            {
+              //Don't multiply mouse input by Time.deltaTime;
+              //float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+
+              _cinemachineTargetYaw += look.x * 1.0f * _cinemachineData.Sensativity;
+              _cinemachineTargetPitch += look.y * 1.0f * _cinemachineData.Sensativity;
+            }
+
+            // clamp our rotations so our values are limited 360 degrees
+            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
+            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, _cinemachineData.BottomClamp, _cinemachineData.TopClamp);
+
+            // Cinemachine will follow this target
+            _cinemachineData.CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + _cinemachineData.CameraAngleOverride,
+                _cinemachineTargetYaw, 0.0f);
+        }
+
+        private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
+        {
+            if (lfAngle < -360f) lfAngle += 360f;
+            if (lfAngle > 360f) lfAngle -= 360f;
+            return Mathf.Clamp(lfAngle, lfMin, lfMax);
         }
 
         private void OnDrawGizmosSelected()
