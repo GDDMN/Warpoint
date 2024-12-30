@@ -3374,6 +3374,10 @@ PrefabInstance:
       propertyPath: AimTargetObj
       value: 
       objectReference: {fileID: 852461965}
+    - target: {fileID: 8807898516984491970, guid: 6ac87bbe171fc3e478c0a8286c6d2a3a, type: 3}
+      propertyPath: ReloadingAnimName
+      value: MAC10Reload
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3575,7 +3579,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2504656340002837234, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
       propertyPath: m_WarningMessage
-      value: 
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'Elbow_R'\n\tTransform 'Elbow_L'\n\tTransform
+        'Hand_L'\n\tTransform 'Shoulder_L'\n\tTransform 'Spine_01'\n\tTransform 'Hips'\n\tTransform
+        'Hand_R'\n\tTransform 'Elbow_R'\n\tTransform 'Elbow_L'\n\tTransform 'Hand_L'\n\tand
+        more ..."
       objectReference: {fileID: 0}
     - target: {fileID: 2575332600833236858, guid: e2256ace6a3d34343bd4577b79fff4b2, type: 3}
       propertyPath: GunplayAnimName
