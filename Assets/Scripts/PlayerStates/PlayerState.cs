@@ -12,18 +12,19 @@ public abstract class PlayerState
   public PlayerInput PlayerInput;
 #endif
   public CharacterController CharacterController;
-  public StarterAssets.StarterAssetsInputs Input;
+  
   public GameObject MainCamera;
 
   public abstract void Initialize();
 
   public abstract void Enter(ActorComponent actorComponent, CinemachineData cinemachineData, 
-                             CharacterController characterController, StarterAssets.StarterAssetsInputs inputs, 
-                             GameObject mainCamera, PlayerInput playerInput);
+                             CharacterController characterController, GameObject mainCamera);
 
-  public abstract void Update();
+  public abstract void Update(bool isAiming, bool isShooting, bool isSprint, 
+                            bool isCrouch, bool isReloading, Vector2 moveDirection, 
+                            bool isAnalogMovement, bool isJump);
 
-  public abstract void LateUpdate();
+  public abstract void LateUpdate(Vector2 look);
 
   public abstract void Exit();
 }

@@ -48,7 +48,7 @@ namespace StarterAssets
             			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
             #endif
 
-            _activeState.Enter(_actorComponent, _cinemachineData, _controller, _input, _mainCamera, _playerInput);
+            _activeState.Enter(_actorComponent, _cinemachineData, _controller, _mainCamera);
             _actorComponent.AssignAnimationIDs();
         }
 
@@ -59,12 +59,14 @@ namespace StarterAssets
               return;     
             }
 
-            _activeState.Update();
+            _activeState.Update(_input.aim, _input.shooting, _input.sprint,
+                                _input.cruch, _input.reloading, _input.move, _input.analogMovement,
+                                _input.jump);
         } 
 
         private void LateUpdate()
         {
-          _activeState.LateUpdate();
+            _activeState.LateUpdate(_input.look);
         }
 
         private void OnDrawGizmosSelected()

@@ -14,6 +14,7 @@ public class ActorValidators
   public bool IsReloading = false;
   public bool IsCrouch = false;
   public bool IsAnalogMovement = false;
+  public bool IsJumping = false;
 
   public Vector2 MoveDirection;
 }
@@ -222,7 +223,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     _animator.SetBool("Cruch", _actorValidators.IsCrouch);
   }
 
-  public void Aiming(CinemachineData cinemachineData)
+  public void Aiming()
   {
     if (_weaponProvider.weaponType == WeaponType.NO_WEAPON || !_data.Grounded)
       return;
@@ -309,7 +310,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     _animator.SetFloat("MotionZ", realDirection.y);
   }
 
-  public void Move(CinemachineData cinemachineData, CharacterController controller, GameObject mainCamera)
+  public void Move(CharacterController controller, GameObject mainCamera)
   {
     // set target speed based on move speed, sprint speed and if sprint is pressed
     float targetSpeed = IsSprintingActorState() ? _data.SprintSpeed : _data.MoveSpeed;
@@ -385,8 +386,9 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     }
   }
 
-  public void JumpAndGravity(StarterAssetsInputs inputs)
+  public void JumpAndGravity(bool isJump)
   {
+    _actorValidators.IsJumping = isJump;
     if (_data.Grounded)
     {
       // reset the fall timeout timer
@@ -406,7 +408,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
       }
 
       // Jump
-      if (inputs.jump && _jumpTimeoutDelta <= 0.0f)
+      if (_actorValidators.IsJumping && _jumpTimeoutDelta <= 0.0f)
       {
         OnJumpLounch?.Invoke(false);
         // the square root of H * -2 * G = how much velocity needed to reach desired height
@@ -445,7 +447,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
       }
 
       // if we are not grounded, do not jump
-      inputs.jump = false;
+      _actorValidators.IsJumping = false;
     }
 
     // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
@@ -557,7 +559,6 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     rigBuilder.enabled = true;
 
     _weaponProvider.Initialize(this);
-    //_weaponProvider.OnShoot += ShootAnimationPlay;
     
     weaponBar.SetValuesOfPickedWeapon(_weaponProvider.CurrentAmmo.ToString(), _weaponProvider.Data.AmmoCapacity.ToString());
     _weaponProvider.OnShoot += delegate { weaponBar.SetActualValueOnShoot(_weaponProvider.CurrentAmmo.ToString()); };

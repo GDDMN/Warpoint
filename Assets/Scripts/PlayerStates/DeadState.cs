@@ -10,16 +10,17 @@ public class DeadState : PlayerState
   }
 
   public override void Enter(ActorComponent actorComponent, CinemachineData cinemachineData,
-                             CharacterController characterController, StarterAssets.StarterAssetsInputs inputs,
-                             GameObject mainCamera, PlayerInput playerInput)
+                             CharacterController characterController, GameObject mainCamera)
   {
   }
 
-  public override void Update()
+  public override void Update(bool isAiming, bool isShooting, bool isSprint, 
+                              bool isCrouch, bool isReloading, Vector2 moveDirection, 
+                              bool isAnalogMovement, bool isJump)
   {
   }
 
-  public override void LateUpdate()
+  public override void LateUpdate(Vector2 look)
   {
   }
 

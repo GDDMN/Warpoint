@@ -1,9 +1,6 @@
 using UnityEngine;
 using Cinemachine;
 using StarterAssets;
-using System;
-using UnityEngine.Animations.Rigging;
-using DG.Tweening;
 
 public class ThirdPersonShooterController : MonoBehaviour
 {
