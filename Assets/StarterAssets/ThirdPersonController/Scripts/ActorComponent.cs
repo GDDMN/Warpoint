@@ -79,7 +79,7 @@ public class ActorValidators
 
 }
 
-public class ActorComponent : MonoBehaviour, ITimeReceiver
+public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
 {
   private const float HIPS_COOLDOWN_TIME = 0.13f;
   [SerializeField] private ActorData _data;
@@ -160,6 +160,8 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
   private bool _isReloading = false;
   private Coroutine _reloadingCoroutine = null;
   private Coroutine _shootRoutine = null;
+
+  public event Action OnDeath;
 
   private void Start()
   {
@@ -610,6 +612,22 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver
     _reloadingCoroutine = null;
     Debug.Log("Stop reloading");
   }
+
+    public void Hurt(int damage)
+    {
+        
+    }
+
+    public void Die()
+    {
+      _actorValidators.IsAlive = false;
+      OnDeath?.Invoke();
+    }
+
+    public void Interaction(Vector3 position, int damage)
+    {
+        
+    }
 }
 
 public class ActorShootingComponent : MonoBehaviour
