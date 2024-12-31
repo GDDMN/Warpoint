@@ -168,12 +168,13 @@ public class WeaponProvider : MonoBehaviour
     Ray ray = new Ray();
     ray.origin = RaycastOrigin.position;
     ray.direction = RaycastOrigin.forward + spread;
-    
-    EffectsPlay(ray.origin, AimTargetObj.position + spread);
+    float distance = Vector3.Distance(ray.origin, AimTargetObj.position);
+
+    EffectsPlay(ray.origin, AimTargetObj.position + (spread * (distance/3)));
 
     OnShoot?.Invoke();
 
-    if(Physics.Raycast(ray.origin, (AimTargetObj.position + spread) - ray.origin, out hit))
+    if(Physics.Raycast(ray.origin, (AimTargetObj.position + (spread * (distance/3))) - ray.origin, out hit))
     {
       SetDamage(hit);
     }
