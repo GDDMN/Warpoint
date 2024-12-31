@@ -48,6 +48,7 @@ namespace StarterAssets
             
             _stateController.Initialize(_actorComponent);
             _activeState = _stateController.GetState(PlayerStateType.ALIVE);
+            _actorComponent.OnDeath += (delegate { StartNewState(PlayerStateType.DEAD); });
             
             #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
                         _playerInput = GetComponent<PlayerInput>();
@@ -57,6 +58,12 @@ namespace StarterAssets
 
             _activeState.Enter(_controller, _mainCamera);
             _actorComponent.AssignAnimationIDs();
+        }
+
+        private void StartNewState(PlayerStateType type)
+        {
+            _activeState = _stateController.GetState(type);
+            _activeState.Enter(_controller, _mainCamera);
         }
 
         private void Update()

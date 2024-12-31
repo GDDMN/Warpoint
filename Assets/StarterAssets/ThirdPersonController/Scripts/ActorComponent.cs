@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using StarterAssets;
 using System;
 using UnityEngine.Animations.Rigging;
 using System.Collections;
@@ -83,6 +82,8 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
 {
   private const float HIPS_ROTATION_ANGLE_LIMIT = 30.0f;
   private const float HIPS_COOLDOWN_TIME = 0.13f;
+
+  private const int MAX_HEALTH_POINTS = 100;
   [SerializeField] private ActorData _data;
   [SerializeField] private WeaponProvider _weaponProvider;
   [SerializeField] private RigBuilder rigBuilder;
@@ -165,7 +166,10 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
   private Coroutine _reloadingCoroutine = null;
   private Coroutine _shootRoutine = null;
 
+  private int _health;
+  public int Health => _health;
   public event Action OnDeath;
+  [SerializeField] private GameObject _prefab;
 
   private void Start()
   {
@@ -175,6 +179,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
     _fallTimeoutDelta = FallTimeout;
 
     PickUpWeapon(_weaponProvider);
+    _health = MAX_HEALTH_POINTS;
   }
 
   private void Update()
@@ -465,6 +470,11 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
 
   private void ConstaintController()
   {
+    if(!_actorValidators.IsAlive)
+    {
+      ConstaintValidate(false, false);
+    }
+
     if(_isReloading)
     {
       ConstaintValidate(false, false);
@@ -619,17 +629,27 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
 
     public void Hurt(int damage)
     {
-        
+      _health -= damage;
+      
+      if(_health <= 0 && _actorValidators.IsAlive)
+      {
+        Die();
+      }
     }
 
     public void Die()
     {
-      _actorValidators.IsAlive = false;
+      LayersWeightController(false);
+      ConstaintController();
+
       OnDeath?.Invoke();
     }
 
     public void Interaction(Vector3 position, int damage)
     {
-        
+      var fx = Instantiate(_prefab, position, Quaternion.identity);
+
+      Debug.Log(_health);
+      Hurt(damage);
     }
 }

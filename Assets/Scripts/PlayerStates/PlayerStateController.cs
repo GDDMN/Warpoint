@@ -8,7 +8,6 @@ public class PlayerStateController
   public void Initialize(ActorComponent actorComponent)
   {
     _actorComponent = actorComponent;
-    _actorComponent.OnDeath += (delegate { this.GetState(PlayerStateType.DEAD); });
 
     ExpectationState expectationState = new ExpectationState();
     expectationState.Initialize(_actorComponent);

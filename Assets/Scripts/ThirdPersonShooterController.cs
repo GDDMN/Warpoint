@@ -12,11 +12,9 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private float normalSensativity;
   [SerializeField] private float aimSensativity;
   [SerializeField] private Transform _aimObject;
-  [SerializeField] private Transform _aimCamObj;
 
   private ThirdPersonController _controller;
   private StarterAssetsInputs _inputs;
-  private Animator _animator;
 
   private bool IsAiming = false;
   private bool OnGround = true;
@@ -25,7 +23,6 @@ public class ThirdPersonShooterController : MonoBehaviour
 
   private void Awake()
   {
-    _animator = GetComponent<Animator>();
     _controller = GetComponent<ThirdPersonController>();
     _inputs = GetComponent<StarterAssetsInputs>();
   }
