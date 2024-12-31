@@ -81,6 +81,7 @@ public class ActorValidators
 
 public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
 {
+  private const float HIPS_ROTATION_ANGLE_LIMIT = 30.0f;
   private const float HIPS_COOLDOWN_TIME = 0.13f;
   [SerializeField] private ActorData _data;
   [SerializeField] private WeaponProvider _weaponProvider;
@@ -90,6 +91,8 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
   [SerializeField] private TwoBoneIKConstraint _IKConstaint;
   [SerializeField] private MultiAimConstraint _constraintRightHand;
   [SerializeField] private MultiAimConstraint _constaintBack;
+
+  [SerializeField] private Transform aimObject;
 
   [SerializeField] private ActorValidators _actorValidators = new ActorValidators();
   public ActorValidators ActorValidators => _actorValidators;
@@ -117,6 +120,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
 
   private bool _hasAnimator;
   private Animator _animator;
+  public Animator Animator => _animator;
 
   private Vector2 realDirection = Vector2.zero;
   private Vector2 lastDirection = Vector2.zero;
@@ -366,7 +370,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
     }
 
-    HipShootingRotate(transform, _actorValidators.ShootingPos);
+    HipShootingRotate(transform, aimObject);
     Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
     // move the player
@@ -555,12 +559,12 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
     OnWeaponPickUp?.Invoke();
   }
 
-  private void HipShootingRotate(Transform actorForvard, Vector3 shootingPos)
+  private void HipShootingRotate(Transform actorForvard, Transform shootingDirection)
   {
     if (!_actorValidators.IsShootingActorState())
       return;
 
-    float angle = Vector3.Angle(shootingPos - actorForvard.position, 
+    float angle = Vector3.Angle(shootingDirection.position - actorForvard.position, 
                                 actorForvard.forward);
 
     if (angle < 30f && angle > -30f)
@@ -568,9 +572,9 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
 
     Transform lookDirection = new GameObject().transform;
     
-    lookDirection.position = new Vector3(shootingPos.x, 
+    lookDirection.position = new Vector3(shootingDirection.position.x, 
                                          0f, 
-                                         shootingPos.z);
+                                         shootingDirection.position.z);
 
     actorForvard.LookAt(lookDirection, Vector3.up);
   }
@@ -628,9 +632,4 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
     {
         
     }
-}
-
-public class ActorShootingComponent : MonoBehaviour
-{
-  
 }

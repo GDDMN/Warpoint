@@ -14,10 +14,9 @@ public abstract class PlayerState
   
   public GameObject MainCamera;
 
-  public abstract void Initialize();
+  public abstract void Initialize(ActorComponent actorComponent);
 
-  public abstract void Enter(ActorComponent actorComponent, 
-                             CharacterController characterController, GameObject mainCamera);
+  public abstract void Enter(CharacterController characterController, GameObject mainCamera);
 
   public abstract void Update();
 

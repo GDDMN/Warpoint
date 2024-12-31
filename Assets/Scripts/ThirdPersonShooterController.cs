@@ -89,9 +89,9 @@ public class ThirdPersonShooterController : MonoBehaviour
     _controller.SetSensativity(aimSensativity);
 
     Vector3 worldAimTarget = mouseWorldPoint;
-    worldAimTarget.y = transform.position.y;
+    worldAimTarget.y = _actorComponent.transform.position.y;
 
-    Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
-    transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * 20f);
+    Vector3 aimDirection = (worldAimTarget - _actorComponent.transform.position).normalized;
+    _actorComponent.transform.forward = Vector3.Lerp(_actorComponent.transform.forward, aimDirection, Time.deltaTime * 20f);
   }
 }

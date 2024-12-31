@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 namespace StarterAssets
 {
-    [RequireComponent(typeof(CharacterController))]
+    //[RequireComponent(typeof(CharacterController))]
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
     [RequireComponent(typeof(PlayerInput))]
 #endif
@@ -22,6 +22,7 @@ namespace StarterAssets
         [SerializeField] private ActorComponent _actorComponent;
         [SerializeField] private CinemachineData _cinemachineData;
         [SerializeField] private Transform aimObjectPos;
+        [SerializeField] private CharacterController _controller;
 
         private PlayerStateController _stateController = new PlayerStateController();
         private PlayerState _activeState;
@@ -29,7 +30,6 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
 #endif
-        private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;    
 
@@ -43,10 +43,10 @@ namespace StarterAssets
 
         private void Start()
         {
-            _controller = GetComponent<CharacterController>();
+            //_controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
             
-            _stateController.Initialize();
+            _stateController.Initialize(_actorComponent);
             _activeState = _stateController.GetState(PlayerStateType.ALIVE);
             
             #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -55,7 +55,7 @@ namespace StarterAssets
             			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
             #endif
 
-            _activeState.Enter(_actorComponent, _controller, _mainCamera);
+            _activeState.Enter(_controller, _mainCamera);
             _actorComponent.AssignAnimationIDs();
         }
 

@@ -6,13 +6,10 @@ public class BotController : MonoBehaviour
   [SerializeField] private ActorComponent _actorComponent;
   private GameObject _mainCamera;  
   private CharacterController _controller;
-  
+
   private Animator _animator;
   private PlayerStateController _stateController = new PlayerStateController();
   private PlayerState _activeState;
-
-  private bool IsAiming = false;
-  private bool OnGround = true;
 
   private void Awake()
   {
@@ -23,10 +20,10 @@ public class BotController : MonoBehaviour
 
   private void Start()
   {
-    _stateController.Initialize();
+    _stateController.Initialize(_actorComponent);
     _activeState = _stateController.GetState(PlayerStateType.ALIVE);
 
-    _activeState.Enter(_actorComponent, _controller, _mainCamera);
+    _activeState.Enter(_controller, _mainCamera);
     _actorComponent.AssignAnimationIDs();
   }
 
@@ -46,14 +43,9 @@ public class BotController : MonoBehaviour
 
   private void OnDisable()
   {
-    _actorComponent.OnJumpLounch -= LandingValidate;
+    //_actorComponent.OnJumpLounch -= LandingValidate;
     //_controller.OnLanding -= LandingValidate;
 
     //_actorComponent.Weapon.OnShoot -= ShootingCameraEffect;
-  }
-
-  private void LandingValidate(bool OnLand)
-  {
-    OnGround = OnLand;
   }
 }

@@ -16,15 +16,14 @@ public class AliveState : PlayerState, IValidatorsSetter
   private bool _jump;
   private Vector3 _shootingPos;
 
-  public override void Initialize()
+  public override void Initialize(ActorComponent actorComponent)
   {
+    ActorComponent = actorComponent;
     StateType = PlayerStateType.ALIVE;
   }
 
-  public override void Enter(ActorComponent actorComponent,
-                             CharacterController characterController, GameObject mainCamera)
+  public override void Enter(CharacterController characterController, GameObject mainCamera)
   {
-    ActorComponent = actorComponent;
     CharacterController = characterController;
     MainCamera = mainCamera;
 
