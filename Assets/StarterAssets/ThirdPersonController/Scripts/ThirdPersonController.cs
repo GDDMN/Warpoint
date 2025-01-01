@@ -34,29 +34,44 @@ namespace StarterAssets
         private GameObject _mainCamera;    
 
         public event Action<bool> OnLanding;
+
+        public ActorComponent ActorComponent => _actorComponent;
         
         private void Awake()
         {
             if (_mainCamera == null)
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
-
-        private void Start()
+        
+        public void Initialize()
         {
-            //_controller = GetComponent<CharacterController>();
-            _input = GetComponent<StarterAssetsInputs>();
-            
+            InitializeInput();
+            AssingAnimationsID();
+            InitializeStateController();
+        }
+
+        private void InitializeStateController()
+        {
             _stateController.Initialize(_actorComponent);
             _activeState = _stateController.GetState(PlayerStateType.ALIVE);
             _actorComponent.OnDeath += (delegate { StartNewState(PlayerStateType.DEAD); });
+
+            StartNewState(PlayerStateType.ALIVE);
+        }  
+
+        private void InitializeInput()
+        {
+            _input = GetComponent<StarterAssetsInputs>();
             
             #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-                        _playerInput = GetComponent<PlayerInput>();
+                _playerInput = GetComponent<PlayerInput>();
             #else
-            			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
+            	Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
             #endif
+        }
 
-            _activeState.Enter(_controller, _mainCamera);
+        private void AssingAnimationsID()
+        {
             _actorComponent.AssignAnimationIDs();
         }
 

@@ -21,14 +21,11 @@ public class ThirdPersonShooterController : MonoBehaviour
 
   private Vector2 SCREEN_CENTER_POINT = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
-  private void Awake()
+  public void Initialize()
   {
     _controller = GetComponent<ThirdPersonController>();
     _inputs = GetComponent<StarterAssetsInputs>();
-  }
 
-  private void Start()
-  {
     _actorComponent.OnJumpLounch += LandingValidate;
     _actorComponent.OnWeaponPickUp += AccesWeaponSettings;
     _controller.OnLanding += LandingValidate;
