@@ -54,13 +54,13 @@ public class WeaponProvider : MonoBehaviour
   public void Initialize(ITimeReceiver receiver)
   {
     ReloadWeapon();
-    OnReload += delegate{ ReloadWeapon(); };
     _timeReceiver = receiver;
   }
 
   public void ReloadWeapon()
   {
     ammo = Data.AmmoCapacity;
+    OnReload?.Invoke();
   }
 
   private void OnDisable()
