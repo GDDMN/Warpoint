@@ -29,6 +29,7 @@ public class AliveState : PlayerState, IValidatorsSetter
     ActorComponent.Health = 100;
 
     ActorComponent.ActorValidators.IsAlive = true;
+    ActorComponent.Animator.enabled = true;
   }
 
   public void SetValidatorsValue(bool isAiming, bool isShooting, bool isSprint, bool isCrouch, bool isReloading, Vector2 moveDirection, bool isAnalogMovement, bool isJump, Vector2 shootingPos)
