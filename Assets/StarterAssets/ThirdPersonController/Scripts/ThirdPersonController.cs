@@ -54,7 +54,7 @@ namespace StarterAssets
         {
             _stateController.Initialize(_actorComponent);
             _activeState = _stateController.GetState(PlayerStateType.ALIVE);
-            _actorComponent.OnDeath += (delegate { StartNewState(PlayerStateType.DEAD); });
+            _actorComponent.OnDeath += properties => { StartNewState(PlayerStateType.DEAD); };
 
             StartNewState(PlayerStateType.ALIVE);
         }  

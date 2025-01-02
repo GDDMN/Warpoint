@@ -167,8 +167,13 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
   private Coroutine _shootRoutine = null;
 
   private int _health;
-  public int Health => _health;
-  public event Action OnDeath;
+  public int Health 
+  { 
+    set => _health = value;
+    get => _health;
+  }
+
+  public event Action<PlayerStateType> OnDeath;
   [SerializeField] private GameObject _prefab;
 
   private void Start()
@@ -473,6 +478,7 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
     if(!_actorValidators.IsAlive)
     {
       ConstaintValidate(false, false);
+      return;
     }
 
     if(_isReloading)
@@ -639,10 +645,11 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
 
     public void Die()
     {
+      OnDeath?.Invoke(PlayerStateType.DEAD);
+      _actorValidators.IsAlive = false;
+
       LayersWeightController(false);
       ConstaintController();
-
-      OnDeath?.Invoke();
     }
 
     public void Interaction(Vector3 position, int damage)
@@ -651,5 +658,11 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
 
       Debug.Log(_health);
       Hurt(damage);
+    }
+
+    public IEnumerator DeactivateAnimatorRoutine()
+    {
+      yield return new WaitForSeconds(0.7f);
+      _animator.enabled = false;
     }
 }

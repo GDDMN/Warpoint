@@ -6,6 +6,8 @@ public class HurtableCube : MonoBehaviour, IHurtable
   [SerializeField] private AudioSource _coundPlayer;
   [SerializeField] private AudioClip _interactAudioClip;
 
+  [SerializeField] private SceneManagerScript SceneManager;
+
   public void Die()
   {
   }
@@ -16,8 +18,10 @@ public class HurtableCube : MonoBehaviour, IHurtable
 
   public void Interaction(Vector3 position, int damage)
   {
+    SceneManager?.SetBotsAlive();
+
     var fx = Instantiate(_prefab, position, Quaternion.identity);
-    
+
     if (_coundPlayer != null)
       _coundPlayer.PlayOneShot(_interactAudioClip);
   }

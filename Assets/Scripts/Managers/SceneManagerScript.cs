@@ -10,16 +10,24 @@ public class SceneManagerScript : MonoBehaviour
     [SerializeField] private List<Transform> BotSpawnersPoint;
     private UIMainConteiner uiConteinerInstance;
     private GameObject _player = null;
+    private List<GameObject> _bots = new List<GameObject>();
+
     private ThirdPersonController _playerController = null;
     private ThirdPersonShooterController _shooterController = null;
     private void Start()
     {
+        _bots.Clear();
         uiConteinerInstance = UIMainConteiner.Instance;
         uiConteinerInstance.Initialize();
 
         uiConteinerInstance.GetWindowByType<UIGameHud>().Initialize();
 
         InitializePlayer();
+
+        for(int i=0;i < BotSpawnersPoint.Count; i++)
+        {
+            InitializeBot(BotSpawnersPoint[i]);
+        }
     }
 
     private void InitializePlayer()
@@ -40,9 +48,21 @@ public class SceneManagerScript : MonoBehaviour
         uiConteinerInstance.GetWindowByType<UIGameHud>().weaponBar.SetValuesOfPickedWeapon(actualAmmoCurrent ,ammoCopacity);                                                                                                                                                      
     }
 
-    private void InitializeBot()
+    private void InitializeBot(Transform botSpawnPoint)
     {
+        var bot = Instantiate(BotController, botSpawnPoint.position, botSpawnPoint.rotation);
+        bot.GetComponent<BotController>().Initialize();
 
+        _bots.Add(bot);
+    }
+
+    public void SetBotsAlive()
+    {
+        foreach(var bot in _bots)
+        {
+            bot.GetComponent<BotController>().StartNewState(PlayerStateType.ALIVE);
+            bot.GetComponent<BotController>().Animator.SetTrigger("AliveTrigger");
+        }
     }
 
     private void OnPlayerPickUpWeapon()

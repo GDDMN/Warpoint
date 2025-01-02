@@ -10,25 +10,27 @@ public class BotController : MonoBehaviour
   private Animator _animator;
   private PlayerStateController _stateController = new PlayerStateController();
   private PlayerState _activeState;
+  public Animator Animator => _animator;
 
   private void Awake()
   {
-    _animator = GetComponent<Animator>();
-    _controller = GetComponent<CharacterController>();
-    _mainCamera = new GameObject("bot controller camera object");
   }
 
-  private void Start()
+  public void Initialize()
   {
+    _animator = _actorComponent.GetComponent<Animator>();
+    _controller = _actorComponent.GetComponent<CharacterController>();
+    _mainCamera = new GameObject("bot controller camera object");
+
     _stateController.Initialize(_actorComponent);
     _activeState = _stateController.GetState(PlayerStateType.ALIVE);
-    _actorComponent.OnDeath += (delegate { StartNewState(PlayerStateType.DEAD); });
-
-    _activeState.Enter(_controller, _mainCamera);
+    _actorComponent.OnDeath += properties => { StartNewState(PlayerStateType.DEAD); };
+    
+    StartNewState(PlayerStateType.ALIVE);
     _actorComponent.AssignAnimationIDs();
   }
 
-  private void StartNewState(PlayerStateType type)
+  public void StartNewState(PlayerStateType type)
   {
     _activeState = _stateController.GetState(type);
     _activeState.Enter(_controller, _mainCamera);

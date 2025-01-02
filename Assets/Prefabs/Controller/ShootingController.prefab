@@ -401,7 +401,8 @@ MonoBehaviour:
   _IKConstaint: {fileID: 6439955922146905775}
   _constraintRightHand: {fileID: 8820581960513567642}
   _constaintBack: {fileID: 1547519073}
-  Animator: {fileID: 0}
+  aimObject: {fileID: 0}
+  _prefab: {fileID: 195360, guid: a3c24a5ae068ed44d950af671f99cc21, type: 3}
 --- !u!82 &1247281150903100126
 AudioSource:
   m_ObjectHideFlags: 0

@@ -14,8 +14,11 @@ public class DeadState : PlayerState
     int deathTypeAnimation = Random.Range(0, 5);
     ActorComponent.Animator.SetInteger("DeathAnimationValue", deathTypeAnimation);
 
-    ActorComponent.ActorValidators.IsAlive = false;
     ActorComponent.Animator.SetTrigger("DeadTrigger");
+    
+    ActorComponent.ActorValidators.IsAlive = false;
+    ActorComponent.Animator.SetBool("IsAlive", false);
+
   }
 
   private void SetDeathAnimation()

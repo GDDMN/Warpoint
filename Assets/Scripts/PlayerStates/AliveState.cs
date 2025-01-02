@@ -26,8 +26,9 @@ public class AliveState : PlayerState, IValidatorsSetter
   {
     CharacterController = characterController;
     MainCamera = mainCamera;
+    ActorComponent.Health = 100;
 
-    //_cinemachineTargetYaw = cinemachineData.CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+    ActorComponent.ActorValidators.IsAlive = true;
   }
 
   public void SetValidatorsValue(bool isAiming, bool isShooting, bool isSprint, bool isCrouch, bool isReloading, Vector2 moveDirection, bool isAnalogMovement, bool isJump, Vector2 shootingPos)
