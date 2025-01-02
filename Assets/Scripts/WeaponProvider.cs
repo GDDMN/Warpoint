@@ -1,13 +1,15 @@
 using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
 using System;
+using TMPro;
 
 public class WeaponProvider : MonoBehaviour
 {
+  private const float HIPS_COOLDOWN_TIME = 0.13f;
+  public string GunplayAnimName; 
+  public string ReloadingAnimName;
   public WeaponType weaponType;
   public WeaponData Data;
-
   public Animator Animator;
 
   public TrailRenderer BulletTracer;
@@ -19,45 +21,120 @@ public class WeaponProvider : MonoBehaviour
   public ParticleSystem _fireParticles;
   public AudioSource WeaponSounds;
 
-  private bool alreadyShooting = false;
+  private bool _alreadyShooting = false;
+
+  private bool _shootValidate = false;
   private Coroutine coroutine;
+  private Coroutine cooldownCoroutine = null;
   private Vector3 _direction;
 
   private float shootingTime = 0f;
   private float spread = 0f;
 
-
   public event Action OnShoot;
 
-  public void Initialize()
+  private int ammo;
+
+  public int CurrentAmmo => ammo;
+
+  private float _normolizedTime = 0f;
+
+  public float NormolizedShootTime => _normolizedTime;
+
+  public ITimeReceiver _timeReceiver; // Интерфейс для передачи значения
+
+  public event Action OnReload;
+
+    // Интерфейс для приёма значения normalizedTime
+  public interface ITimeReceiver
   {
+      void UpdateTime(float time);
+  }
+
+  public void Initialize(ITimeReceiver receiver)
+  {
+    ReloadWeapon();
+    _timeReceiver = receiver;
+  }
+
+  public void ReloadWeapon()
+  {
+    ammo = Data.AmmoCapacity;
+    OnReload?.Invoke();
+  }
+
+  private void OnDisable()
+  {
+    _alreadyShooting = false;
+    _fireParticles.Stop();
+    shootingTime = 0f;
+
+    if (coroutine != null)
+      StopCoroutine(coroutine);
+  }
+
+  private void OnDestroy()
+  {
+    _alreadyShooting = false;
+    _fireParticles.Stop();
+    shootingTime = 0f;
+
+    if (coroutine != null)
+      StopCoroutine(coroutine);
+  }
+
+  public void AtTheReadyPlaySound()
+  {
+    WeaponSounds.PlayOneShot(Data.AtTheReadySound);
   }
 
   public void ShootValidate(bool validate, Vector3 direction, bool isAiming)
   {
-    if (validate)
+    if (validate && (isAiming || _shootValidate))
     {
       _direction = direction;
       StartShootRoutine(isAiming);
-      alreadyShooting = true;
+      _alreadyShooting = true;
+    }
+    else if(validate && !isAiming)
+    {
+      if(cooldownCoroutine == null)
+        cooldownCoroutine = StartCoroutine(HipsShootingCooldown());
     }
     else
     {
-      alreadyShooting = false;
-      _fireParticles.Stop();
-      shootingTime = 0f;
+      _alreadyShooting = false;
+      _shootValidate = false;
 
+      _fireParticles.Stop();
+      Data.Spread.RestartSpread();
+      shootingTime = 0f;
+      
       if(coroutine != null)
         StopCoroutine(coroutine);
+
+      if(cooldownCoroutine != null)
+      {
+        StopCoroutine(cooldownCoroutine);
+        cooldownCoroutine = null;
+      }
     }
+  }
+
+  private IEnumerator HipsShootingCooldown()
+  {
+    Debug.Log("Start Shooting Cooldown");
+    yield return new WaitForSeconds(HIPS_COOLDOWN_TIME);
+    _shootValidate = true;
+    Debug.Log("End Shooting Cooldown");
+    
   }
 
   private void StartShootRoutine(bool isAiming)
   {
-    if (alreadyShooting)
+    if (_alreadyShooting || ammo <= 0)
       return;
 
-    
     coroutine = StartCoroutine(ShootRoutine(isAiming));
   }
 
@@ -65,25 +142,39 @@ public class WeaponProvider : MonoBehaviour
   {
     while(true)
     {
-      Vector3 spreading = SpreadPos(isAiming);
-      shootingTime += 0.4f * Time.deltaTime;
-      Shoot(spreading);
-      yield return new WaitForSecondsRealtime(Data.RecoverySpeed);
+      Shoot();
+      _normolizedTime = 0f;
+
+      while(_normolizedTime < 1f)
+      {
+        yield return null;
+        _normolizedTime += 1f / Data.RecoverySpeed * Time.deltaTime;
+        _normolizedTime = Mathf.Clamp(_normolizedTime, 0f, 1f);
+        
+        _timeReceiver?.UpdateTime(_normolizedTime);
+      }
     }
   }
 
-  private void Shoot(Vector3 spread)
+  private void Shoot()
   {
+    if (ammo <= 0)
+      return;
+
+    Vector3 spread = Data.Spread.GetSpreadPos();
+
+    ammo--;
     RaycastHit hit;
     Ray ray = new Ray();
     ray.origin = RaycastOrigin.position;
     ray.direction = RaycastOrigin.forward + spread;
-    
-    EffectsPlay(ray.origin, AimTargetObj.position + spread);
+    float distance = Vector3.Distance(ray.origin, AimTargetObj.position);
+
+    EffectsPlay(ray.origin, AimTargetObj.position + (spread * (distance/3)));
 
     OnShoot?.Invoke();
 
-    if(Physics.Raycast(ray.origin, (AimTargetObj.position + spread) - ray.origin, out hit))
+    if(Physics.Raycast(ray.origin, (AimTargetObj.position + (spread * (distance/3))) - ray.origin, out hit))
     {
       SetDamage(hit);
     }
@@ -98,26 +189,11 @@ public class WeaponProvider : MonoBehaviour
     hurtableObject.Interaction(hit.point, Data.Damage);
   }
 
-  private Vector3 SpreadPos(bool isAiming)
-  {
-    spread = shootingTime * Data.DeltaSpread;
-    
-    if(isAiming)
-      spread = Mathf.Clamp(spread, 0f, Data.AimMaxSpread);
-    else
-      spread = Mathf.Clamp(spread, 0f, Data.HipMaxSpread);
-
-    Vector3 spreading = new Vector3(UnityEngine.Random.Range(-spread, spread), UnityEngine.Random.Range(-spread, spread), 0f);
-    return spreading;
-  }
-
   private void EffectsPlay(Vector3 originPos, Vector3 endPos)
   {
     WeaponSounds.PlayOneShot(Data.ShootSound);
     _fireParticles.Play();
     var trace = Instantiate(BulletTracer, originPos, Quaternion.identity);
-
-    //Animator.SetTrigger("Shoot");
 
     trace.AddPosition(originPos);
     trace.transform.position = endPos;

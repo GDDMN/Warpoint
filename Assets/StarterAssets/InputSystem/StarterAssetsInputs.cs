@@ -17,6 +17,7 @@ namespace StarterAssets
 		public bool aim;
 		public bool cruch;
 		public bool shooting;
+		public bool reloading;
 
 		public bool cameraSide = true;
 
@@ -70,6 +71,11 @@ namespace StarterAssets
 			ChangeCameraSide(!cameraSide);
     }
 
+		public void OnReloading(InputValue value)
+    {
+			ReloadingInput(value.isPressed);
+    }
+
 #endif
     public void MoveInput(Vector2 newMoveDirection)
 		{
@@ -117,6 +123,11 @@ namespace StarterAssets
 		private void ChangeCameraSide(bool unversdCameraSide)
 		{
 			cameraSide = unversdCameraSide;
+		}
+
+		private void ReloadingInput(bool newReloadingState)
+    	{
+			reloading = newReloadingState;
 		}
 	}
 }

@@ -1,89 +1,79 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.InputSystem;
+﻿using UnityEngine;
 
-public class AliveState : PlayerState
+public class AliveState : PlayerState, IValidatorsSetter
 {
   private float _cinemachineTargetYaw;
   private float _cinemachineTargetPitch;
   private const float _threshold = 0.01f;
 
-  private bool IsCurrentDeviceMouse
-  {
-    get
-    {
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-      return PlayerInput.currentControlScheme == "KeyboardMouse";
-#else
-				return false;
-#endif
-    }
-  }
+  private bool _aiming;
+  private bool _shooting;
+  private bool _sprinting;
+  private bool _crouch;
+  private bool _reloading;
+  private Vector2 _moveDirection;
+  private bool _analogMovement;
+  private bool _jump;
+  private Vector3 _shootingPos;
 
-  public override void Initialize()
+  public override void Initialize(ActorComponent actorComponent)
   {
+    ActorComponent = actorComponent;
     StateType = PlayerStateType.ALIVE;
   }
 
-  public override void Enter(ActorComponent actorComponent, CinemachineData cinemachineData,
-                             CharacterController characterController, StarterAssets.StarterAssetsInputs inputs,
-                             GameObject mainCamera, PlayerInput playerInput)
+  public override void Enter(CharacterController characterController, GameObject mainCamera)
   {
-    ActorComponent = actorComponent;
-    CinemachineData = cinemachineData;
     CharacterController = characterController;
-    Input = inputs;
     MainCamera = mainCamera;
-    PlayerInput = playerInput;
+    ActorComponent.Health = 100;
 
-    _cinemachineTargetYaw = CinemachineData.CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+    ActorComponent.ActorValidators.IsAlive = true;
+  }
+
+  public void SetValidatorsValue(bool isAiming, bool isShooting, bool isSprint, bool isCrouch, bool isReloading, Vector2 moveDirection, bool isAnalogMovement, bool isJump, Vector2 shootingPos)
+  {
+    _aiming = isAiming;
+    _shooting = isShooting;
+    _sprinting = isSprint;
+    _crouch = isCrouch;
+    _reloading = isReloading;
+
+    _moveDirection = moveDirection;
+    _shootingPos = shootingPos;
+    _analogMovement = isAnalogMovement;
+    _jump = isJump;
   }
 
   public override void Update()
   {
     //Внимательно смотрим за последовательностью команд
-    ActorComponent.JumpAndGravity(Input);
+    ActorComponent.ActorValidators.SetActorStateValidators(_aiming, _shooting , _sprinting, _crouch, 
+                                          _reloading, _moveDirection, _analogMovement, _shootingPos);
+
+    ActorComponent.JumpAndGravity(_jump);
     ActorComponent.GroundedCheck();
-    ActorComponent.Move(Input, CinemachineData, CharacterController, MainCamera);
-    ActorComponent.Aiming(Input, CinemachineData);
-    ActorComponent.Shooting(Input);
-    ActorComponent.Cruch(Input);
+    ActorComponent.Move(CharacterController, MainCamera);
+
+    ActorComponent.Reloading();
+    ActorComponent.Aiming();
+    ActorComponent.Shooting();
+    ActorComponent.Cruch();
+    ActorComponent.LegsMotionValidator();
   }
 
-  public override void LateUpdate()
+  private void SetActorValidators()
   {
-    CameraRotation();
-  }
-
-  private void CameraRotation()
-  {
-    // if there is an input and camera position is not fixed
-    if (Input.look.sqrMagnitude >= _threshold && !CinemachineData.LockCameraPosition)
-    {
-      //Don't multiply mouse input by Time.deltaTime;
-      float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-
-      _cinemachineTargetYaw += Input.look.x * deltaTimeMultiplier * CinemachineData.Sensativity;
-      _cinemachineTargetPitch += Input.look.y * deltaTimeMultiplier * CinemachineData.Sensativity;
-    }
-
-    // clamp our rotations so our values are limited 360 degrees
-    _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-    _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, CinemachineData.BottomClamp, CinemachineData.TopClamp);
-
-    // Cinemachine will follow this target
-    CinemachineData.CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CinemachineData.CameraAngleOverride,
-        _cinemachineTargetYaw, 0.0f);
-  }
-
-  private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
-  {
-    if (lfAngle < -360f) lfAngle += 360f;
-    if (lfAngle > 360f) lfAngle -= 360f;
-    return Mathf.Clamp(lfAngle, lfMin, lfMax);
   }
 
   public override void Exit()
   {
   }
+}
+
+public interface IValidatorsSetter
+{
+  void SetValidatorsValue(bool isAiming, bool isShooting, bool isSprint, 
+                          bool isCrouch, bool isReloading, Vector2 moveDirection, 
+                          bool isAnalogMovement, bool isJump, Vector2 shootingPos);
 }

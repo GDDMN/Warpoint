@@ -1,9 +1,6 @@
 using UnityEngine;
 using Cinemachine;
 using StarterAssets;
-using System;
-using UnityEngine.Animations.Rigging;
-using DG.Tweening;
 
 public class ThirdPersonShooterController : MonoBehaviour
 {
@@ -15,33 +12,28 @@ public class ThirdPersonShooterController : MonoBehaviour
   [SerializeField] private float normalSensativity;
   [SerializeField] private float aimSensativity;
   [SerializeField] private Transform _aimObject;
-  [SerializeField] private Transform _aimCamObj;
-
-  [Header("Weapon")]
-  [SerializeField] private WeaponProvider weapon;
 
   private ThirdPersonController _controller;
   private StarterAssetsInputs _inputs;
-  private Animator _animator;
 
   private bool IsAiming = false;
   private bool OnGround = true;
 
   private Vector2 SCREEN_CENTER_POINT = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
-  private void Awake()
+  public void Initialize()
   {
-    _animator = GetComponent<Animator>();
     _controller = GetComponent<ThirdPersonController>();
     _inputs = GetComponent<StarterAssetsInputs>();
+
+    _actorComponent.OnJumpLounch += LandingValidate;
+    _actorComponent.OnWeaponPickUp += AccesWeaponSettings;
+    _controller.OnLanding += LandingValidate;
   }
 
-  private void Start()
+  private void AccesWeaponSettings()
   {
-    _actorComponent.OnJumpLounch += LandingValidate;
-    _controller.OnLanding += LandingValidate;
-
-    weapon.OnShoot += ShootingCameraEffect;
+    _actorComponent.Weapon.OnShoot += ShootingCameraEffect;
   }
 
   private void Update()
@@ -55,7 +47,7 @@ public class ThirdPersonShooterController : MonoBehaviour
     _actorComponent.OnJumpLounch -= LandingValidate;
     _controller.OnLanding -= LandingValidate;
 
-    weapon.OnShoot -= ShootingCameraEffect;
+    _actorComponent.Weapon.OnShoot -= ShootingCameraEffect;
   }
 
   private void LandingValidate(bool OnLand)
@@ -65,7 +57,7 @@ public class ThirdPersonShooterController : MonoBehaviour
   
   private void ShootingCameraEffect()
   {
-    CinemachineShake.ShootingShake(_aimVirtualCamera, weapon.Data.RecoverySpeed);
+    CinemachineShake.ShootingShake(_aimVirtualCamera, _actorComponent.Weapon.Data.RecoverySpeed);
     
   }
 
@@ -91,9 +83,9 @@ public class ThirdPersonShooterController : MonoBehaviour
     _controller.SetSensativity(aimSensativity);
 
     Vector3 worldAimTarget = mouseWorldPoint;
-    worldAimTarget.y = transform.position.y;
+    worldAimTarget.y = _actorComponent.transform.position.y;
 
-    Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
-    transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * 20f);
+    Vector3 aimDirection = (worldAimTarget - _actorComponent.transform.position).normalized;
+    _actorComponent.transform.forward = Vector3.Lerp(_actorComponent.transform.forward, aimDirection, Time.deltaTime * 20f);
   }
 }

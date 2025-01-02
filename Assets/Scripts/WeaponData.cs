@@ -12,9 +12,11 @@ public struct WeaponData
   public int AmmoCapacity;
   public float ReloadingSpeed;
   public float RecoverySpeed;
-  public float HipMaxSpread;
-  public float AimMaxSpread;
-  public float DeltaSpread;
+
+  [Header("Spread sprite")]
+  public Spread Spread;
+  public float SpreadFactor;
+
   public int Damage;
 
 
@@ -23,4 +25,30 @@ public struct WeaponData
 
   [Header("Sound data")]
   public AudioClip ShootSound;
+  public AudioClip AtTheReadySound;
+
+  [Header("Left hand point")]
+  public Transform LeftHandPoint;
+}
+
+[Serializable]
+public class Spread
+{
+  [SerializeField] private Vector2[] _spreadPos;
+  private int _iterator;
+  public Vector2 GetSpreadPos()
+  {
+    Vector2 value = _spreadPos[_iterator];
+    _iterator++;
+    
+    if(_iterator >= _spreadPos.Length)
+      _iterator = 0;
+
+    return value;
+  }
+
+  public void RestartSpread()
+  {
+    _iterator = 0;
+  }
 }

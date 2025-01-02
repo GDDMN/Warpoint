@@ -1,12 +1,92 @@
 ﻿using UnityEngine;
-using StarterAssets;
 using System;
 using UnityEngine.Animations.Rigging;
+using System.Collections;
+using static WeaponProvider;
 
-public class ActorComponent : MonoBehaviour
+public class ActorValidators
 {
+  public bool IsAlive = true;
+  public bool IsAiming = false;
+  public bool IsShooting = false;
+  public bool IsSprint = false;
+  public bool IsReloading = false;
+  public bool IsCrouch = false;
+  public bool IsAnalogMovement = false;
+  public bool IsJumping = false;
+  public Vector2 MoveDirection;
+  public Vector3 ShootingPos;
+
+  public void SetActorStateValidators(bool isAiming, bool isShooting, bool isSprint, bool isCrouch, bool isReloading, Vector2 moveDirection, bool isAnalogMovement, Vector3 shootigPos)
+  {
+    IsAlive = true;
+    IsAiming = isAiming;
+    IsShooting = isShooting;
+    IsSprint = isSprint;
+    IsCrouch = isCrouch;
+    IsReloading = isReloading;
+    ShootingPos = shootigPos;
+
+    MoveDirection = moveDirection;
+    IsAnalogMovement = isAnalogMovement;
+  }
+
+  public bool CheckActorDefaultState()
+  {
+    return IsAlive && 
+          !IsAiming && 
+          !IsShooting;
+  }
+
+  public bool IsAimingActorState()
+  {
+    return IsAlive && 
+           IsAiming && 
+          !IsReloading;
+  }
+
+  public bool IsShootingActorState()
+  {
+    return IsAlive && 
+           IsShooting && 
+          !IsReloading;
+  }
+
+  public bool IsCrouchingActorState()
+  {
+    return IsAlive && 
+           IsCrouch && 
+          !IsShooting;
+  }
+
+  public bool IsSprintingActorState()
+  {
+    return IsAlive && 
+           IsSprint && 
+          !IsAiming && 
+          !IsShooting && 
+          !IsCrouch && 
+          !IsReloading; 
+  }
+
+  public bool IsReloadingState()
+  {
+    return IsAlive && 
+           IsReloading &&
+           !IsSprint;
+  }
+
+}
+
+public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
+{
+  private const float HIPS_ROTATION_ANGLE_LIMIT = 30.0f;
+  private const float HIPS_COOLDOWN_TIME = 0.13f;
+
+  private const int MAX_HEALTH_POINTS = 100;
   [SerializeField] private ActorData _data;
   [SerializeField] private WeaponProvider _weaponProvider;
+  [SerializeField] private RigBuilder rigBuilder;
 
   [Header("Constains")]
   [SerializeField] private TwoBoneIKConstraint _IKConstaint;
@@ -15,18 +95,16 @@ public class ActorComponent : MonoBehaviour
 
   [SerializeField] private Transform aimObject;
 
-  private bool _isAiming = false;
-  private bool _isShooting = false;
+  [SerializeField] private ActorValidators _actorValidators = new ActorValidators();
+  public ActorValidators ActorValidators => _actorValidators;
 
-  private Vector3 RIFLE_CONSTAIN_BODY_OFFSET { get { return new Vector3(-40, -10, 20); } }
+  private Vector3 RIFLE_CONSTAIN_BODY_OFFSET { get { return new Vector3(-60, -10, 20); } }
   private Vector3 PISTOL_CONSTAIN_BODY_OFFSET { get { return new Vector3(-15, 0, 0); } }
 
-  // player
-  private bool _isAlive = true;
   private float _speed;
   private float _animationBlend;
   private float _targetRotation = 0.0f;
-  private float _rotationVelocity;
+  private float _rotationVelocity = 0.3f;
   private float _verticalVelocity;
   private float _terminalVelocity = 53.0f;
 
@@ -43,6 +121,7 @@ public class ActorComponent : MonoBehaviour
 
   private bool _hasAnimator;
   private Animator _animator;
+  public Animator Animator => _animator;
 
   private Vector2 realDirection = Vector2.zero;
   private Vector2 lastDirection = Vector2.zero;
@@ -55,12 +134,47 @@ public class ActorComponent : MonoBehaviour
 
   public bool OnGround => _data.Grounded;
 
+  public WeaponProvider Weapon => _weaponProvider;
 
   public readonly float LEGS_STEP_SPEED = 0.1f;
 
-  public bool IsAlive => _isAlive;
+  public bool IsAlive => _actorValidators.IsAlive;
 
   public event Action<bool> OnJumpLounch;
+
+  public event Action<bool> EndReloading;
+
+  public event Action OnWeaponPickUp;
+
+  private float _hipsShootCooldownTime = 1f;
+  private float _hipsShootCooldownCurrentTime = 0f;
+  private const float _hipsShootCooldownSpeed = 0.5f;
+
+  private float _normolizedTime = 0f;
+
+  private bool _isPlayingShootRoutine = false;
+
+
+  private bool _shootingIsAvaliable = false;
+
+  private bool _isOnGroundIssue = true;
+  private Coroutine _onGRoundRoutineIssue = null;
+
+  private bool _isTheReadyWeaponIssued = false;
+  
+  private bool _isReloading = false;
+  private Coroutine _reloadingCoroutine = null;
+  private Coroutine _shootRoutine = null;
+
+  private int _health;
+  public int Health 
+  { 
+    set => _health = value;
+    get => _health;
+  }
+
+  public event Action<PlayerStateType> OnDeath;
+  [SerializeField] private GameObject _prefab;
 
   private void Start()
   {
@@ -70,10 +184,14 @@ public class ActorComponent : MonoBehaviour
     _fallTimeoutDelta = FallTimeout;
 
     PickUpWeapon(_weaponProvider);
+    _health = MAX_HEALTH_POINTS;
   }
 
-  public void Update()
+  private void Update()
   {
+    bool layersWeightValidator = (_actorValidators.IsAimingActorState() || _actorValidators.IsShootingActorState()) && _data.Grounded;
+
+    LayersWeightController(layersWeightValidator);
     ConstaintController();
   }
 
@@ -109,74 +227,120 @@ public class ActorComponent : MonoBehaviour
       OnJumpLounch?.Invoke(false);
   }
 
-  public void Cruch(StarterAssetsInputs inputs)
+  public void Cruch()
   {
-    _animator.SetBool("Cruch", inputs.cruch);
+    _animator.SetBool("Cruch", _actorValidators.IsCrouch);
   }
 
-  public void Aiming(StarterAssetsInputs inputs, CinemachineData cinemachineData)
+  public void Aiming()
   {
-    _isAiming = inputs.aim;
-
-    if (cinemachineData.weaponProvider.weaponType == WeaponType.NO_WEAPON)
+    if (_weaponProvider.weaponType == WeaponType.NO_WEAPON || !_data.Grounded)
       return;
 
-    _animator.SetBool("Aim", inputs.aim);
-    _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
+    _animator.SetBool("Aim", _actorValidators.IsAiming);
+  }
 
-    if (!inputs.aim || !_data.Grounded)
+  public void Shooting()
+  {
+    if (_data.Grounded)
     {
-      _animator.SetLayerWeight(2, 0);
-      _animator.SetLayerWeight(1, 0);
-      _animator.SetLayerWeight(0, 1);
+      _weaponProvider.ShootValidate(_actorValidators.IsShootingActorState(), transform.forward, _actorValidators.IsAiming);;
+    }
+    else
+    {
+      _weaponProvider.ShootValidate(false, transform.forward, _actorValidators.IsAiming);
+    }
+    
+    PlayShootAnimation();
 
-      realDirection = Vector2.zero;
-      lastDirection = Vector2.zero;
-
+    if (_actorValidators.IsAiming)
       return;
+  }
+
+  private void PlayShootAnimation()
+  {
+    if(_actorValidators.IsAimingActorState() || _actorValidators.IsShootingActorState())
+    {
+      _animator.SetBool("Aim", true);
+    }
+    else if(!_actorValidators.IsAimingActorState())
+    {
+      _animator.SetBool("Aim", false);
     }
 
-    _animator.SetLayerWeight(2, 1);
-    _animator.SetLayerWeight(1, 1);
-    _animator.SetLayerWeight(0, 0);
+    if(_actorValidators.IsShootingActorState() && !_isPlayingShootRoutine && _weaponProvider.CurrentAmmo > 0)
+    {
+      _shootRoutine = StartCoroutine(PlayShootAnimRoutine());
+    }
+  }
 
-    Vector2 direction = new Vector2(inputs.move.x, inputs.move.y);
+  public void UpdateTime(float time)
+  {
+    _normolizedTime = time;
+  }
+
+  private IEnumerator PlayShootAnimRoutine()
+  {
+    if(!_actorValidators.IsAimingActorState())
+      yield return new WaitForSeconds(HIPS_COOLDOWN_TIME);
+
+    _isPlayingShootRoutine = true;
+
+    while(_normolizedTime < 1f)
+    {
+      _normolizedTime = Mathf.Max(_normolizedTime, 0.1f);
+      _animator.Play(_weaponProvider.GunplayAnimName, -1, _normolizedTime);
+      
+      if(!_actorValidators.IsShootingActorState())
+      {
+        _normolizedTime += 1.5f * Time.deltaTime;
+      }
+      yield return null;
+    }
+
+    _animator.Play(_weaponProvider.GunplayAnimName, -1, 1f);
+    _isPlayingShootRoutine = false;
+    _shootRoutine = null;
+  }
+
+  public void LegsMotionValidator()
+  {
+    Vector2 direction = new Vector2(_actorValidators.MoveDirection.x, _actorValidators.MoveDirection.y);
 
     if (Vector2.Distance(lastDirection, direction) > 0.01f)
       realDirection = Vector2.Lerp(lastDirection, direction, LEGS_STEP_SPEED);
 
-    direction.x = Mathf.Clamp(realDirection.x, -1f, 1f);
-    direction.y = Mathf.Clamp(realDirection.y, -1f, 1f);
+    realDirection.x = Mathf.Clamp(realDirection.x, -1.0f, 1.0f);
+    realDirection.y = Mathf.Clamp(realDirection.y, -1.0f, 1.0f);
 
     lastDirection = realDirection;
 
-
-    _animator.SetFloat("MotionX", direction.x);
-    _animator.SetFloat("MotionZ", direction.y);
+    _animator.SetFloat("MotionX", realDirection.x);
+    _animator.SetFloat("MotionZ", realDirection.y);
   }
 
-  public void Move(StarterAssetsInputs inputs, CinemachineData cinemachineData, CharacterController controller, GameObject mainCamera)
+  public void Move(CharacterController controller, GameObject mainCamera)
   {
     // set target speed based on move speed, sprint speed and if sprint is pressed
-    float targetSpeed = inputs.sprint ? _data.SprintSpeed : _data.MoveSpeed;
+    float targetSpeed = _actorValidators.IsSprintingActorState() ? _data.SprintSpeed : _data.MoveSpeed;
 
-    if (inputs.cruch)
+    if (_actorValidators.IsCrouch)
       targetSpeed = _data.CruchSpeed;
 
-    if (cinemachineData.weaponProvider.weaponType != WeaponType.NO_WEAPON)
-      targetSpeed = inputs.aim ? _data.AimSpeed : targetSpeed;
+    if (_weaponProvider.weaponType != WeaponType.NO_WEAPON)
+      targetSpeed = _actorValidators.IsAiming ? _data.AimSpeed : targetSpeed;
 
     // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
     // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
     // if there is no input, set the target speed to 0
-    if (inputs.move == Vector2.zero) targetSpeed = 0.0f;
+    if (_actorValidators.MoveDirection == Vector2.zero) targetSpeed = 0.0f;
 
     // a reference to the players current horizontal velocity
     float currentHorizontalSpeed = new Vector3(controller.velocity.x, 0.0f, controller.velocity.z).magnitude;
 
     float speedOffset = 0.1f;
-    float inputMagnitude = inputs.analogMovement ? inputs.move.magnitude : 1f;
+    float inputMagnitude = _actorValidators.IsAnalogMovement ? _actorValidators.MoveDirection.magnitude : 1f;
 
     // accelerate or decelerate to target speed
     if (currentHorizontalSpeed < targetSpeed - speedOffset ||
@@ -199,11 +363,11 @@ public class ActorComponent : MonoBehaviour
     if (_animationBlend < 0.01f) _animationBlend = 0f;
 
     // normalise input direction
-    Vector3 inputDirection = new Vector3(inputs.move.x, 0.0f, inputs.move.y).normalized;
+    Vector3 inputDirection = new Vector3(_actorValidators.MoveDirection.x, 0.0f, _actorValidators.MoveDirection.y).normalized;
 
     // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
     // if there is a move input rotate player when the player is moving
-    if (inputs.move != Vector2.zero)
+    if (_actorValidators.MoveDirection != Vector2.zero)
     {
       _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                         mainCamera.transform.eulerAngles.y;
@@ -212,7 +376,7 @@ public class ActorComponent : MonoBehaviour
           _data.RotationSmoothTime);
 
       // rotate to face input direction relative to camera position
-      if ((!inputs.aim || cinemachineData.weaponProvider.weaponType == WeaponType.NO_WEAPON) && !_isShooting)
+      if ((!_actorValidators.IsAiming || _weaponProvider.weaponType == WeaponType.NO_WEAPON) && !_actorValidators.IsShooting)
         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
     }
 
@@ -231,8 +395,9 @@ public class ActorComponent : MonoBehaviour
     }
   }
 
-  public void JumpAndGravity(StarterAssetsInputs inputs)
+  public void JumpAndGravity(bool isJump)
   {
+    _actorValidators.IsJumping = isJump;
     if (_data.Grounded)
     {
       // reset the fall timeout timer
@@ -252,7 +417,7 @@ public class ActorComponent : MonoBehaviour
       }
 
       // Jump
-      if (inputs.jump && _jumpTimeoutDelta <= 0.0f)
+      if (_actorValidators.IsJumping && _jumpTimeoutDelta <= 0.0f)
       {
         OnJumpLounch?.Invoke(false);
         // the square root of H * -2 * G = how much velocity needed to reach desired height
@@ -291,7 +456,7 @@ public class ActorComponent : MonoBehaviour
       }
 
       // if we are not grounded, do not jump
-      inputs.jump = false;
+      _actorValidators.IsJumping = false;
     }
 
     // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
@@ -301,16 +466,45 @@ public class ActorComponent : MonoBehaviour
     }
   }
 
+  private void LayersWeightController(bool isLayersActive)
+  {
+    _animator.SetLayerWeight(2, isLayersActive ? 1 : 0);
+    _animator.SetLayerWeight(1, isLayersActive || _isReloading ? 1 : 0);
+    _animator.SetLayerWeight(0, isLayersActive ? 0 : 1);
+  }
+
   private void ConstaintController()
   {
-    if (_isAiming && _data.Grounded)
+    if(!_actorValidators.IsAlive)
     {
+      ConstaintValidate(false, false);
+      return;
+    }
+
+    if(_isReloading)
+    {
+      ConstaintValidate(false, false);
+      return;
+    }
+
+    if(_actorValidators.IsAimingActorState())
+    { 
+      if(_onGRoundRoutineIssue != null)
+        StopCoroutine(_onGRoundRoutineIssue);
+
+      _isOnGroundIssue = true;
+      
       ConstaintValidate(true, true);
       return;
     }
 
-    if (_isShooting && _data.Grounded)
+    if(_actorValidators.IsShootingActorState())
     {
+      if(_onGRoundRoutineIssue != null)
+        StopCoroutine(_onGRoundRoutineIssue);
+
+      _isOnGroundIssue = true;
+      
       ConstaintValidate(true, true);
       return;
     }
@@ -318,6 +512,7 @@ public class ActorComponent : MonoBehaviour
     if (!_data.Grounded)
     {
       ConstaintValidate(false, false);
+      _isOnGroundIssue = false;
       return;
     }
 
@@ -329,7 +524,17 @@ public class ActorComponent : MonoBehaviour
       return;
     }
 
-    ConstaintValidate(true, false);
+    //ConstaintValidate(true, false);
+    if(!_isOnGroundIssue && _data.Grounded)
+    {
+      _onGRoundRoutineIssue = StartCoroutine(WaitForConstainRoutine());
+      return;
+    }
+
+    if(_data.Grounded && _isOnGroundIssue)
+    {
+      ConstaintValidate(true, false);
+    }
   }
 
   private void ConstaintValidate(bool lefthandActive, bool armActive)
@@ -337,6 +542,13 @@ public class ActorComponent : MonoBehaviour
     _IKConstaint.weight = lefthandActive ? 1f : 0f;
     _constaintBack.weight = armActive ? 1f : 0f;
     _constraintRightHand.weight = armActive ? 1f : 0f;
+  }
+
+  private IEnumerator WaitForConstainRoutine()
+  {
+    yield return new WaitForSeconds(2f);
+    //ConstaintValidate(true, false);
+    _isOnGroundIssue = true;
   }
 
   private void ConstaintBodyOffsets(WeaponType type)
@@ -349,69 +561,108 @@ public class ActorComponent : MonoBehaviour
     }
   }
 
-  private void PickUpWeapon(WeaponProvider weaponProvider)
-  {
+  public void PickUpWeapon(WeaponProvider weaponProvider)
+  { 
+    rigBuilder.enabled = false;
+    
     _weaponProvider = weaponProvider;
     _animator.SetInteger("WeaponType", (int)_weaponProvider.weaponType);
 
-    _weaponProvider.OnShoot += ShootAnimationPlay;
-  }
+    _IKConstaint.data.target = weaponProvider.Data.LeftHandPoint;
+    rigBuilder.enabled = true;
 
-  private void ShootAnimationPlay()
-  {
-    _animator.SetTrigger("Shoot");
-  }
-
-  public void Shooting(StarterAssetsInputs inputs)
-  {
-    _isShooting = inputs.shooting;
-    bool sprinting = inputs.sprint;
-    bool aiming = inputs.aim;
-
-    if (!_isShooting)
-    {
-      _weaponProvider.ShootValidate(false, transform.forward, aiming);
-      return;
-    }
-
-    if (_data.Grounded && !sprinting)
-    {
-      _weaponProvider.ShootValidate(_isShooting, transform.forward, aiming);
-    }
-    else
-    {
-      _weaponProvider.ShootValidate(false, transform.forward, aiming);
-    }
-
-    if (_isAiming)
-      return;
-
-    _animator.SetLayerWeight(2, 1);
-    _animator.SetLayerWeight(1, 1);
-    _animator.SetLayerWeight(0, 0);
-
-    Vector2 direction = new Vector2(inputs.move.x, inputs.move.y);
-
-    _animator.SetFloat("MotionX", direction.x);
-    _animator.SetFloat("MotionZ", direction.y);
-
-    //HipShootingRotate(transform, aimObject);
-    //Сделать поворот в сторону цели, если объект находится со спины игрока
+    _weaponProvider.Initialize(this);
+    OnWeaponPickUp?.Invoke();
   }
 
   private void HipShootingRotate(Transform actorForvard, Transform shootingDirection)
   {
-    if (!_isShooting)
+    if (!_actorValidators.IsShootingActorState())
       return;
 
     float angle = Vector3.Angle(shootingDirection.position - actorForvard.position, 
                                 actorForvard.forward);
 
-    Debug.Log(angle);
-
-    if (angle < 70f && angle > -70f)
+    if (angle < 30f && angle > -30f)
       return;
 
-    actorForvard.LookAt(shootingDirection, Vector3.up);
+    Transform lookDirection = new GameObject().transform;
+    
+    lookDirection.position = new Vector3(shootingDirection.position.x, 
+                                         0f, 
+                                         shootingDirection.position.z);
+
+    actorForvard.LookAt(lookDirection, Vector3.up);
   }
+
+  public void Reloading()
+  {
+    if(!_actorValidators.IsReloadingState())
+    {
+      return;
+    }
+
+    if(_isReloading || _reloadingCoroutine != null)
+      return;
+
+    if(_shootRoutine != null)
+    {
+      StopCoroutine(_shootRoutine);
+      _shootRoutine = null;
+    }
+
+    _isReloading = true;
+    _animator.Play(_weaponProvider.ReloadingAnimName, 1);
+
+    _reloadingCoroutine = StartCoroutine(ReloadingRoutine());
+  }
+
+  private IEnumerator ReloadingRoutine()
+  {
+    _actorValidators.IsReloading = true;
+    Debug.Log("Start reloading");
+    yield return new WaitForSeconds(_weaponProvider.Data.ReloadingSpeed);
+    
+    _isReloading = false;
+    _actorValidators.IsReloading = false;
+    
+    _weaponProvider.ReloadWeapon();
+    
+    StopCoroutine(_reloadingCoroutine);
+    _reloadingCoroutine = null;
+    Debug.Log("Stop reloading");
+  }
+
+    public void Hurt(int damage)
+    {
+      _health -= damage;
+      
+      if(_health <= 0 && _actorValidators.IsAlive)
+      {
+        Die();
+      }
+    }
+
+    public void Die()
+    {
+      OnDeath?.Invoke(PlayerStateType.DEAD);
+      _actorValidators.IsAlive = false;
+
+      LayersWeightController(false);
+      ConstaintController();
+    }
+
+    public void Interaction(Vector3 position, int damage)
+    {
+      var fx = Instantiate(_prefab, position, Quaternion.identity);
+
+      Debug.Log(_health);
+      Hurt(damage);
+    }
+
+    public IEnumerator DeactivateAnimatorRoutine()
+    {
+      yield return new WaitForSeconds(0.7f);
+      _animator.enabled = false;
+    }
 }

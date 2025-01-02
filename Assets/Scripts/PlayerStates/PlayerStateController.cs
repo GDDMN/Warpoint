@@ -3,17 +3,20 @@
 public class PlayerStateController
 {
   private List<PlayerState> _allStates = new List<PlayerState>();
+  private ActorComponent _actorComponent;
 
-  public void Initialize()
+  public void Initialize(ActorComponent actorComponent)
   {
+    _actorComponent = actorComponent;
+
     ExpectationState expectationState = new ExpectationState();
-    expectationState.Initialize();
+    expectationState.Initialize(_actorComponent);
 
     AliveState aliveState = new AliveState();
-    aliveState.Initialize();
+    aliveState.Initialize(_actorComponent);
 
     DeadState deadState = new DeadState();
-    deadState.Initialize();
+    deadState.Initialize(_actorComponent);
 
     _allStates.Add(expectationState);
     _allStates.Add(aliveState);

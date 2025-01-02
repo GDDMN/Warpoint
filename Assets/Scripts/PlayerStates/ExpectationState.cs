@@ -1,25 +1,18 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.InputSystem;
+﻿using UnityEngine;
 
 public class ExpectationState : PlayerState
 {
-  public override void Initialize()
+  public override void Initialize(ActorComponent actorComponent)
   {
+    ActorComponent = actorComponent;
     StateType = PlayerStateType.EXPECTATION;
   }
 
-  public override void Enter(ActorComponent actorComponent, CinemachineData cinemachineData,
-                             CharacterController characterController, StarterAssets.StarterAssetsInputs inputs,
-                             GameObject mainCamera, PlayerInput playerInput)
+  public override void Enter(CharacterController characterController, GameObject mainCamera)
   {
   }
 
   public override void Update()
-  {
-  }
-
-  public override void LateUpdate()
   {
   }
 
