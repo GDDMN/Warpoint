@@ -54,7 +54,9 @@ namespace StarterAssets
         {
             _stateController.Initialize(_actorComponent);
             _activeState = _stateController.GetState(PlayerStateType.ALIVE);
-            _actorComponent.OnDeath += properties => { StartNewState(PlayerStateType.DEAD); };
+            var hurtable = _actorComponent.GetComponent<HurtableActor>();
+
+            hurtable.OnDeath += properties => { StartNewState(PlayerStateType.DEAD); };
 
             StartNewState(PlayerStateType.ALIVE);
         }  

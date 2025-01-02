@@ -78,7 +78,7 @@ public class ActorValidators
 
 }
 
-public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
+public class ActorComponent : MonoBehaviour, ITimeReceiver
 {
   private const float HIPS_ROTATION_ANGLE_LIMIT = 30.0f;
   private const float HIPS_COOLDOWN_TIME = 0.13f;
@@ -173,8 +173,8 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
     get => _health;
   }
 
-  public event Action<PlayerStateType> OnDeath;
-  [SerializeField] private GameObject _prefab;
+  
+
 
   private void Start()
   {
@@ -466,14 +466,14 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
     }
   }
 
-  private void LayersWeightController(bool isLayersActive)
+  public void LayersWeightController(bool isLayersActive)
   {
     _animator.SetLayerWeight(2, isLayersActive ? 1 : 0);
     _animator.SetLayerWeight(1, isLayersActive || _isReloading ? 1 : 0);
     _animator.SetLayerWeight(0, isLayersActive ? 0 : 1);
   }
 
-  private void ConstaintController()
+  public void ConstaintController()
   {
     if(!_actorValidators.IsAlive)
     {
@@ -633,32 +633,6 @@ public class ActorComponent : MonoBehaviour, ITimeReceiver, IHurtable
     Debug.Log("Stop reloading");
   }
 
-    public void Hurt(int damage)
-    {
-      _health -= damage;
-      
-      if(_health <= 0 && _actorValidators.IsAlive)
-      {
-        Die();
-      }
-    }
-
-    public void Die()
-    {
-      OnDeath?.Invoke(PlayerStateType.DEAD);
-      _actorValidators.IsAlive = false;
-
-      LayersWeightController(false);
-      ConstaintController();
-    }
-
-    public void Interaction(Vector3 position, int damage)
-    {
-      var fx = Instantiate(_prefab, position, Quaternion.identity);
-
-      Debug.Log(_health);
-      Hurt(damage);
-    }
 
     public IEnumerator DeactivateAnimatorRoutine()
     {

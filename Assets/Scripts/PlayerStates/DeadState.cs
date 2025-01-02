@@ -17,8 +17,7 @@ public class DeadState : PlayerState
     ActorComponent.Animator.SetTrigger("DeadTrigger");
     
     ActorComponent.ActorValidators.IsAlive = false;
-    ActorComponent.Animator.SetBool("IsAlive", false);
-
+    //ActorComponent.Animator.SetBool("IsAlive", false);
   }
 
   private void SetDeathAnimation()

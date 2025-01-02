@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 3241596853487980463}
   - component: {fileID: 4217111881024858598}
   - component: {fileID: 1247281150903100126}
+  - component: {fileID: 2477661952090444020}
   m_Layer: 8
   m_Name: ShootingController
   m_TagString: Player
@@ -402,7 +403,6 @@ MonoBehaviour:
   _constraintRightHand: {fileID: 8820581960513567642}
   _constaintBack: {fileID: 1547519073}
   aimObject: {fileID: 0}
-  _prefab: {fileID: 195360, guid: a3c24a5ae068ed44d950af671f99cc21, type: 3}
 --- !u!82 &1247281150903100126
 AudioSource:
   m_ObjectHideFlags: 0
@@ -499,6 +499,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2477661952090444020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098293134084549734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e51d79f9f408854393dd582bfe44a58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _prefab: {fileID: 195360, guid: a3c24a5ae068ed44d950af671f99cc21, type: 3}
+  _actorComponent: {fileID: 4217111881024858598}
 --- !u!1 &2267498236499299229
 GameObject:
   m_ObjectHideFlags: 0
