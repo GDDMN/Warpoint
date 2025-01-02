@@ -62,6 +62,8 @@ public class SceneManagerScript : MonoBehaviour
         {
             if(bot.GetComponent<BotController>().StateType != PlayerStateType.ALIVE)
             {
+                bot.GetComponent<BotController>().ActorComponent.GetComponent<HurtableActor>().InitializeAliveState();
+
                 bot.GetComponent<BotController>().Animator.SetTrigger("AliveTrigger");
                 bot.GetComponent<BotController>().StartNewState(PlayerStateType.ALIVE);
             }
