@@ -60,11 +60,14 @@ public class SceneManagerScript : MonoBehaviour
     {
         foreach(var bot in _bots)
         {
-            bot.GetComponent<BotController>().StartNewState(PlayerStateType.ALIVE);
-            bot.GetComponent<BotController>().Animator.SetTrigger("AliveTrigger");
+            if(bot.GetComponent<BotController>().StateType != PlayerStateType.ALIVE)
+            {
+                bot.GetComponent<BotController>().Animator.SetTrigger("AliveTrigger");
+                bot.GetComponent<BotController>().StartNewState(PlayerStateType.ALIVE);
+            }
         }
     }
-
+    
     private void OnPlayerPickUpWeapon()
     {
         uiConteinerInstance.GetWindowByType<UIGameHud>().weaponBar.SetValuesOfPickedWeapon(_playerController.ActorComponent.Weapon.CurrentAmmo.ToString(),

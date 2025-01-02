@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.InputSystem.Android.LowLevel;
 
 public class BotController : MonoBehaviour
 {
    [Header("Actor component")]
   [SerializeField] private ActorComponent _actorComponent;
+  public PlayerStateType StateType => _activeState.StateType;
   private GameObject _mainCamera;  
   private CharacterController _controller;
 
@@ -11,6 +13,7 @@ public class BotController : MonoBehaviour
   private PlayerStateController _stateController = new PlayerStateController();
   private PlayerState _activeState;
   public Animator Animator => _animator;
+  public ActorComponent ActorComponent => _actorComponent;
 
   private void Awake()
   {

@@ -24,7 +24,7 @@ public class HurtableActor : MonoBehaviour, IHurtable
 
       _actorComponent.LayersWeightController(false);
       _actorComponent.ConstaintController();
-      _actorComponent.Animator.enabled = false;
+      //_actorComponent.Animator.enabled = false;
     }
 
     public void Interaction(Vector3 position, int damage)
