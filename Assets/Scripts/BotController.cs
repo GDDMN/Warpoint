@@ -1,9 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BotController : MonoBehaviour
 {
    [Header("Actor component")]
   [SerializeField] private ActorComponent _actorComponent;
+  [SerializeField] private List<GameObject> botModels = new List<GameObject>();
+  [SerializeField] private int model_num = 0;
   public PlayerStateType StateType => _activeState.StateType;
   private GameObject _mainCamera;  
   private CharacterController _controller;
@@ -16,6 +19,12 @@ public class BotController : MonoBehaviour
 
   private void Awake()
   {
+    foreach(var model in botModels)
+    {
+      model.SetActive(false);
+    }
+
+    botModels[Random.Range(0, botModels.Count)].SetActive(true);
   }
 
   public void Initialize()
